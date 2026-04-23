@@ -127,15 +127,6 @@ function adminMiddleware(req, res, next) {
   });
 }
 
-// ── SETTINGS HELPER ─────────────────────────────────────────
-async function getSetting(key, defaultVal) {
-  const s = await Settings.findOne({ key });
-  return s ? s.value : defaultVal;
-}
-async function setSetting(key, value) {
-  await Settings.findOneAndUpdate({ key }, { value }, { upsert: true });
-}
-
 // ═══════════════════════════════════════════════════════════
 //  AUTH ROUTES
 // ═══════════════════════════════════════════════════════════
