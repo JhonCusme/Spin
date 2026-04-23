@@ -25,6 +25,9 @@ pids
 *.seed
 *.pid.lock
 
+# Firebase
+firebase-key.json
+
 # Coverage directory used by tools like istanbul
 coverage/
 *.lcov

@@ -6,7 +6,7 @@
 
 require('dotenv').config();
 const express      = require('express');
-const mongoose     = require('mongoose');
+const admin = require('firebase-admin');
 const bcrypt       = require('bcryptjs');
 const jwt          = require('jsonwebtoken');
 const cors         = require('cors');
@@ -43,62 +43,48 @@ const upload = multer({
   }
 });
 
-// ── MONGODB ──────────────────────────────────────────────────
-mongoose.connect(process.env.MONGODB_URI, {
-  serverSelectionTimeoutMS: 8000,
-  socketTimeoutMS: 45000,
-})
-  .then(() => console.log('✅ MongoDB conectado'))
-  .catch(err => {
-    console.error('❌ MongoDB error:', err.message);
-    console.log('💡 IP whitelist (0.0.0.0/0) o DNS issue. El servidor continuará sin DB (usará fallback local).');
-  });
-
-// ── SCHEMAS ──────────────────────────────────────────────────
-const UserSchema = new mongoose.Schema({
-  username:    { type: String, required: true, unique: true, lowercase: true, trim: true },
-  email:       { type: String, required: true, unique: true, lowercase: true },
-  password:    { type: String, required: true },
-  firstName:   String,
-  lastName:    String,
-  phone:       String,
-  isPro:       { type: Boolean, default: false },
-  proType:     { type: String, enum: ['none','monthly','lifetime'], default: 'none' },
-  proExpiry:   Date,           // null = lifetime
-  ruletas:     { type: Array, default: [{ id: 1, name: 'Ruleta 1', entries: [], history: [], wins: {} }] },
-  totalSpins:  { type: Number, default: 0 },
-  createdAt:   { type: Date, default: Date.now },
-  lastLogin:   Date,
+// ── FIRESTORE ──────────────────────────────────────────────────
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT_B64) {
+  serviceAccount = JSON.parse(Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_B64, 'base64').toString());
+} else {
+  serviceAccount = JSON.parse(fs.readFileSync('./firebase-key.json', 'utf8'));
+}
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
 });
+const db = admin.firestore();
 
-const PaymentSchema = new mongoose.Schema({
-  userId:      { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  username:    String,
-  email:       String,
-  method:      { type: String, enum: ['paypal','transfer'] },
-  plan:        { type: String, enum: ['monthly','lifetime'] },
-  amount:      Number,
-  currency:    { type: String, default: 'USD' },
-  status:      { type: String, enum: ['pending','completed','rejected','refunded'], default: 'pending' },
-  // PayPal
-  paypalOrderId:    String,
-  paypalPayerId:    String,
-  // Transferencia
-  bankRef:          String,    // referencia del usuario
-  comprobante:      String,    // ruta del archivo
-  adminNote:        String,
-  createdAt:        { type: Date, default: Date.now },
-  updatedAt:        Date,
-});
+// ── SETTINGS HELPER (Firestore) ─────────────────────────────
+async function getSetting(key, defaultVal) {
+  const doc = await db.collection('settings').doc('public').get();
+  return doc.exists ? doc.data()[key] : defaultVal;
+}
+async function setSetting(key, value) {
+  await db.collection('settings').doc('public').set({
+    [key]: value
+  }, { merge: true });
+}
 
-const SettingsSchema = new mongoose.Schema({
-  key:   { type: String, unique: true },
-  value: mongoose.Schema.Types.Mixed,
-});
+// ── USER HELPER (Firestore) ─────────────────────────────────
+async function getUser(username) {
+  const doc = await db.collection('users').doc(username.toLowerCase()).get();
+  return doc.exists ? doc.data() : null;
+}
+async function updateUser(username, updates) {
+  await db.collection('users').doc(username.toLowerCase()).update(updates);
+}
 
-const User     = mongoose.model('User', UserSchema);
-const Payment  = mongoose.model('Payment', PaymentSchema);
-const Settings = mongoose.model('Settings', SettingsSchema);
+// sanitizeUser (same)
+function sanitizeUser(u) {
+  return {
+    id: u.username, username: u.username, email: u.email,
+    firstName: u.firstName, lastName: u.lastName, phone: u.phone,
+    isPro: u.isPro, proType: u.proType, proExpiry: u.proExpiry,
+    ruletas: u.ruletas, totalSpins: u.totalSpins, createdAt: u.createdAt,
+    isAdmin: u.username === process.env.ADMIN_USERNAME,
+  };
+}
 
 // ── PAYPAL CLIENT ────────────────────────────────────────────
 function getPayPalClient() {
@@ -165,19 +151,42 @@ app.post('/api/auth/register', async (req, res) => {
     if (!/^[a-zA-Z0-9_]{3,20}$/.test(username))
       return res.status(400).json({ error: 'Usuario inválido' });
 
-    const exists = await User.findOne({ $or: [{ username }, { email }] });
-    if (exists) return res.status(400).json({ error: exists.username === username ? 'Usuario ya existe' : 'Email ya registrado' });
+    const lowerUser = username.toLowerCase();
+    const lowerEmail = email.toLowerCase();
+
+    // Check username
+    const userRef = db.collection('users').doc(lowerUser);
+    const userSnap = await userRef.get();
+    if (userSnap.exists) return res.status(400).json({ error: 'Usuario ya existe' });
+
+    // Check email
+    const emailSnap = await db.collection('users').where('email', '==', lowerEmail).get();
+    if (!emailSnap.empty) return res.status(400).json({ error: 'Email ya registrado' });
 
     const hashed = await bcrypt.hash(password, 12);
-    const user = await User.create({ username, email, password: hashed, firstName, lastName, phone });
+    await userRef.set({
+      username,
+      email: lowerEmail,
+      password: hashed,
+      firstName,
+      lastName,
+      phone,
+      isPro: false,
+      proType: 'none',
+      proExpiry: null,
+      ruletas: [{ id: 1, name: 'Ruleta 1', entries: [], history: [], wins: {} }],
+      totalSpins: 0,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      lastLogin: null,
+    });
 
-    const token = signToken({ id: user._id, username: user.username, isAdmin: false });
+    const token = signToken({ username: lowerUser, isAdmin: false });
     sendEmail(email, '¡Bienvenido a SpinDraw! 🎉', `
       <h2>¡Hola ${firstName || username}!</h2>
       <p>Tu cuenta en SpinDraw fue creada exitosamente.</p>
       <p>Empieza a crear sorteos en <a href="${process.env.FRONTEND_URL}">SpinDraw</a></p>
     `);
-    res.json({ token, user: sanitizeUser(user) });
+    res.json({ token, user: sanitizeUser({ username, email: lowerEmail, firstName, lastName, phone, isPro: false, proType: 'none', proExpiry: null, ruletas: [{ id: 1, name: 'Ruleta 1', entries: [], history: [], wins: {} }], totalSpins: 0 }) });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -185,31 +194,45 @@ app.post('/api/auth/register', async (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { username, password } = req.body;
-    const user = await User.findOne({
-      $or: [{ username: username?.toLowerCase() }, { email: username?.toLowerCase() }]
-    });
-    if (!user) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
+    const lowerInput = username.toLowerCase();
 
-    const valid = await bcrypt.compare(password, user.password);
+    // Try as username
+    let userSnap = await db.collection('users').doc(lowerInput).get();
+    let userData;
+    if (!userSnap.exists) {
+      // Try as email
+      const emailSnaps = await db.collection('users').where('email', '==', lowerInput).get();
+      if (emailSnaps.empty) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
+      userSnap = emailSnaps.docs[0];
+    }
+    userData = userSnap.data();
+
+    const valid = await bcrypt.compare(password, userData.password);
     if (!valid) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
 
     // Check pro expiry
-    if (user.isPro && user.proType === 'monthly' && user.proExpiry && new Date() > user.proExpiry) {
-      user.isPro = false; user.proType = 'none'; await user.save();
+    let isPro = userData.isPro;
+    let proType = userData.proType;
+    let proExpiry = userData.proExpiry;
+    if (isPro && proType === 'monthly' && proExpiry && new Date() > new Date(proExpiry.seconds * 1000)) {
+      isPro = false;
+      proType = 'none';
+      proExpiry = null;
+      await db.collection('users').doc(lowerInput).update({ isPro, proType, proExpiry });
     }
 
-    user.lastLogin = new Date(); await user.save();
-    const token = signToken({ id: user._id, username: user.username, isAdmin: user.username === process.env.ADMIN_USERNAME });
-    res.json({ token, user: sanitizeUser(user) });
+    await db.collection('users').doc(lowerInput).update({ lastLogin: admin.firestore.FieldValue.serverTimestamp() });
+    const token = signToken({ username: lowerInput, isAdmin: lowerInput === process.env.ADMIN_USERNAME });
+    res.json({ token, user: sanitizeUser(userData) });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // GET /api/auth/me
 app.get('/api/auth/me', authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
-    res.json({ user: sanitizeUser(user) });
+    const userSnap = await db.collection('users').doc(req.user.username).get();
+    if (!userSnap.exists) return res.status(404).json({ error: 'Usuario no encontrado' });
+    res.json({ user: sanitizeUser(userSnap.data()) });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -217,7 +240,7 @@ app.get('/api/auth/me', authMiddleware, async (req, res) => {
 app.put('/api/auth/ruletas', authMiddleware, async (req, res) => {
   try {
     const { ruletas } = req.body;
-    await User.findByIdAndUpdate(req.user.id, { ruletas });
+    await db.collection('users').doc(req.user.username).update({ ruletas });
     res.json({ ok: true });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
@@ -225,7 +248,9 @@ app.put('/api/auth/ruletas', authMiddleware, async (req, res) => {
 // PUT /api/auth/spins (incrementar contador de giros)
 app.put('/api/auth/spins', authMiddleware, async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.user.id, { $inc: { totalSpins: 1 } });
+    await db.collection('users').doc(req.user.username).update({
+      totalSpins: admin.firestore.FieldValue.increment(1)
+    });
     res.json({ ok: true });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
@@ -297,11 +322,14 @@ app.post('/api/paypal/create-order', authMiddleware, async (req, res) => {
     const approveUrl = order.result.links.find(l => l.rel === 'approve')?.href;
 
     // Crear registro de pago pendiente
-    const user = await User.findById(req.user.id);
-    await Payment.create({
-      userId: user._id, username: user.username, email: user.email,
+    const userSnap = await db.collection('users').doc(req.user.username).get();
+    const user = userSnap.data();
+    await db.collection('payments').add({
+      userId: req.user.username, username: user.username, email: user.email,
       method: 'paypal', plan, amount,
       paypalOrderId: order.result.id, status: 'pending',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: null,
     });
 
     res.json({ orderId: order.result.id, approveUrl });
@@ -319,23 +347,30 @@ app.post('/api/paypal/capture-order', authMiddleware, async (req, res) => {
     const capture = await client.execute(request);
 
     if (capture.result.status === 'COMPLETED') {
-      const payment = await Payment.findOneAndUpdate(
-        { paypalOrderId: orderId },
-        { status: 'completed', paypalPayerId: capture.result.payer.payer_id, updatedAt: new Date() },
-        { new: true }
-      );
+      const paymentSnaps = await db.collection('payments').where('paypalOrderId', '==', orderId).get();
+      if (paymentSnaps.empty) return res.status(404).json({ error: 'Pago no encontrado' });
+      const paymentDoc = paymentSnaps.docs[0];
+      const payment = paymentDoc.data();
+      await paymentDoc.ref.update({
+        status: 'completed',
+        paypalPayerId: capture.result.payer.payer_id,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
       // Activar Pro
-      const user = await User.findById(payment.userId);
-      user.isPro = true;
-      user.proType = payment.plan;
-      user.proExpiry = payment.plan === 'monthly' ? new Date(Date.now() + 30*24*60*60*1000) : null;
-      await user.save();
+      const userSnap = await db.collection('users').doc(payment.userId).get();
+      const user = userSnap.data();
+      const proExpiry = payment.plan === 'monthly' ? new Date(Date.now() + 30*24*60*60*1000) : null;
+      await userSnap.ref.update({
+        isPro: true,
+        proType: payment.plan,
+        proExpiry: proExpiry ? admin.firestore.Timestamp.fromDate(proExpiry) : null,
+      });
 
       sendEmail(user.email, '✅ ¡Tu suscripción Pro está activa!', `
         <h2>¡Felicidades ${user.firstName || user.username}!</h2>
         <p>Tu pago fue procesado correctamente. Ya tienes acceso a <strong>SpinDraw Pro</strong> 🎉</p>
         <p>Plan: <strong>${payment.plan === 'monthly' ? 'Mensual' : 'Vitalicio'}</strong></p>
-        ${payment.plan === 'monthly' ? `<p>Válido hasta: ${user.proExpiry.toLocaleDateString('es-EC')}</p>` : '<p>Acceso de por vida ✨</p>'}
+        ${payment.plan === 'monthly' ? `<p>Válido hasta: ${proExpiry.toLocaleDateString('es-EC')}</p>` : '<p>Acceso de por vida ✨</p>'}
       `);
 
       res.json({ success: true, user: sanitizeUser(user) });
@@ -358,12 +393,15 @@ app.post('/api/transfer/submit', authMiddleware, upload.single('comprobante'), a
     if (!amount) return res.status(400).json({ error: 'Plan inválido' });
     if (!req.file) return res.status(400).json({ error: 'Comprobante requerido' });
 
-    const user = await User.findById(req.user.id);
-    const payment = await Payment.create({
-      userId: user._id, username: user.username, email: user.email,
+    const userSnap = await db.collection('users').doc(req.user.username).get();
+    const user = userSnap.data();
+    const paymentRef = await db.collection('payments').add({
+      userId: req.user.username, username: user.username, email: user.email,
       method: 'transfer', plan, amount,
       bankRef, comprobante: req.file.path,
       status: 'pending',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      updatedAt: null,
     });
 
     // Notificar al admin por email
@@ -393,16 +431,15 @@ app.post('/api/transfer/submit', authMiddleware, upload.single('comprobante'), a
 // GET /api/admin/dashboard
 app.get('/api/admin/dashboard', adminMiddleware, async (req, res) => {
   try {
-    const [totalUsers, proUsers, pendingPayments, completedPayments, totalRevenue] = await Promise.all([
-      User.countDocuments(),
-      User.countDocuments({ isPro: true }),
-      Payment.countDocuments({ status: 'pending' }),
-      Payment.countDocuments({ status: 'completed' }),
-      Payment.aggregate([{ $match: { status: 'completed' } }, { $group: { _id: null, total: { $sum: '$amount' } } }]),
-    ]);
+    const usersSnap = await db.collection('users').get();
+    const totalUsers = usersSnap.size;
+    const proUsers = usersSnap.docs.filter(doc => doc.data().isPro).length;
+    const pendingPayments = (await db.collection('payments').where('status', '==', 'pending').get()).size;
+    const completedPayments = (await db.collection('payments').where('status', '==', 'completed').get()).size;
+    const totalRevenue = (await db.collection('payments').where('status', '==', 'completed').get()).docs.reduce((sum, doc) => sum + doc.data().amount, 0);
     res.json({
       totalUsers, proUsers, pendingPayments, completedPayments,
-      totalRevenue: totalRevenue[0]?.total || 0,
+      totalRevenue,
     });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
@@ -411,12 +448,12 @@ app.get('/api/admin/dashboard', adminMiddleware, async (req, res) => {
 app.get('/api/admin/payments', adminMiddleware, async (req, res) => {
   try {
     const { status, page = 1, limit = 20 } = req.query;
-    const filter = status ? { status } : {};
-    const payments = await Payment.find(filter)
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
-    const total = await Payment.countDocuments(filter);
+    let query = db.collection('payments').orderBy('createdAt', 'desc');
+    if (status) query = query.where('status', '==', status);
+    const paymentsSnap = await query.limit(parseInt(limit)).offset((page - 1) * limit).get();
+    const payments = paymentsSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const totalSnap = await query.get();
+    const total = totalSnap.size;
     res.json({ payments, total, pages: Math.ceil(total / limit) });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
@@ -425,18 +462,23 @@ app.get('/api/admin/payments', adminMiddleware, async (req, res) => {
 app.post('/api/admin/payments/:id/approve', adminMiddleware, async (req, res) => {
   try {
     const { adminNote } = req.body;
-    const payment = await Payment.findByIdAndUpdate(
-      req.params.id,
-      { status: 'completed', adminNote, updatedAt: new Date() },
-      { new: true }
-    );
-    if (!payment) return res.status(404).json({ error: 'Pago no encontrado' });
+    const paymentDoc = await db.collection('payments').doc(req.params.id).get();
+    if (!paymentDoc.exists) return res.status(404).json({ error: 'Pago no encontrado' });
+    const payment = paymentDoc.data();
+    await paymentDoc.ref.update({
+      status: 'completed',
+      adminNote,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
 
-    const user = await User.findById(payment.userId);
-    user.isPro = true;
-    user.proType = payment.plan;
-    user.proExpiry = payment.plan === 'monthly' ? new Date(Date.now() + 30*24*60*60*1000) : null;
-    await user.save();
+    const userSnap = await db.collection('users').doc(payment.userId).get();
+    const user = userSnap.data();
+    const proExpiry = payment.plan === 'monthly' ? new Date(Date.now() + 30*24*60*60*1000) : null;
+    await userSnap.ref.update({
+      isPro: true,
+      proType: payment.plan,
+      proExpiry: proExpiry ? admin.firestore.Timestamp.fromDate(proExpiry) : null,
+    });
 
     sendEmail(user.email, '✅ ¡Tu cuenta Pro está activa! — SpinDraw', `
       <h2>¡Felicidades ${user.firstName || user.username}!</h2>
@@ -454,12 +496,14 @@ app.post('/api/admin/payments/:id/approve', adminMiddleware, async (req, res) =>
 app.post('/api/admin/payments/:id/reject', adminMiddleware, async (req, res) => {
   try {
     const { adminNote } = req.body;
-    const payment = await Payment.findByIdAndUpdate(
-      req.params.id,
-      { status: 'rejected', adminNote, updatedAt: new Date() },
-      { new: true }
-    );
-    if (!payment) return res.status(404).json({ error: 'Pago no encontrado' });
+    const paymentDoc = await db.collection('payments').doc(req.params.id).get();
+    if (!paymentDoc.exists) return res.status(404).json({ error: 'Pago no encontrado' });
+    const payment = paymentDoc.data();
+    await paymentDoc.ref.update({
+      status: 'rejected',
+      adminNote,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
 
     const user = await User.findById(payment.userId);
     sendEmail(user.email, '❌ Comprobante rechazado — SpinDraw', `
@@ -477,16 +521,22 @@ app.post('/api/admin/payments/:id/reject', adminMiddleware, async (req, res) => 
 app.get('/api/admin/users', adminMiddleware, async (req, res) => {
   try {
     const { page = 1, limit = 20, search } = req.query;
-    const filter = search ? { $or: [
-      { username: new RegExp(search, 'i') },
-      { email: new RegExp(search, 'i') },
-    ]} : {};
-    const users = await User.find(filter, '-password')
-      .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
-    const total = await User.countDocuments(filter);
-    res.json({ users, total, pages: Math.ceil(total / limit) });
+    let query = db.collection('users').orderBy('createdAt', 'desc');
+    if (search) {
+      const allSnap = await query.get();
+      const allUsers = allSnap.docs.map(doc => ({ id: doc.id, ...doc.data() })).filter(u =>
+        u.username.includes(search.toLowerCase()) || u.email.includes(search.toLowerCase())
+      );
+      const total = allUsers.length;
+      const users = allUsers.slice((page - 1) * limit, page * limit);
+      res.json({ users, total, pages: Math.ceil(total / limit) });
+    } else {
+      const usersSnap = await query.limit(parseInt(limit)).offset((page - 1) * limit).get();
+      const users = usersSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const totalSnap = await query.get();
+      const total = totalSnap.size;
+      res.json({ users, total, pages: Math.ceil(total / limit) });
+    }
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -498,8 +548,9 @@ app.post('/api/admin/users/:id/toggle-pro', adminMiddleware, async (req, res) =>
     if (isPro && proType === 'monthly' && days)
       update.proExpiry = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
     if (isPro && proType === 'lifetime') update.proExpiry = null;
-    const user = await User.findByIdAndUpdate(req.params.id, update, { new: true });
-    res.json({ success: true, user: sanitizeUser(user) });
+    await db.collection('users').doc(req.params.id).update(update);
+    const userSnap = await db.collection('users').doc(req.params.id).get();
+    res.json({ success: true, user: sanitizeUser(userSnap.data()) });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
