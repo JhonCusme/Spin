@@ -1215,7 +1215,8 @@ let currentPalette=PALETTES[0];
 function getColor(i){return currentPalette[i%currentPalette.length];}
 function ar(){return ruletas[activeRuletaIdx];}
 
-// ══ PLAbuyPro(plan){
+// ══ PLA
+function buyPro(plan){
   if (!authToken) {
     showAuthModal();
     return;
@@ -1236,7 +1237,6 @@ function ar(){return ruletas[activeRuletaIdx];}
   .catch(err => alert('Error de conexión: ' + err.message));
 }
 function simulateUpgrade(){isPro=true;closePaywall();updatePlanUI();} // Keep for admin or something
-function simulateUpgrade(){isPro=true;closePaywall();updatePlanUI();}
 function deactivatePro(){
   isPro=false;updatePlanUI();
   if(ar().entries.length>FREE_LIMIT)ar().entries=ar().entries.slice(0,FREE_LIMIT);
