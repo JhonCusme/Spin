@@ -31,6 +31,7 @@ body{
   justify-content:center; gap:20px; overflow:hidden;
 }
 #fullscreenOverlay.active{display:flex;}
+#fsClose{position:absolute;top:20px;right:20px;background:rgba(0,0,0,0.7);color:white;border:none;padding:10px 15px;border-radius:5px;cursor:pointer;font-size:18px;z-index:10000;}
 #fsLogoArea{height:56px;display:flex;align-items:center;}
 #fsLogoArea img{max-height:52px;max-width:220px;object-fit:contain;}
 #fsTitle{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:4px;color:var(--accent);}
@@ -559,7 +560,8 @@ header{
       <div class="pf-item"><span class="check">✔</span> Sin anuncios</div>
     </div>
     <div class="paywall-price">Solo <strong>$4.99</strong> / mes — cancela cuando quieras</div>
-    <button class="btn-upgrade" onclick="simulateUpgrade()">🚀 Comenzar con Pro</button><br>
+    <button class="btn-upgrade" onclick="buyPro('monthly')">💳 Comprar Pro Mensual</button><br>
+    <button class="btn-upgrade" onclick="buyPro('lifetime')">💎 Comprar Pro Vitalicio</button><br>
     <button class="btn-cancel" onclick="closePaywall()">Ahora no</button>
   </div>
 </div>
@@ -1213,7 +1215,27 @@ let currentPalette=PALETTES[0];
 function getColor(i){return currentPalette[i%currentPalette.length];}
 function ar(){return ruletas[activeRuletaIdx];}
 
-// ══ PLAN ══
+// ══ PLAbuyPro(plan){
+  if (!authToken) {
+    showAuthModal();
+    return;
+  }
+  fetch(API + '/api/paypal/create-order', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+    body: JSON.stringify({ plan })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.approveUrl) {
+      window.location = data.approveUrl;
+    } else {
+      alert('Error: ' + (data.error || 'Desconocido'));
+    }
+  })
+  .catch(err => alert('Error de conexión: ' + err.message));
+}
+function simulateUpgrade(){isPro=true;closePaywall();updatePlanUI();} // Keep for admin or something
 function simulateUpgrade(){isPro=true;closePaywall();updatePlanUI();}
 function deactivatePro(){
   isPro=false;updatePlanUI();
