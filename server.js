@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════
 //  SpinDraw — Backend Server
-//  Stack: Node.js + Express + MongoDB + PayPal SDK
+//  Stack: Node.js + Express + Firebase + PayPal SDK
 //  Deploy: Render.com (free tier) or Railway
 // ═══════════════════════════════════════════════════════════
 
