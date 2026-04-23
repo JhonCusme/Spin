@@ -1943,7 +1943,16 @@ function logout() {
 // ════════════════════════════════════════════
 let siteSettings = null;
 
-function openPaywall() {
+async function openPaywall() {
+  // Load prices from server
+  if (!siteSettings) {
+    try { siteSettings = await api('GET','/api/settings/public'); } catch {
+      siteSettings = { prices: { monthly:{amount:4.99}, lifetime:{amount:29.99} }, bank:{}, whatsapp:'' };
+    }
+  }
+  const { prices } = siteSettings;
+  document.getElementById('priceMonthly').textContent = `$${prices.monthly.amount}`;
+  document.getElementById('priceLifetime').textContent = `$${prices.lifetime.amount}`;
   document.getElementById('paywallModal').classList.add('active');
 }
 function closePaywall() { document.getElementById('paywallModal').classList.remove('active'); }
