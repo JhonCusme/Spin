@@ -1729,9 +1729,9 @@ function setSound(s){selectedSound=s;}
 function testSound(){if(selectedSound==='casino')playTick();else if(selectedSound==='fanfare')playFanfare();else if(selectedSound==='drum'){playDrumRoll();setTimeout(playDrum,2200);}}
 
 // ════════════════════════════════════════════
-//  API CONFIG — cambia esta URL por la tuya
+//  API CONFIG — usa el dominio actual
 // ════════════════════════════════════════════
-const API = 'http://localhost:3000'; // URL local para desarrollo
+const API = window.location.origin;
 let authToken = localStorage.getItem('sd_token') || null;
 let currentUserData = null;
 
