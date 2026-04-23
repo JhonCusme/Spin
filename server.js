@@ -21,12 +21,12 @@ const app = express();
 // ── MIDDLEWARES ──────────────────────────────────────────────
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 app.use(express.json());
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('/tmp/uploads'));
 
 // ── MULTER (comprobantes de transferencia) ───────────────────
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = 'uploads/comprobantes';
+    const dir = '/tmp/uploads/comprobantes';
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
