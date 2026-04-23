@@ -119,6 +119,7 @@ body{
   align-items:center;justify-content:center;
 }
 #transferModal.active{display:flex;}
+#paywallModal.active{display:flex !important;}
 .transfer-details{text-align:left;margin:20px 0;padding:15px;background:var(--bg);border-radius:10px;}
 .transfer-details p{margin:5px 0;}
 .paywall-box{
@@ -551,30 +552,7 @@ header{
   </div>
 </div>
 
-<!-- ══ PAYWALL ══ -->
-<div id="paywallModal">
-  <div class="paywall-box">
-    <div class="paywall-crown">👑</div>
-    <div class="paywall-title">SpinDraw Pro</div>
-    <div class="paywall-sub">Desbloquea todo y lleva tus sorteos al siguiente nivel.</div>
-    <div class="paywall-features">
-      <div class="pf-item"><span class="check">✔</span> Participantes ilimitados</div>
-      <div class="pf-item"><span class="check">✔</span> Múltiples ruletas guardadas</div>
-      <div class="pf-item"><span class="check">✔</span> Logo personalizado</div>
-      <div class="pf-item"><span class="check">✔</span> Temas y colores</div>
-      <div class="pf-item"><span class="check">✔</span> Sonidos al girar</div>
-      <div class="pf-item"><span class="check">✔</span> Modo Stream pantalla completa</div>
-      <div class="pf-item"><span class="check">✔</span> Eliminar ganador automáticamente</div>
-      <div class="pf-item"><span class="check">✔</span> Importar lista de participantes</div>
-      <div class="pf-item"><span class="check">✔</span> Compartir resultado como imagen</div>
-      <div class="pf-item"><span class="check">✔</span> Sin anuncios</div>
-    </div>
-    <div class="paywall-price">Solo <strong>$4.99</strong> / mes — cancela cuando quieras</div>
-    <button class="btn-upgrade" onclick="selectPaymentMethod('monthly')">💳 Comprar Pro Mensual</button><br>
-    <button class="btn-upgrade" onclick="selectPaymentMethod('lifetime')">💎 Comprar Pro Vitalicio</button><br>
-    <button class="btn-cancel" onclick="closePaywall()">Ahora no</button>
-  </div>
-</div>
+
 
 <!-- ══ PAYMENT METHOD MODAL ══ -->
 <div id="paymentMethodModal">
@@ -1753,7 +1731,7 @@ function testSound(){if(selectedSound==='casino')playTick();else if(selectedSoun
 // ════════════════════════════════════════════
 //  API CONFIG — cambia esta URL por la tuya
 // ════════════════════════════════════════════
-const API = 'https://spin-22w3.onrender.com'; // URL de producción
+const API = 'http://localhost:3000'; // URL local para desarrollo
 let authToken = localStorage.getItem('sd_token') || null;
 let currentUserData = null;
 
@@ -1965,16 +1943,7 @@ function logout() {
 // ════════════════════════════════════════════
 let siteSettings = null;
 
-async function openPaywall() {
-  // Load prices from server
-  if (!siteSettings) {
-    try { siteSettings = await api('GET','/api/settings/public'); } catch {
-      siteSettings = { prices: { monthly:{amount:4.99}, lifetime:{amount:29.99} }, bank:{}, whatsapp:'' };
-    }
-  }
-  const { prices } = siteSettings;
-  document.getElementById('priceMonthly').textContent = `$${prices.monthly.amount}`;
-  document.getElementById('priceLifetime').textContent = `$${prices.lifetime.amount}`;
+function openPaywall() {
   document.getElementById('paywallModal').classList.add('active');
 }
 function closePaywall() { document.getElementById('paywallModal').classList.remove('active'); }
