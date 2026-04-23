@@ -30,7 +30,7 @@ services:
       - key: EMAIL_PASS
         sync: false
       - key: ADMIN_USERNAME
-        value: admin
+        value: adminspin
       - key: ADMIN_EMAIL
         sync: false
     autoDeploy: true
