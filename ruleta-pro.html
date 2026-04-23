@@ -104,13 +104,23 @@ body{
 }
 @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 
-/* ══ PAYWALL ══ */
-#paywallModal{
-  display:none;position:fixed;inset:0;z-index:8888;
+/* ══ PAYMENT METHOD MODAL ══ */
+#paymentMethodModal{
+  display:none;position:fixed;inset:0;z-index:8889;
   background:rgba(0,0,0,.75);backdrop-filter:blur(8px);
   align-items:center;justify-content:center;
 }
-#paywallModal.active{display:flex;}
+#paymentMethodModal.active{display:flex;}
+
+/* ══ TRANSFER MODAL ══ */
+#transferModal{
+  display:none;position:fixed;inset:0;z-index:8890;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+}
+#transferModal.active{display:flex;}
+.transfer-details{text-align:left;margin:20px 0;padding:15px;background:var(--bg);border-radius:10px;}
+.transfer-details p{margin:5px 0;}
 .paywall-box{
   background:var(--card);border:1px solid var(--border);border-radius:20px;
   padding:36px 32px;max-width:420px;width:90%;text-align:center;
@@ -560,9 +570,40 @@ header{
       <div class="pf-item"><span class="check">✔</span> Sin anuncios</div>
     </div>
     <div class="paywall-price">Solo <strong>$4.99</strong> / mes — cancela cuando quieras</div>
-    <button class="btn-upgrade" onclick="buyPro('monthly')">💳 Comprar Pro Mensual</button><br>
-    <button class="btn-upgrade" onclick="buyPro('lifetime')">💎 Comprar Pro Vitalicio</button><br>
+    <button class="btn-upgrade" onclick="selectPaymentMethod('monthly')">💳 Comprar Pro Mensual</button><br>
+    <button class="btn-upgrade" onclick="selectPaymentMethod('lifetime')">💎 Comprar Pro Vitalicio</button><br>
     <button class="btn-cancel" onclick="closePaywall()">Ahora no</button>
+  </div>
+</div>
+
+<!-- ══ PAYMENT METHOD MODAL ══ -->
+<div id="paymentMethodModal">
+  <div class="paywall-box">
+    <div class="paywall-crown">💳</div>
+    <div class="paywall-title">Método de Pago</div>
+    <div class="paywall-sub">Elige cómo quieres pagar por SpinDraw Pro.</div>
+    <button class="btn-upgrade" onclick="buyProPayPal(selectedPlan)">PayPal</button><br>
+    <button class="btn-upgrade" onclick="buyProTransfer(selectedPlan)">Transferencia Bancaria</button><br>
+    <button class="btn-cancel" onclick="closePaymentMethodModal()">Atrás</button>
+  </div>
+</div>
+
+<!-- ══ TRANSFER PAYMENT MODAL ══ -->
+<div id="transferModal">
+  <div class="paywall-box">
+    <div class="paywall-crown">🏦</div>
+    <div class="paywall-title">Pago por Transferencia</div>
+    <div class="paywall-sub">Realiza la transferencia a la siguiente cuenta y sube el comprobante.</div>
+    <div class="transfer-details">
+      <p><strong>Banco:</strong> Banco Ejemplo</p>
+      <p><strong>Cuenta:</strong> 1234567890</p>
+      <p><strong>CLABE:</strong> 012345678901234567</p>
+      <p><strong>Beneficiario:</strong> SpinDraw Pro</p>
+      <p><strong>Monto:</strong> <span id="transferAmount">$4.99</span></p>
+    </div>
+    <input type="file" id="comprobanteFile" accept="image/*,application/pdf" style="margin:10px 0;">
+    <button class="btn-upgrade" onclick="uploadComprobante()">Subir Comprobante</button><br>
+    <button class="btn-cancel" onclick="closeTransferModal()">Cancelar</button>
   </div>
 </div>
 
@@ -1216,11 +1257,16 @@ function getColor(i){return currentPalette[i%currentPalette.length];}
 function ar(){return ruletas[activeRuletaIdx];}
 
 // ══ PLA
-function buyPro(plan){
-  if (!authToken) {
-    showAccountModal();
-    return;
-  }
+let selectedPlan = '';
+
+function selectPaymentMethod(plan){
+  selectedPlan = plan;
+  closePaywall();
+  document.getElementById('paymentMethodModal').classList.add('active');
+}
+
+function buyProPayPal(plan){
+  closePaymentMethodModal();
   fetch(API + '/api/paypal/create-order', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
@@ -1235,6 +1281,58 @@ function buyPro(plan){
     }
   })
   .catch(err => alert('Error de conexión: ' + err.message));
+}
+
+function buyProTransfer(plan){
+  closePaymentMethodModal();
+  document.getElementById('transferAmount').textContent = plan === 'monthly' ? '$4.99' : '$49.99';
+  document.getElementById('transferModal').classList.add('active');
+}
+
+function closePaymentMethodModal(){
+  document.getElementById('paymentMethodModal').classList.remove('active');
+}
+
+function closeTransferModal(){
+  document.getElementById('transferModal').classList.remove('active');
+}
+
+function uploadComprobante(){
+  const file = document.getElementById('comprobanteFile').files[0];
+  if (!file) {
+    alert('Selecciona un archivo');
+    return;
+  }
+  const formData = new FormData();
+  formData.append('comprobante', file);
+  formData.append('plan', selectedPlan);
+  // Optional: add bank reference if user inputs it
+  fetch(API + '/api/transfer/submit', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + authToken },
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      alert('Comprobante subido. Tu cuenta Pro será activada en 24 horas.');
+      closeTransferModal();
+      // Optionally update UI
+      isPro = true;
+      updatePlanUI();
+    } else {
+      alert('Error: ' + (data.error || 'Desconocido'));
+    }
+  })
+  .catch(err => alert('Error de conexión: ' + err.message));
+}
+
+function buyPro(plan){
+  if (!authToken) {
+    showAccountModal();
+    return;
+  }
+  selectPaymentMethod(plan);
 }
 function simulateUpgrade(){isPro=true;closePaywall();updatePlanUI();} // Keep for admin or something
 function deactivatePro(){

@@ -305,7 +305,7 @@ app.get('/api/settings/public', async (req, res) => {
 app.post('/api/paypal/create-order', authMiddleware, async (req, res) => {
   try {
     const { plan } = req.body; // 'monthly' | 'lifetime'
-    const prices = await getSetting('prices', { monthly: { amount: 4.99 }, lifetime: { amount: 29.99 } });
+    const prices = await getSetting('prices', { monthly: { amount: 4.99 }, lifetime: { amount: 49.99 } });
     const amount = prices[plan]?.amount;
     if (!amount) return res.status(400).json({ error: 'Plan inválido' });
 
@@ -396,7 +396,7 @@ app.post('/api/paypal/capture-order', authMiddleware, async (req, res) => {
 app.post('/api/transfer/submit', authMiddleware, upload.single('comprobante'), async (req, res) => {
   try {
     const { plan, bankRef } = req.body;
-    const prices = await getSetting('prices', { monthly: { amount: 4.99 }, lifetime: { amount: 29.99 } });
+    const prices = await getSetting('prices', { monthly: { amount: 4.99 }, lifetime: { amount: 49.99 } });
     const amount = prices[plan]?.amount;
     if (!amount) return res.status(400).json({ error: 'Plan inválido' });
     if (!req.file) return res.status(400).json({ error: 'Comprobante requerido' });
