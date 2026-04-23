@@ -406,7 +406,7 @@ app.post('/api/transfer/submit', authMiddleware, upload.single('comprobante'), a
     const paymentRef = await db.collection('payments').add({
       userId: req.user.username, username: user.username, email: user.email,
       method: 'transfer', plan, amount,
-      bankRef, comprobante: req.file.path,
+      bankRef: bankRef || null, comprobante: req.file.path,
       status: 'pending',
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: null,
