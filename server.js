@@ -398,6 +398,7 @@ app.post('/api/transfer/submit', authMiddleware, upload.single('comprobante'), a
     const { plan, bankRef } = req.body;
     const prices = await getSetting('prices', { monthly: { amount: 4.99 }, lifetime: { amount: 49.99 } });
     const amount = prices[plan]?.amount;
+    console.log('Plan:', plan, 'Prices:', prices, 'Amount:', amount);
     if (!amount) return res.status(400).json({ error: 'Plan inválido' });
     if (!req.file) return res.status(400).json({ error: 'Comprobante requerido' });
 
