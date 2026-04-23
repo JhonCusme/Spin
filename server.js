@@ -418,7 +418,7 @@ app.post('/api/transfer/submit', authMiddleware, upload.single('comprobante'), a
       <p><b>Usuario:</b> ${user.username} (${user.email})</p>
       <p><b>Plan:</b> ${plan} — $${amount}</p>
       <p><b>Referencia:</b> ${bankRef || 'No indicada'}</p>
-      <p><b>ID Pago:</b> ${payment._id}</p>
+      <p><b>ID Pago:</b> ${paymentRef.id}</p>
       <p>Revisa el panel admin para aprobar o rechazar.</p>
     `);
 
@@ -428,7 +428,7 @@ app.post('/api/transfer/submit', authMiddleware, upload.single('comprobante'), a
       <p>Te notificaremos por email cuando tu cuenta Pro esté activa.</p>
     `);
 
-    res.json({ success: true, paymentId: payment._id });
+    res.json({ success: true, paymentId: paymentRef.id });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
