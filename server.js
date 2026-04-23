@@ -318,8 +318,8 @@ app.post('/api/paypal/create-order', authMiddleware, async (req, res) => {
         description: `SpinDraw Pro — ${plan === 'monthly' ? 'Mensual' : 'Vitalicio'}`,
       }],
       application_context: {
-        return_url: `${process.env.FRONTEND_URL}/paypal-success`,
-        cancel_url: `${process.env.FRONTEND_URL}/paypal-cancel`,
+        return_url: `${process.env.FRONTEND_URL || 'https://spin-22w3.onrender.com'}/paypal-success`,
+        cancel_url: `${process.env.FRONTEND_URL || 'https://spin-22w3.onrender.com'}/paypal-cancel`,
         brand_name: 'SpinDraw',
         user_action: 'PAY_NOW',
       }
