@@ -1993,6 +1993,7 @@ async function pollPaymentStatus(plan) {
 
 // ── TRANSFER ─────────────────────────────────
 function openTransferModal(plan) {
+  selectedPlan = plan; // ensure selectedPlan is set
   const { bank, prices, whatsapp } = siteSettings;
   const amount = prices[plan]?.amount;
   document.getElementById('transferPlan').textContent = plan==='monthly'?'Mensual':'Vitalicio';
