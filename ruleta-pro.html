@@ -573,10 +573,12 @@ header{
     <div class="paywall-title">Pago por Transferencia</div>
     <div class="paywall-sub">Realiza la transferencia a la siguiente cuenta y sube el comprobante.</div>
     <div class="transfer-details">
-      <p><strong>Banco:</strong> Banco Ejemplo</p>
-      <p><strong>Cuenta:</strong> 1234567890</p>
-      <p><strong>CLABE:</strong> 012345678901234567</p>
-      <p><strong>Beneficiario:</strong> SpinDraw Pro</p>
+      <p><strong>Banco:</strong> <span id="bankBankName"></span></p>
+      <p><strong>Cuenta:</strong> <span id="bankAccount"></span></p>
+      <p><strong>CLABE:</strong> <span id="bankId"></span></p>
+      <p><strong>Beneficiario:</strong> <span id="bankName"></span></p>
+      <p><strong>Tipo:</strong> <span id="bankType"></span></p>
+      <p><strong>Nota:</strong> <span id="bankNote"></span></p>
       <p><strong>Monto:</strong> <span id="transferAmount">$4.99</span></p>
     </div>
     <input type="file" id="comprobanteFile" accept="image/*,application/pdf" style="margin:10px 0;">
