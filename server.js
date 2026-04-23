@@ -286,7 +286,24 @@ app.get('/api/settings/public', async (req, res) => {
     });
     const whatsapp = await getSetting('whatsapp', '+593900000000');
     res.json({ prices, bank, whatsapp });
-  } catch(e) { res.status(500).json({ error: e.message }); }
+  } catch(e) {
+    // Fallback to defaults on error
+    res.json({
+      prices: {
+        monthly:  { amount: 4.99,  label: 'Mensual' },
+        lifetime: { amount: 29.99, label: 'Vitalicio' },
+      },
+      bank: {
+        name:    'Tu Nombre Completo',
+        bank:    'Banco Pichincha',
+        account: '2200000000',
+        type:    'Ahorros',
+        id:      '1700000000',
+        note:    'Indicar tu usuario SpinDraw en la referencia',
+      },
+      whatsapp: '+593900000000'
+    });
+  }
 });
 
 // ═══════════════════════════════════════════════════════════

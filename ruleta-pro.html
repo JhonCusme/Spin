@@ -1218,7 +1218,7 @@ function ar(){return ruletas[activeRuletaIdx];}
 // ══ PLA
 function buyPro(plan){
   if (!authToken) {
-    showAuthModal();
+    showAccountModal();
     return;
   }
   fetch(API + '/api/paypal/create-order', {
