@@ -29,6 +29,9 @@ pids
 coverage/
 *.lcov
 
+# Uploads
+uploads/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
