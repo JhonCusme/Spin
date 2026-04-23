@@ -12,7 +12,7 @@ services:
       - key: PORT
         value: 3000
       - key: FRONTEND_URL
-        sync: false
+        value: https://spin-22w3.onrender.com
       - key: FIREBASE_PROJECT_ID
         value: spindraw-6cdb2
       - key: FIREBASE_SERVICE_ACCOUNT_B64
