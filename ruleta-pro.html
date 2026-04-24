@@ -583,7 +583,7 @@ header{
     </div>
     <input type="file" id="comprobanteFile" accept="image/*,application/pdf" style="margin:10px 0;">
     <button class="btn-upgrade" id="uploadComprobanteBtn" onclick="uploadComprobante()">Subir Comprobante</button><br>
-    <button class="btn-cancel" onclick="closeTransferModal()">Cancelar</button>
+    <button class="btn-cancel" id="cancelTransferBtn" onclick="closeTransferModal()">Cancelar</button>
   </div>
 </div>
 
@@ -1284,7 +1284,9 @@ function uploadComprobante(){
     return;
   }
   const button = document.getElementById('uploadComprobanteBtn');
+  const cancelBtn = document.getElementById('cancelTransferBtn');
   button.disabled = true;
+  cancelBtn.disabled = true;
   button.textContent = 'Subiendo...';
   const formData = new FormData();
   formData.append('comprobante', file);
@@ -1300,9 +1302,7 @@ function uploadComprobante(){
     if (data.success) {
       alert('Comprobante subido. Tu cuenta Pro será activada en 24 horas.');
       closeTransferModal();
-      // Optionally update UI
-      isPro = true;
-      updatePlanUI();
+      // Do not set isPro here; wait for admin approval
     } else {
       alert('Error: ' + (data.error || 'Desconocido'));
     }
@@ -1310,6 +1310,7 @@ function uploadComprobante(){
   .catch(err => alert('Error de conexión: ' + err.message))
   .finally(() => {
     button.disabled = false;
+    cancelBtn.disabled = false;
     button.textContent = 'Subir Comprobante';
   });
 }
