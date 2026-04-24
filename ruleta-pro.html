@@ -1277,7 +1277,28 @@ function closeTransferModal(){
   document.getElementById('transferModal').classList.remove('active');
 }
 
-function uploadComprobante(){
+async function compressImage(file, maxSizeMB = 5) {
+  const maxSize = maxSizeMB * 1024 * 1024;
+  if (file.size <= maxSize) return file;
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      const ratio = Math.sqrt(maxSize / file.size);
+      width *= ratio;
+      height *= ratio;
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(resolve, 'image/jpeg', 0.8);
+    };
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+async function uploadComprobante(){
   const file = document.getElementById('comprobanteFile').files[0];
   if (!file) {
     alert('Selecciona un archivo');
@@ -1288,8 +1309,20 @@ function uploadComprobante(){
   button.disabled = true;
   cancelBtn.disabled = true;
   button.textContent = 'Subiendo...';
+
+  let processedFile = file;
+  if (file.type.startsWith('image/')) {
+    processedFile = await compressImage(file);
+  } else if (file.size > 5 * 1024 * 1024) {
+    alert('El archivo es demasiado grande. Solo se permiten archivos de hasta 5MB.');
+    button.disabled = false;
+    cancelBtn.disabled = false;
+    button.textContent = 'Subir Comprobante';
+    return;
+  }
+
   const formData = new FormData();
-  formData.append('comprobante', file);
+  formData.append('comprobante', processedFile);
   formData.append('plan', selectedPlan);
   // Optional: add bank reference if user inputs it
   fetch(API + '/api/transfer/submit', {
