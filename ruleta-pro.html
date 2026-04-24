@@ -582,7 +582,7 @@ header{
       <p><strong>Monto:</strong> <span id="transferAmount">$4.99</span></p>
     </div>
     <input type="file" id="comprobanteFile" accept="image/*,application/pdf" style="margin:10px 0;">
-    <button class="btn-upgrade" onclick="uploadComprobante()">Subir Comprobante</button><br>
+    <button class="btn-upgrade" id="uploadComprobanteBtn" onclick="uploadComprobante()">Subir Comprobante</button><br>
     <button class="btn-cancel" onclick="closeTransferModal()">Cancelar</button>
   </div>
 </div>
@@ -1283,6 +1283,9 @@ function uploadComprobante(){
     alert('Selecciona un archivo');
     return;
   }
+  const button = document.getElementById('uploadComprobanteBtn');
+  button.disabled = true;
+  button.textContent = 'Subiendo...';
   const formData = new FormData();
   formData.append('comprobante', file);
   formData.append('plan', selectedPlan);
@@ -1304,7 +1307,11 @@ function uploadComprobante(){
       alert('Error: ' + (data.error || 'Desconocido'));
     }
   })
-  .catch(err => alert('Error de conexión: ' + err.message));
+  .catch(err => alert('Error de conexión: ' + err.message))
+  .finally(() => {
+    button.disabled = false;
+    button.textContent = 'Subir Comprobante';
+  });
 }
 
 function buyPro(plan){
