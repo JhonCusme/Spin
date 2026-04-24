@@ -42,8 +42,7 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT_B64) {
   serviceAccount = JSON.parse(fs.readFileSync('./firebase-key.json', 'utf8'));
 }
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: 'spindraw-6cdb2.appspot.com'
+  credential: admin.credential.cert(serviceAccount)
 });
 const db = admin.firestore();
 
