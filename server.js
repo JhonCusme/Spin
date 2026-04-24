@@ -24,16 +24,7 @@ app.use(express.json());
 app.use('/uploads', express.static('/tmp/uploads'));
 
 // ── MULTER (comprobantes de transferencia) ───────────────────
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = '/tmp/uploads/comprobantes';
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  }
-});
+const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
