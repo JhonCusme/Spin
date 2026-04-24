@@ -401,12 +401,19 @@ app.post('/api/transfer/submit', authMiddleware, upload.single('comprobante'), a
     if (!amount) return res.status(400).json({ error: 'Plan inválido' });
     if (!req.file) return res.status(400).json({ error: 'Comprobante requerido' });
 
+    // Upload to Firebase Storage
+    const bucket = admin.storage().bucket();
+    const fileName = `comprobantes/${Date.now()}-${req.file.originalname}`;
+    const file = bucket.file(fileName);
+    await file.save(req.file.buffer, { contentType: req.file.mimetype });
+    const [url] = await file.getSignedUrl({ action: 'read', expires: '03-09-2491' });
+
     const userSnap = await db.collection('users').doc(req.user.username).get();
     const user = userSnap.data();
     const paymentRef = await db.collection('payments').add({
       userId: req.user.username, username: user.username, email: user.email,
       method: 'transfer', plan, amount,
-      bankRef: bankRef || null, comprobante: req.file.path,
+      bankRef: bankRef || null, comprobante: url,
       status: 'pending',
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: null,
