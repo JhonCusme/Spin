@@ -440,6 +440,46 @@ app.post('/api/payphone/create-subscription', authMiddleware, async (req, res) =
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
+// POST /api/payphone/create-order
+app.post('/api/payphone/create-order', authMiddleware, async (req, res) => {
+  try {
+    const { plan } = req.body; // 'lifetime'
+    const prices = await getSetting('prices', { lifetime: { amount: 29.99 } });
+    const amount = prices[plan]?.amount;
+    if (!amount || plan !== 'lifetime') return res.status(400).json({ error: 'Solo pagos únicos vitalicios disponibles' });
+
+    const cents = Math.round(amount * 100);
+    const clientTxId = `order-${req.user.username}-${Date.now()}`;
+
+    // Crear registro de pago pendiente
+    await db.collection('payments').add({
+      userId: req.user.username,
+      username: req.user.username,
+      email: req.user.email,
+      method: 'payphone',
+      plan,
+      amount,
+      status: 'pending',
+      clientTxId,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    res.json({
+      token: PAYPHONE_TOKEN,
+      storeId: PAYPHONE_STORE_ID,
+      amount: cents,
+      amountWithoutTax: cents,
+      amountWithTax: 0,
+      tax: 0,
+      currency: 'USD',
+      clientTransactionId: clientTxId,
+      reference: `Pago vitalicio SpinDraw Pro`,
+      lang: 'es',
+      defaultMethod: 'card',
+    });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
 // POST /api/payphone/confirm
 app.post('/api/payphone/confirm', authMiddleware, async (req, res) => {
   try {
@@ -459,43 +499,66 @@ app.post('/api/payphone/confirm', authMiddleware, async (req, res) => {
     const data = confirmRes.data;
     if (data.statusCode !== 3) return res.status(400).json({ error: 'Pago no aprobado' });
 
-    // Buscar suscripción pendiente
-    const subSnaps = await db.collection('subscriptions').where('clientTxId', '==', clientTransactionId).get();
-    if (subSnaps.empty) return res.status(404).json({ error: 'Suscripción no encontrada' });
-    const subDoc = subSnaps.docs[0];
-    const sub = subDoc.data();
+    let userId, plan, isSubscription = false;
 
-    // Guardar datos de tokenización
-    const cardHolder = encryptAES(data.optionalParameter4, PAYPHONE_ENCRYPT_KEY);
-    await subDoc.ref.update({
-      status: 'active',
-      cardToken: data.cardToken,
-      cardHolder,
-      email: data.email,
-      phoneNumber: data.phoneNumber,
-      documentId: data.document,
-      transactionId: data.transactionId,
-      nextCharge: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 30*24*60*60*1000)), // Próximo mes
-      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    // Buscar en subscriptions (mensual)
+    const subSnaps = await db.collection('subscriptions').where('clientTxId', '==', clientTransactionId).get();
+    if (!subSnaps.empty) {
+      const subDoc = subSnaps.docs[0];
+      const sub = subDoc.data();
+      userId = sub.userId;
+      plan = sub.plan;
+      isSubscription = true;
+
+      // Guardar datos de tokenización
+      const cardHolder = encryptAES(data.optionalParameter4, PAYPHONE_ENCRYPT_KEY);
+      await subDoc.ref.update({
+        status: 'active',
+        cardToken: data.cardToken,
+        cardHolder,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        documentId: data.document,
+        transactionId: data.transactionId,
+        nextCharge: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 30*24*60*60*1000)),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } else {
+      // Buscar en payments (vitalicio)
+      const paySnaps = await db.collection('payments').where('clientTxId', '==', clientTransactionId).get();
+      if (paySnaps.empty) return res.status(404).json({ error: 'Pago no encontrado' });
+      const payDoc = paySnaps.docs[0];
+      const pay = payDoc.data();
+      userId = pay.userId;
+      plan = pay.plan;
+
+      await payDoc.ref.update({
+        status: 'completed',
+        transactionId: data.transactionId,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    }
 
     // Activar Pro
-    const userSnap = await db.collection('users').doc(sub.userId).get();
+    const userSnap = await db.collection('users').doc(userId).get();
     const user = userSnap.data();
-    const proExpiry = new Date(Date.now() + 30*24*60*60*1000);
+    const proExpiry = plan === 'monthly' ? new Date(Date.now() + 30*24*60*60*1000) : null;
     await userSnap.ref.update({
       isPro: true,
-      proType: 'monthly',
-      proExpiry: admin.firestore.Timestamp.fromDate(proExpiry),
+      proType: plan,
+      proExpiry: proExpiry ? admin.firestore.Timestamp.fromDate(proExpiry) : null,
     });
 
-    sendEmail(user.email, '✅ ¡Tu suscripción mensual Pro está activa!', `
+    const planName = plan === 'monthly' ? 'Mensual' : 'Vitalicio';
+    const emailSubject = `✅ ¡Tu ${planName.toLowerCase()} Pro está activa!`;
+    const emailBody = `
       <h2>¡Felicidades ${user.firstName || user.username}!</h2>
       <p>Tu pago fue procesado correctamente. Ya tienes acceso a <strong>SpinDraw Pro</strong> 🎉</p>
-      <p>Plan: <strong>Mensual</strong></p>
-      <p>Válido hasta: ${proExpiry.toLocaleDateString('es-EC')}</p>
-      <p>Se renovará automáticamente cada mes.</p>
-    `);
+      <p>Plan: <strong>${planName}</strong></p>
+      ${plan === 'monthly' ? `<p>Válido hasta: ${proExpiry.toLocaleDateString('es-EC')}</p><p>Se renovará automáticamente cada mes.</p>` : '<p>Acceso de por vida ✨</p>'}
+    `;
+
+    sendEmail(user.email, emailSubject, emailBody);
 
     res.json({ success: true, user: sanitizeUser(user) });
   } catch(e) { res.status(500).json({ error: e.message }); }

@@ -2012,12 +2012,13 @@ async function startPayment(plan, method) {
   else openTransferModal(plan);
 }
 
-async function startPayPhoneSubscription(plan) {
+async function startPayPhonePayment(plan) {
   if (!currentUserData) {
     closePaywall(); showAccountModal(); return;
   }
   try {
-    const data = await api('POST', '/api/payphone/create-subscription', { plan });
+    const endpoint = plan === 'monthly' ? '/api/payphone/create-subscription' : '/api/payphone/create-order';
+    const data = await api('POST', endpoint, { plan });
     // Initialize PayPhone box
     window.ppb = new PPaymentButtonBox(data);
     ppb.render('payphone-container');
@@ -2405,7 +2406,7 @@ restoreSession().then(() => {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#003087"><path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 3.993-.032.17a.804.804 0 0 1-.794.68H7.72a.483.483 0 0 1-.477-.558L7.418 21h1.518l.95-6.02h1.385c4.678 0 7.537-2.36 8.428-6.872.09-.46.153-.9.168-1.33.63.45 1.07 1.02 1.2 1.7z"/></svg>
             PayPal / Tarjeta
           </button>
-          <button class="btn-payphone" onclick="startPayPhoneSubscription('monthly')">
+          <button class="btn-payphone" onclick="startPayPhonePayment('monthly')">
             💳 PayPhone (EC) - Recurrente
           </button>
           <button class="btn-transfer" onclick="startPayment('monthly','transfer')">🏦 Transferencia (EC)</button>
@@ -2421,6 +2422,9 @@ restoreSession().then(() => {
           <button class="btn-paypal" onclick="startPayment('lifetime','paypal')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#003087"><path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 3.993-.032.17a.804.804 0 0 1-.794.68H7.72a.483.483 0 0 1-.477-.558L7.418 21h1.518l.95-6.02h1.385c4.678 0 7.537-2.36 8.428-6.872.09-.46.153-.9.168-1.33.63.45 1.07 1.02 1.2 1.7z"/></svg>
             PayPal / Tarjeta
+          </button>
+          <button class="btn-payphone" onclick="startPayPhonePayment('lifetime')">
+            💳 PayPhone (EC)
           </button>
           <button class="btn-transfer" onclick="startPayment('lifetime','transfer')">🏦 Transferencia (EC)</button>
         </div>
