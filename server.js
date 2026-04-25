@@ -15,6 +15,9 @@ const path         = require('path');
 const fs           = require('fs');
 const paypal       = require('@paypal/checkout-server-sdk');
 const nodemailer   = require('nodemailer');
+const axios        = require('axios');
+const cron         = require('node-cron');
+const crypto       = require('crypto');
 
 const app = express();
 
@@ -84,6 +87,21 @@ function getPayPalClient() {
     ? new paypal.core.LiveEnvironment(process.env.PAYPAL_CLIENT_ID, process.env.PAYPAL_CLIENT_SECRET)
     : new paypal.core.SandboxEnvironment(process.env.PAYPAL_CLIENT_ID, process.env.PAYPAL_CLIENT_SECRET);
   return new paypal.core.PayPalHttpClient(env);
+}
+
+// ── PAYPHONE CONFIG ──────────────────────────────────────────
+const PAYPHONE_TOKEN = process.env.PAYPHONE_TOKEN;
+const PAYPHONE_STORE_ID = process.env.PAYPHONE_STORE_ID;
+const PAYPHONE_ENCRYPT_KEY = process.env.PAYPHONE_ENCRYPT_KEY; // Clave para encriptar cardHolder
+const PAYPHONE_BASE_URL = process.env.PAYPHONE_MODE === 'live'
+  ? 'https://pay.payphonetodoesposible.com'
+  : 'https://pay.payphonetodoesposible.com'; // Para pruebas usar el mismo, pero en sandbox
+
+function encryptAES(text, key) {
+  const cipher = crypto.createCipher('aes-256-cbc', key);
+  let encrypted = cipher.update(text, 'utf8', 'base64');
+  encrypted += cipher.final('base64');
+  return encrypted;
 }
 
 // ── EMAIL ────────────────────────────────────────────────────
@@ -378,6 +396,200 @@ app.post('/api/paypal/capture-order', authMiddleware, async (req, res) => {
       res.status(400).json({ error: 'Pago no completado' });
     }
   } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ═══════════════════════════════════════════════════════════
+//  PAYPHONE ROUTES
+// ═══════════════════════════════════════════════════════════
+
+// POST /api/payphone/create-subscription
+app.post('/api/payphone/create-subscription', authMiddleware, async (req, res) => {
+  try {
+    const { plan } = req.body; // 'monthly'
+    const prices = await getSetting('prices', { monthly: { amount: 4.99 } });
+    const amount = prices[plan]?.amount;
+    if (!amount || plan !== 'monthly') return res.status(400).json({ error: 'Solo suscripciones mensuales disponibles' });
+
+    const cents = Math.round(amount * 100);
+    const clientTxId = `sub-${req.user.username}-${Date.now()}`;
+
+    // Crear registro de suscripción pendiente
+    await db.collection('subscriptions').add({
+      userId: req.user.username,
+      plan,
+      amount,
+      method: 'payphone',
+      status: 'pending',
+      clientTxId,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    res.json({
+      token: PAYPHONE_TOKEN,
+      storeId: PAYPHONE_STORE_ID,
+      amount: cents,
+      amountWithoutTax: cents,
+      amountWithTax: 0,
+      tax: 0,
+      currency: 'USD',
+      clientTransactionId: clientTxId,
+      reference: `Suscripción mensual SpinDraw Pro`,
+      lang: 'es',
+      defaultMethod: 'card',
+    });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// POST /api/payphone/confirm
+app.post('/api/payphone/confirm', authMiddleware, async (req, res) => {
+  try {
+    const { id, clientTransactionId } = req.body;
+
+    // Confirmar con PayPhone
+    const confirmRes = await axios.post(`${PAYPHONE_BASE_URL}/api/button/V2/Confirm`, {
+      id: parseInt(id),
+      clientTxId: clientTransactionId,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${PAYPHONE_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = confirmRes.data;
+    if (data.statusCode !== 3) return res.status(400).json({ error: 'Pago no aprobado' });
+
+    // Buscar suscripción pendiente
+    const subSnaps = await db.collection('subscriptions').where('clientTxId', '==', clientTransactionId).get();
+    if (subSnaps.empty) return res.status(404).json({ error: 'Suscripción no encontrada' });
+    const subDoc = subSnaps.docs[0];
+    const sub = subDoc.data();
+
+    // Guardar datos de tokenización
+    const cardHolder = encryptAES(data.optionalParameter4, PAYPHONE_ENCRYPT_KEY);
+    await subDoc.ref.update({
+      status: 'active',
+      cardToken: data.cardToken,
+      cardHolder,
+      email: data.email,
+      phoneNumber: data.phoneNumber,
+      documentId: data.document,
+      transactionId: data.transactionId,
+      nextCharge: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 30*24*60*60*1000)), // Próximo mes
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
+    // Activar Pro
+    const userSnap = await db.collection('users').doc(sub.userId).get();
+    const user = userSnap.data();
+    const proExpiry = new Date(Date.now() + 30*24*60*60*1000);
+    await userSnap.ref.update({
+      isPro: true,
+      proType: 'monthly',
+      proExpiry: admin.firestore.Timestamp.fromDate(proExpiry),
+    });
+
+    sendEmail(user.email, '✅ ¡Tu suscripción mensual Pro está activa!', `
+      <h2>¡Felicidades ${user.firstName || user.username}!</h2>
+      <p>Tu pago fue procesado correctamente. Ya tienes acceso a <strong>SpinDraw Pro</strong> 🎉</p>
+      <p>Plan: <strong>Mensual</strong></p>
+      <p>Válido hasta: ${proExpiry.toLocaleDateString('es-EC')}</p>
+      <p>Se renovará automáticamente cada mes.</p>
+    `);
+
+    res.json({ success: true, user: sanitizeUser(user) });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// Función para cobrar renovación
+async function chargeSubscription(subId) {
+  try {
+    const subSnap = await db.collection('subscriptions').doc(subId).get();
+    if (!subSnap.exists) return;
+    const sub = subSnap.data();
+    if (sub.status !== 'active') return;
+
+    const cents = Math.round(sub.amount * 100);
+    const clientTxId = `renew-${sub.userId}-${Date.now()}`;
+
+    const chargeData = {
+      cardHolder: sub.cardHolder,
+      cardToken: sub.cardToken,
+      documentId: sub.documentId,
+      phoneNumber: sub.phoneNumber,
+      email: sub.email,
+      amount: cents,
+      amountWithoutTax: cents,
+      amountWithTax: 0,
+      tax: 0,
+      clientTransactionId: clientTxId,
+      currency: 'USD',
+      storeId: PAYPHONE_STORE_ID,
+      optionalParameter: `Renovación mensual SpinDraw Pro`,
+      order: {
+        billTo: {
+          billToId: 1,
+          address1: 'N/A',
+          address2: 'N/A',
+          country: 'EC',
+          state: 'N/A',
+          locality: 'N/A',
+          firstName: 'Usuario',
+          lastName: 'Pro',
+          phoneNumber: `+${sub.phoneNumber}`,
+          email: sub.email,
+          postalCode: '000000',
+          ipAddress: '127.0.0.1',
+        },
+        lineItems: [{
+          productName: 'Suscripción mensual SpinDraw Pro',
+          unitPrice: cents,
+          quantity: 1,
+          totalAmount: cents,
+          taxAmount: 0,
+          productSKU: 'SUB-MONTHLY',
+          productDescription: 'Acceso mensual a SpinDraw Pro',
+        }],
+      },
+    };
+
+    const chargeRes = await axios.post(`${PAYPHONE_BASE_URL}/api/transaction/web`, chargeData, {
+      headers: {
+        'Authorization': `Bearer ${PAYPHONE_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const data = chargeRes.data;
+    if (data.statusCode === 3) {
+      // Éxito, actualizar nextCharge y proExpiry
+      const nextCharge = new Date(Date.now() + 30*24*60*60*1000);
+      const proExpiry = new Date(Date.now() + 30*24*60*60*1000);
+      await subSnap.ref.update({
+        nextCharge: admin.firestore.Timestamp.fromDate(nextCharge),
+        lastCharged: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      await db.collection('users').doc(sub.userId).update({
+        proExpiry: admin.firestore.Timestamp.fromDate(proExpiry),
+      });
+    } else {
+      // Falló, cancelar suscripción
+      await subSnap.ref.update({ status: 'failed' });
+      await db.collection('users').doc(sub.userId).update({ isPro: false });
+    }
+  } catch(e) { console.error('Charge error:', e.message); }
+}
+
+// Cron para renovaciones diarias
+cron.schedule('0 0 * * *', async () => { // Todos los días a medianoche
+  const now = new Date();
+  const subs = await db.collection('subscriptions')
+    .where('status', '==', 'active')
+    .where('nextCharge', '<=', admin.firestore.Timestamp.fromDate(now))
+    .get();
+  for (const doc of subs.docs) {
+    await chargeSubscription(doc.id);
+  }
 });
 
 // ═══════════════════════════════════════════════════════════

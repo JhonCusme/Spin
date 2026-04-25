@@ -8,6 +8,9 @@
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7223873610943022"
      crossorigin="anonymous"></script>
+<!-- PayPhone -->
+<link rel="stylesheet" href="https://cdn.payphonetodoesposible.com/box/v1.1/payphone-payment-box.css">
+<script type="module" src="https://cdn.payphonetodoesposible.com/box/v1.1/payphone-payment-box.js"></script>
 <style>
 :root{
   --bg:#080b12; --surface:#0f1420; --card:#141926; --border:#1e2535;
@@ -1363,6 +1366,7 @@ function deactivatePro(){
 }
 function openPaywall(){document.getElementById('paywallModal').classList.add('active');}
 function closePaywall(){document.getElementById('paywallModal').classList.remove('active');}
+function closePayphoneModal(){document.getElementById('payphoneModal').classList.remove('active');}
 function updatePlanUI(){
   document.getElementById('planDot').className='plan-dot'+(isPro?' pro':'');
   document.getElementById('planLabel').textContent=isPro?'✦ Plan Pro':'Plan Free';
@@ -2008,6 +2012,20 @@ async function startPayment(plan, method) {
   else openTransferModal(plan);
 }
 
+async function startPayPhoneSubscription(plan) {
+  if (!currentUserData) {
+    closePaywall(); showAccountModal(); return;
+  }
+  try {
+    const data = await api('POST', '/api/payphone/create-subscription', { plan });
+    // Initialize PayPhone box
+    window.ppb = new PPaymentButtonBox(data);
+    ppb.render('payphone-container');
+    // Show modal or overlay for PayPhone
+    document.getElementById('payphoneModal').classList.add('active');
+  } catch(e) { showToast('Error: '+e.message,'error'); }
+}
+
 // ── PAYPAL ───────────────────────────────────
 async function startPayPal(plan) {
   const btn = document.getElementById(`ppBtn${plan}`);
@@ -2266,6 +2284,12 @@ restoreSession().then(() => {
   transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:5px;
 }
 .btn-paypal:hover{opacity:.88;}
+.btn-payphone{
+  background:#00d4aa;color:#fff;border:none;border-radius:8px;
+  padding:9px 8px;font-weight:800;font-size:.8rem;cursor:pointer;
+  transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.btn-payphone:hover{opacity:.88;}
 .btn-transfer{
   background:var(--card);border:1px solid var(--border);color:var(--text);
   border-radius:8px;padding:8px;font-size:.78rem;cursor:pointer;transition:border-color .15s;
@@ -2381,6 +2405,9 @@ restoreSession().then(() => {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#003087"><path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 3.993-.032.17a.804.804 0 0 1-.794.68H7.72a.483.483 0 0 1-.477-.558L7.418 21h1.518l.95-6.02h1.385c4.678 0 7.537-2.36 8.428-6.872.09-.46.153-.9.168-1.33.63.45 1.07 1.02 1.2 1.7z"/></svg>
             PayPal / Tarjeta
           </button>
+          <button class="btn-payphone" onclick="startPayPhoneSubscription('monthly')">
+            💳 PayPhone (EC) - Recurrente
+          </button>
           <button class="btn-transfer" onclick="startPayment('monthly','transfer')">🏦 Transferencia (EC)</button>
         </div>
       </div>
@@ -2409,6 +2436,19 @@ restoreSession().then(() => {
       </div>
     </div>
     <button onclick="closePaywall()" style="width:100%;background:none;border:1px solid var(--border);color:var(--muted);border-radius:50px;padding:10px;margin-top:14px;cursor:pointer;">Ahora no</button>
+  </div>
+</div>
+
+<!-- PAYPHONE MODAL -->
+<div id="payphoneModal" style="display:none;position:fixed;inset:0;z-index:8888;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:500px;max-height:calc(100vh - 32px);overflow-y:auto;animation:authSlideIn .3s ease;">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:2rem;margin-bottom:6px;">💳</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:#00d4aa;">PAYPHONE</div>
+      <div style="font-size:.82rem;color:var(--muted);margin-top:4px;">Suscripción mensual recurrente</div>
+    </div>
+    <div id="payphone-container"></div>
+    <button onclick="closePayphoneModal()" style="width:100%;background:none;border:1px solid var(--border);color:var(--muted);border-radius:50px;padding:10px;margin-top:14px;cursor:pointer;">Cancelar</button>
   </div>
 </div>
 
@@ -2564,7 +2604,27 @@ document.addEventListener('DOMContentLoaded', () => {
     adminBtn.onclick = openAdminPanel;
     sidebar.appendChild(adminBtn);
   }
+
+  // Check for PayPhone return
+  const urlParams = new URLSearchParams(window.location.search);
+  const ppId = urlParams.get('id');
+  const ppClientTxId = urlParams.get('clientTransactionId');
+  if (ppId && ppClientTxId) {
+    confirmPayPhonePayment(ppId, ppClientTxId);
+  }
 });
+
+async function confirmPayPhonePayment(id, clientTransactionId) {
+  try {
+    const { user } = await api('POST', '/api/payphone/confirm', { id, clientTransactionId });
+    applySession(user);
+    showToast('🎉 ¡Suscripción mensual activada!','success');
+    // Clean URL
+    window.history.replaceState({}, document.title, window.location.pathname);
+  } catch(e) {
+    showToast('Error al confirmar pago: '+e.message,'error');
+  }
+}
 </script>
 </body>
 </html>
