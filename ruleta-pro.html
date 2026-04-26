@@ -2198,6 +2198,7 @@ async function loadAdminSettings() {
     document.getElementById('setAdminEmail').value    = s.adminEmail    || '';
     document.getElementById('setPayphoneEnabled').checked = s.payphoneEnabled !== false;
     document.getElementById('setNuveiEnabled').checked = s.nuveiEnabled !== false;
+    document.getElementById('setNuveiMode').value = s.nuveiMode || 'staging';
     document.getElementById('setNuveiApiKey').value   = s.nuveiApiKey   || '';
     document.getElementById('setNuveiSecret').value   = s.nuveiSecret   || '';
     document.getElementById('setNuveiMerchantId').value = s.nuveiMerchantId || '';
@@ -2222,6 +2223,7 @@ async function saveAdminSettings() {
     adminEmail: document.getElementById('setAdminEmail').value,
     payphoneEnabled: document.getElementById('setPayphoneEnabled').checked,
     nuveiEnabled: document.getElementById('setNuveiEnabled').checked,
+    nuveiMode: document.getElementById('setNuveiMode').value,
     nuveiApiKey: document.getElementById('setNuveiApiKey').value,
     nuveiSecret: document.getElementById('setNuveiSecret').value,
     nuveiMerchantId: document.getElementById('setNuveiMerchantId').value,
@@ -2601,6 +2603,13 @@ restoreSession().then(() => {
           <input type="checkbox" id="setNuveiEnabled" style="width:16px;height:16px;">
           Habilitar pagos con Nuvei
         </label>
+      </div>
+      <div class="admin-field">
+        <label>Modo Nuvei</label>
+        <select class="admin-input" id="setNuveiMode">
+          <option value="staging">Staging (Pruebas)</option>
+          <option value="production">Production (Producción)</option>
+        </select>
       </div>
       <div class="admin-section-title" style="margin-top:8px">Credenciales Nuvei</div>
       <div class="admin-row-2">

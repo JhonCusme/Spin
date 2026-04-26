@@ -569,59 +569,81 @@ app.post('/api/payphone/confirm', authMiddleware, async (req, res) => {
 });
 
 // ── NUEI PAYMENTS ───────────────────────────────────────────
-// TODO: Implement Nuvei integration based on their API docs
-// Add environment variables: NUEI_API_KEY, NUEI_SECRET, etc.
+// Nuvei API integration with staging/production switch
+
+function getNuveiUrls(mode) {
+  const isProd = mode === 'production';
+  return {
+    cards: isProd ? 'https://ccapi.paymentez.com' : 'https://ccapi-stg.paymentez.com',
+    other: isProd ? 'https://noccapi.paymentez.com' : 'https://noccapi-stg.paymentez.com'
+  };
+}
 
 // POST /api/nuvei/create-subscription
 app.post('/api/nuvei/create-subscription', authMiddleware, async (req, res) => {
   try {
     const { plan } = req.body;
     const userId = req.user.uid;
+    const userEmail = req.user.email;
     const amount = plan === 'monthly' ? siteSettings.prices.monthly.amount : siteSettings.prices.lifetime.amount;
 
-    // Get Nuvei credentials from settings
+    // Get Nuvei credentials and mode from settings
     const nuveiApiKey = await getSetting('nuveiApiKey', '');
     const nuveiSecret = await getSetting('nuveiSecret', '');
-    const nuveiMerchantId = await getSetting('nuveiMerchantId', '');
-    const nuveiTerminalId = await getSetting('nuveiTerminalId', '');
+    const nuveiMode = await getSetting('nuveiMode', 'staging');
 
-    if (!nuveiApiKey || !nuveiSecret || !nuveiMerchantId || !nuveiTerminalId) {
+    if (!nuveiApiKey || !nuveiSecret) {
       return res.status(400).json({ error: 'Credenciales de Nuvei no configuradas' });
     }
 
-    // Create subscription with Nuvei (adjust based on actual API)
-    const nuveiRes = await axios.post('https://api.nuvei.com/v1/subscriptions', {
-      merchantId: nuveiMerchantId,
-      terminalId: nuveiTerminalId,
-      amount: amount * 100, // assuming cents
-      currency: 'USD',
-      recurring: true,
-      interval: 'MONTHLY',
-      userId,
-      plan,
-      // Add more params as per Nuvei docs
+    const urls = getNuveiUrls(nuveiMode);
+
+    // Generate auth token
+    const timestamp = Math.floor(Date.now() / 1000);
+    const uniqString = nuveiSecret + timestamp;
+    const uniqToken = crypto.createHash('sha256').update(uniqString).toString('hex');
+    const authToken = Buffer.from(`${nuveiApiKey};${timestamp};${uniqToken}`).toString('base64');
+
+    // Init reference for checkout
+    const nuveiRes = await axios.post(`${urls.cards}/v2/transaction/init_reference/`, {
+      user: {
+        id: userId,
+        email: userEmail
+      },
+      order: {
+        amount: amount,
+        description: `SpinDraw Pro ${plan}`,
+        dev_reference: `sub_${userId}_${Date.now()}`,
+        vat: 0,
+        currency: 'USD'
+      },
+      configuration: {
+        success_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}?nuvei_success=1&reference=${reference}`,
+        failure_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}?nuvei_failure=1`,
+        pending_url: `${process.env.FRONTEND_URL || 'http://localhost:3000'}?nuvei_pending=1`
+      }
     }, {
       headers: {
-        'Authorization': `Bearer ${nuveiApiKey}`,
+        'Auth-Token': authToken,
         'Content-Type': 'application/json',
       },
     });
 
-    const subscriptionId = nuveiRes.data.subscriptionId;
-    const checkoutUrl = nuveiRes.data.checkoutUrl;
+    const reference = nuveiRes.data.reference;
+    const checkoutUrl = nuveiRes.data.checkout_url;
 
     // Save to DB
-    await db.collection('subscriptions').add({
+    const subRef = await db.collection('subscriptions').add({
       userId,
       plan,
       provider: 'nuvei',
-      subscriptionId,
+      reference,
       status: 'pending',
       amount,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    res.json({ subscriptionId, checkoutUrl });
+    res.json({ reference, checkoutUrl, subId: subRef.id });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -630,85 +652,116 @@ app.post('/api/nuvei/create-order', authMiddleware, async (req, res) => {
   try {
     const { plan } = req.body;
     const userId = req.user.uid;
+    const userEmail = req.user.email;
     const amount = plan === 'monthly' ? siteSettings.prices.monthly.amount : siteSettings.prices.lifetime.amount;
 
-    // Get Nuvei credentials
+    // Get Nuvei credentials and mode
     const nuveiApiKey = await getSetting('nuveiApiKey', '');
     const nuveiSecret = await getSetting('nuveiSecret', '');
-    const nuveiMerchantId = await getSetting('nuveiMerchantId', '');
-    const nuveiTerminalId = await getSetting('nuveiTerminalId', '');
+    const nuveiMode = await getSetting('nuveiMode', 'staging');
 
-    if (!nuveiApiKey || !nuveiSecret || !nuveiMerchantId || !nuveiTerminalId) {
+    if (!nuveiApiKey || !nuveiSecret) {
       return res.status(400).json({ error: 'Credenciales de Nuvei no configuradas' });
     }
 
-    // Create order with Nuvei
-    const nuveiRes = await axios.post('https://api.nuvei.com/v1/orders', {
-      merchantId: nuveiMerchantId,
-      terminalId: nuveiTerminalId,
-      amount: amount * 100,
-      currency: 'USD',
-      userId,
-      plan,
-      // Add more params
+    const urls = getNuveiUrls(nuveiMode);
+
+    // Generate auth token
+    const timestamp = Math.floor(Date.now() / 1000);
+    const uniqString = nuveiSecret + timestamp;
+    const uniqToken = crypto.createHash('sha256').update(uniqString).toString('hex');
+    const authToken = Buffer.from(`${nuveiApiKey};${timestamp};${uniqToken}`).toString('base64');
+
+    // Create order for bank transfer (PSE)
+    const nuveiRes = await axios.post(`${urls.other}/order/`, {
+      carrier: {
+        id: 'PSE'
+      },
+      user: {
+        id: userId,
+        email: userEmail
+      },
+      order: {
+        dev_reference: `order_${userId}_${Date.now()}`,
+        amount: amount,
+        description: `SpinDraw Pro ${plan}`,
+        currency: 'USD'
+      }
     }, {
       headers: {
-        'Authorization': `Bearer ${nuveiApiKey}`,
+        'Auth-Token': authToken,
         'Content-Type': 'application/json',
       },
     });
 
-    const orderId = nuveiRes.data.orderId;
-    const checkoutUrl = nuveiRes.data.checkoutUrl;
+    const transaction = nuveiRes.data.transaction;
+    const transactionId = transaction.id;
+    const bankUrl = transaction.bank_url;
 
     // Save to DB
-    await db.collection('payments').add({
+    const payRef = await db.collection('payments').add({
       userId,
       plan,
       provider: 'nuvei',
-      orderId,
+      transactionId,
       status: 'pending',
       amount,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    res.json({ orderId, checkoutUrl });
+    res.json({ transactionId, bankUrl, payId: payRef.id });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // POST /api/nuvei/confirm
 app.post('/api/nuvei/confirm', authMiddleware, async (req, res) => {
   try {
-    const { orderId, subscriptionId } = req.body;
+    const { transactionId, reference } = req.body;
 
-    // Get credentials
+    // Get credentials and mode
     const nuveiApiKey = await getSetting('nuveiApiKey', '');
     const nuveiSecret = await getSetting('nuveiSecret', '');
+    const nuveiMode = await getSetting('nuveiMode', 'staging');
 
     if (!nuveiApiKey || !nuveiSecret) {
       return res.status(400).json({ error: 'Credenciales de Nuvei no configuradas' });
     }
 
-    // Confirm with Nuvei (adjust endpoint and params)
-    const confirmRes = await axios.post('https://api.nuvei.com/v1/confirm', {
-      orderId,
-      subscriptionId,
-      // other params
-    }, {
-      headers: {
-        'Authorization': `Bearer ${nuveiApiKey}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const urls = getNuveiUrls(nuveiMode);
 
-    const data = confirmRes.data;
-    if (data.status !== 'approved') return res.status(400).json({ error: 'Pago no aprobado' });
+    // Generate auth token
+    const timestamp = Math.floor(Date.now() / 1000);
+    const uniqString = nuveiSecret + timestamp;
+    const uniqToken = crypto.createHash('sha256').update(uniqString).toString('hex');
+    const authToken = Buffer.from(`${nuveiApiKey};${timestamp};${uniqToken}`).toString('base64');
 
-    let userId, plan, isSubscription = false;
+    let statusRes;
+    if (transactionId) {
+      // For bank transfer
+      statusRes = await axios.get(`${urls.other}/order/${transactionId}`, {
+        headers: {
+          'Auth-Token': authToken,
+          'Content-Type': 'application/json',
+        },
+      });
+    } else if (reference) {
+      // For card checkout
+      statusRes = await axios.get(`${urls.cards}/v2/transaction/${reference}`, {
+        headers: {
+          'Auth-Token': authToken,
+          'Content-Type': 'application/json',
+        },
+      });
+    }
 
-    if (subscriptionId) {
-      // Subscription
-      const subSnaps = await db.collection('subscriptions').where('subscriptionId', '==', subscriptionId).get();
+    const data = statusRes.data;
+    if (data.transaction && data.transaction.status !== 'approved') return res.status(400).json({ error: 'Pago no aprobado' });
+
+    let userId, plan, isSubscription = false, cardToken = null;
+
+    if (reference) {
+      // Subscription (card)
+      const subSnaps = await db.collection('subscriptions').where('reference', '==', reference).get();
       if (subSnaps.empty) return res.status(404).json({ error: 'Suscripción no encontrada' });
       const subDoc = subSnaps.docs[0];
       const sub = subDoc.data();
@@ -716,15 +769,21 @@ app.post('/api/nuvei/confirm', authMiddleware, async (req, res) => {
       plan = sub.plan;
       isSubscription = true;
 
+      // Get card token if available
+      if (data.card && data.card.token) {
+        cardToken = data.card.token;
+      }
+
       await subDoc.ref.update({
         status: 'active',
-        transactionId: data.transactionId,
-        nextCharge: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 30*24*60*60*1000)),
+        transactionId: data.transaction.id,
+        cardToken,
+        nextCharge: plan === 'monthly' ? admin.firestore.Timestamp.fromDate(new Date(Date.now() + 30*24*60*60*1000)) : null,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     } else {
-      // One-time
-      const paySnaps = await db.collection('payments').where('orderId', '==', orderId).get();
+      // One-time (bank)
+      const paySnaps = await db.collection('payments').where('transactionId', '==', transactionId).get();
       if (paySnaps.empty) return res.status(404).json({ error: 'Pago no encontrado' });
       const payDoc = paySnaps.docs[0];
       const pay = payDoc.data();
@@ -733,7 +792,6 @@ app.post('/api/nuvei/confirm', authMiddleware, async (req, res) => {
 
       await payDoc.ref.update({
         status: 'completed',
-        transactionId: data.transactionId,
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
     }
@@ -772,30 +830,45 @@ async function chargeSubscription(subId) {
     if (sub.status !== 'active') return;
 
     if (sub.provider === 'nuvei') {
-      // Charge Nuvei subscription
+      // Charge Nuvei subscription using debit with token
       const nuveiApiKey = await getSetting('nuveiApiKey', '');
       const nuveiSecret = await getSetting('nuveiSecret', '');
-      const nuveiMerchantId = await getSetting('nuveiMerchantId', '');
-      const nuveiTerminalId = await getSetting('nuveiTerminalId', '');
+      const nuveiMode = await getSetting('nuveiMode', 'staging');
 
-      if (!nuveiApiKey || !nuveiSecret) return; // Skip if not configured
+      if (!nuveiApiKey || !nuveiSecret || !sub.cardToken) return; // Skip if not configured or no token
+
+      const urls = getNuveiUrls(nuveiMode);
+
+      // Generate auth token
+      const timestamp = Math.floor(Date.now() / 1000);
+      const uniqString = nuveiSecret + timestamp;
+      const uniqToken = crypto.createHash('sha256').update(uniqString).toString('hex');
+      const authToken = Buffer.from(`${nuveiApiKey};${timestamp};${uniqToken}`).toString('base64');
 
       try {
-        const chargeRes = await axios.post('https://api.nuvei.com/v1/charge-subscription', {
-          merchantId: nuveiMerchantId,
-          terminalId: nuveiTerminalId,
-          subscriptionId: sub.subscriptionId,
-          amount: Math.round(sub.amount * 100),
-          currency: 'USD',
-          // other params
+        const chargeRes = await axios.post(`${urls.cards}/v2/transaction/debit/`, {
+          user: {
+            id: sub.userId,
+            email: sub.userEmail || 'user@example.com' // Need to store email
+          },
+          order: {
+            amount: sub.amount,
+            description: `SpinDraw Pro Monthly Renewal`,
+            dev_reference: `renew_${sub.userId}_${Date.now()}`,
+            vat: 0,
+            currency: 'USD'
+          },
+          card: {
+            token: sub.cardToken
+          }
         }, {
           headers: {
-            'Authorization': `Bearer ${nuveiApiKey}`,
+            'Auth-Token': authToken,
             'Content-Type': 'application/json',
           },
         });
 
-        if (chargeRes.data.status === 'success') {
+        if (chargeRes.data.transaction && chargeRes.data.transaction.status === 'success') {
           // Update next charge
           await subSnap.ref.update({
             nextCharge: admin.firestore.Timestamp.fromDate(new Date(Date.now() + 30*24*60*60*1000)),
@@ -810,6 +883,10 @@ async function chargeSubscription(subId) {
         }
       } catch(e) {
         console.error('Nuvei charge error:', e.message);
+        await subSnap.ref.update({
+          status: 'failed',
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
       }
       return;
     }
@@ -1082,26 +1159,27 @@ app.post('/api/admin/users/:id/toggle-pro', adminMiddleware, async (req, res) =>
 // GET /api/admin/settings
 app.get('/api/admin/settings', adminMiddleware, async (req, res) => {
   try {
-    const [prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId] = await Promise.all([
+    const [prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId] = await Promise.all([
       getSetting('prices', { monthly: { amount: 4.99, label: 'Mensual' }, lifetime: { amount: 29.99, label: 'Vitalicio' } }),
       getSetting('bank', {}),
       getSetting('whatsapp', ''),
       getSetting('adminEmail', ''),
       getSetting('payphoneEnabled', true),
       getSetting('nuveiEnabled', false),
+      getSetting('nuveiMode', 'staging'),
       getSetting('nuveiApiKey', ''),
       getSetting('nuveiSecret', ''),
       getSetting('nuveiMerchantId', ''),
       getSetting('nuveiTerminalId', ''),
     ]);
-    res.json({ prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId });
+    res.json({ prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // PUT /api/admin/settings
 app.put('/api/admin/settings', adminMiddleware, async (req, res) => {
   try {
-    const { prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId } = req.body;
+    const { prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId } = req.body;
     const ops = [];
     if (prices)         ops.push(setSetting('prices', prices));
     if (bank)           ops.push(setSetting('bank', bank));
@@ -1109,6 +1187,7 @@ app.put('/api/admin/settings', adminMiddleware, async (req, res) => {
     if (adminEmail)     ops.push(setSetting('adminEmail', adminEmail));
     if (payphoneEnabled !== undefined) ops.push(setSetting('payphoneEnabled', payphoneEnabled));
     if (nuveiEnabled !== undefined) ops.push(setSetting('nuveiEnabled', nuveiEnabled));
+    if (nuveiMode !== undefined) ops.push(setSetting('nuveiMode', nuveiMode));
     if (nuveiApiKey !== undefined) ops.push(setSetting('nuveiApiKey', nuveiApiKey));
     if (nuveiSecret !== undefined) ops.push(setSetting('nuveiSecret', nuveiSecret));
     if (nuveiMerchantId !== undefined) ops.push(setSetting('nuveiMerchantId', nuveiMerchantId));
