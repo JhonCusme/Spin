@@ -2107,13 +2107,12 @@ async function loadAdminDashboard() {
     document.getElementById('adProUsers').textContent     = d.proUsers;
     document.getElementById('adPending').textContent      = d.pendingPayments;
     document.getElementById('adRevenue').textContent      = `$${d.totalRevenue.toFixed(2)}`;
-    loadAdminPayments('pending');
   } catch(e) { showToast('Error admin: '+e.message,'error'); }
 }
 
-async function loadAdminPayments(status) {
+async function loadAdminPayments(status, listId = 'adminPaymentsList') {
   document.querySelectorAll('.admin-tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.status===status));
-  const list = document.getElementById('adminPaymentsList');
+  const list = document.getElementById(listId);
   list.innerHTML = '<div style="color:var(--muted);padding:20px;text-align:center">Cargando...</div>';
   try {
     const { payments } = await api('GET',`/api/admin/payments?status=${status}`);
@@ -2148,7 +2147,7 @@ async function approvePayment(id) {
   try {
     await api('POST',`/api/admin/payments/${id}/approve`,{ adminNote:note });
     showToast('✓ Pago aprobado y Pro activado','success');
-    loadAdminPayments('pending');
+    loadAdminPayments('pending', 'adminPaymentsList2');
     loadAdminDashboard();
   } catch(e) { showToast('Error: '+e.message,'error'); }
 }
@@ -2157,7 +2156,7 @@ async function rejectPayment(id) {
   try {
     await api('POST',`/api/admin/payments/${id}/reject`,{ adminNote:note });
     showToast('Pago rechazado','info');
-    loadAdminPayments('pending');
+    loadAdminPayments('pending', 'adminPaymentsList2');
   } catch(e) { showToast('Error: '+e.message,'error'); }
 }
 
@@ -2526,20 +2525,15 @@ restoreSession().then(() => {
         <div class="admin-stat"><div class="admin-stat-num" id="adPending" style="color:var(--gold)">—</div><div class="admin-stat-label">Pagos pendientes</div></div>
         <div class="admin-stat"><div class="admin-stat-num" id="adRevenue" style="color:var(--green)">—</div><div class="admin-stat-label">Ingresos totales</div></div>
       </div>
-      <div class="admin-section-title">Transferencias pendientes de aprobar</div>
-      <div style="display:flex;gap:6px;margin-bottom:10px;">
-        <button class="admin-tab-btn active" data-status="pending" onclick="loadAdminPayments('pending')">Pendientes</button>
-        <button class="admin-tab-btn" data-status="completed" onclick="loadAdminPayments('completed')">Aprobados</button>
-        <button class="admin-tab-btn" data-status="rejected" onclick="loadAdminPayments('rejected')">Rechazados</button>
-      </div>
-      <div id="adminPaymentsList"></div>
+      <div class="admin-section-title">Resumen</div>
+      <p>Usa las pestañas de arriba para gestionar pagos, usuarios y ajustes.</p>
     </div>
     <!-- PAYMENTS -->
     <div class="admin-tab-content" id="adminTab-payments">
       <div style="display:flex;gap:6px;margin-bottom:12px;">
-        <button class="admin-tab-btn active" data-status="pending" onclick="loadAdminPayments('pending')">Pendientes</button>
-        <button class="admin-tab-btn" data-status="completed" onclick="loadAdminPayments('completed')">Completados</button>
-        <button class="admin-tab-btn" data-status="all" onclick="loadAdminPayments('')">Todos</button>
+        <button class="admin-tab-btn active" data-status="pending" onclick="loadAdminPayments('pending', 'adminPaymentsList2')">Pendientes</button>
+        <button class="admin-tab-btn" data-status="completed" onclick="loadAdminPayments('completed', 'adminPaymentsList2')">Completados</button>
+        <button class="admin-tab-btn" data-status="all" onclick="loadAdminPayments('', 'adminPaymentsList2')">Todos</button>
       </div>
       <div id="adminPaymentsList2"></div>
     </div>
@@ -2588,11 +2582,13 @@ restoreSession().then(() => {
 <!-- Admin nav button (hidden by default, shows if admin) -->
 <script>
 function showAdminTab(name, btn) {
+  document.querySelectorAll('.admin-tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
   document.querySelectorAll('.admin-tab-content').forEach(t=>t.classList.remove('active'));
   document.querySelector(`#adminTab-${name}`)?.classList.add('active');
   if(name==='settings') loadAdminSettings();
   if(name==='users') loadAdminUsers();
-  if(name==='payments') loadAdminPayments('pending');
+  if(name==='payments') loadAdminPayments('pending', 'adminPaymentsList2');
 }
 // Add email field to register form dynamically
 document.addEventListener('DOMContentLoaded', () => {
