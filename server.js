@@ -287,7 +287,8 @@ app.get('/api/settings/public', async (req, res) => {
     });
     const whatsapp = await getSetting('whatsapp', '+593900000000');
     const payphoneEnabled = await getSetting('payphoneEnabled', true);
-    res.json({ prices, bank, whatsapp, payphoneEnabled });
+    const nuveiEnabled = await getSetting('nuveiEnabled', false);
+    res.json({ prices, bank, whatsapp, payphoneEnabled, nuveiEnabled });
   } catch(e) {
     // Fallback to defaults on error
     res.json({
@@ -304,7 +305,8 @@ app.get('/api/settings/public', async (req, res) => {
         note:    'Indicar tu usuario SpinDraw en la referencia',
       },
       whatsapp: '+593900000000',
-      payphoneEnabled: true
+      payphoneEnabled: true,
+      nuveiEnabled: false
     });
   }
 });
@@ -563,6 +565,62 @@ app.post('/api/payphone/confirm', authMiddleware, async (req, res) => {
     sendEmail(user.email, emailSubject, emailBody);
 
     res.json({ success: true, user: sanitizeUser(user) });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// ── NUEI PAYMENTS ───────────────────────────────────────────
+// TODO: Implement Nuvei integration based on their API docs
+// Add environment variables: NUEI_API_KEY, NUEI_SECRET, etc.
+
+// POST /api/nuvei/create-subscription
+app.post('/api/nuvei/create-subscription', authMiddleware, async (req, res) => {
+  try {
+    const { plan } = req.body;
+    const userId = req.user.uid;
+    const amount = plan === 'monthly' ? siteSettings.prices.monthly.amount : siteSettings.prices.lifetime.amount;
+
+    // Placeholder: Create subscription with Nuvei
+    // const nuveiRes = await axios.post('https://api.nuvei.com/v1/subscriptions', {
+    //   amount,
+    //   currency: 'USD',
+    //   // ... other params
+    // }, { headers: { 'Authorization': `Bearer ${NUEI_API_KEY}` } });
+
+    // For now, return placeholder
+    res.json({
+      subscriptionId: 'nuvei_sub_' + Date.now(),
+      checkoutUrl: 'https://checkout.nuvei.com?token=placeholder'
+    });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// POST /api/nuvei/create-order
+app.post('/api/nuvei/create-order', authMiddleware, async (req, res) => {
+  try {
+    const { plan } = req.body;
+    const userId = req.user.uid;
+    const amount = plan === 'monthly' ? siteSettings.prices.monthly.amount : siteSettings.prices.lifetime.amount;
+
+    // Placeholder: Create order with Nuvei
+    // const nuveiRes = await axios.post('https://api.nuvei.com/v1/orders', {
+    //   amount,
+    //   currency: 'USD',
+    //   // ... other params
+    // }, { headers: { 'Authorization': `Bearer ${NUEI_API_KEY}` } });
+
+    // For now, return placeholder
+    res.json({
+      orderId: 'nuvei_order_' + Date.now(),
+      checkoutUrl: 'https://checkout.nuvei.com?token=placeholder'
+    });
+  } catch(e) { res.status(500).json({ error: e.message }); }
+});
+
+// POST /api/nuvei/confirm
+app.post('/api/nuvei/confirm', authMiddleware, async (req, res) => {
+  try {
+    // Placeholder for confirmation
+    res.json({ success: true });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -841,27 +899,29 @@ app.post('/api/admin/users/:id/toggle-pro', adminMiddleware, async (req, res) =>
 // GET /api/admin/settings
 app.get('/api/admin/settings', adminMiddleware, async (req, res) => {
   try {
-    const [prices, bank, whatsapp, adminEmail, payphoneEnabled] = await Promise.all([
+    const [prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled] = await Promise.all([
       getSetting('prices', { monthly: { amount: 4.99, label: 'Mensual' }, lifetime: { amount: 29.99, label: 'Vitalicio' } }),
       getSetting('bank', {}),
       getSetting('whatsapp', ''),
       getSetting('adminEmail', ''),
       getSetting('payphoneEnabled', true),
+      getSetting('nuveiEnabled', false),
     ]);
-    res.json({ prices, bank, whatsapp, adminEmail, payphoneEnabled });
+    res.json({ prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // PUT /api/admin/settings
 app.put('/api/admin/settings', adminMiddleware, async (req, res) => {
   try {
-    const { prices, bank, whatsapp, adminEmail, payphoneEnabled } = req.body;
+    const { prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled } = req.body;
     const ops = [];
     if (prices)         ops.push(setSetting('prices', prices));
     if (bank)           ops.push(setSetting('bank', bank));
     if (whatsapp)       ops.push(setSetting('whatsapp', whatsapp));
     if (adminEmail)     ops.push(setSetting('adminEmail', adminEmail));
     if (payphoneEnabled !== undefined) ops.push(setSetting('payphoneEnabled', payphoneEnabled));
+    if (nuveiEnabled !== undefined) ops.push(setSetting('nuveiEnabled', nuveiEnabled));
     await Promise.all(ops);
     res.json({ success: true });
   } catch(e) { res.status(500).json({ error: e.message }); }
