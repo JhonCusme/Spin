@@ -286,7 +286,8 @@ app.get('/api/settings/public', async (req, res) => {
       note:    'Indicar tu usuario SpinDraw en la referencia',
     });
     const whatsapp = await getSetting('whatsapp', '+593900000000');
-    res.json({ prices, bank, whatsapp });
+    const payphoneEnabled = await getSetting('payphoneEnabled', true);
+    res.json({ prices, bank, whatsapp, payphoneEnabled });
   } catch(e) {
     // Fallback to defaults on error
     res.json({
@@ -302,7 +303,8 @@ app.get('/api/settings/public', async (req, res) => {
         id:      '1700000000',
         note:    'Indicar tu usuario SpinDraw en la referencia',
       },
-      whatsapp: '+593900000000'
+      whatsapp: '+593900000000',
+      payphoneEnabled: true
     });
   }
 });
@@ -839,25 +841,27 @@ app.post('/api/admin/users/:id/toggle-pro', adminMiddleware, async (req, res) =>
 // GET /api/admin/settings
 app.get('/api/admin/settings', adminMiddleware, async (req, res) => {
   try {
-    const [prices, bank, whatsapp, adminEmail] = await Promise.all([
+    const [prices, bank, whatsapp, adminEmail, payphoneEnabled] = await Promise.all([
       getSetting('prices', { monthly: { amount: 4.99, label: 'Mensual' }, lifetime: { amount: 29.99, label: 'Vitalicio' } }),
       getSetting('bank', {}),
       getSetting('whatsapp', ''),
       getSetting('adminEmail', ''),
+      getSetting('payphoneEnabled', true),
     ]);
-    res.json({ prices, bank, whatsapp, adminEmail });
+    res.json({ prices, bank, whatsapp, adminEmail, payphoneEnabled });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // PUT /api/admin/settings
 app.put('/api/admin/settings', adminMiddleware, async (req, res) => {
   try {
-    const { prices, bank, whatsapp, adminEmail } = req.body;
+    const { prices, bank, whatsapp, adminEmail, payphoneEnabled } = req.body;
     const ops = [];
-    if (prices)     ops.push(setSetting('prices', prices));
-    if (bank)       ops.push(setSetting('bank', bank));
-    if (whatsapp)   ops.push(setSetting('whatsapp', whatsapp));
-    if (adminEmail) ops.push(setSetting('adminEmail', adminEmail));
+    if (prices)         ops.push(setSetting('prices', prices));
+    if (bank)           ops.push(setSetting('bank', bank));
+    if (whatsapp)       ops.push(setSetting('whatsapp', whatsapp));
+    if (adminEmail)     ops.push(setSetting('adminEmail', adminEmail));
+    if (payphoneEnabled !== undefined) ops.push(setSetting('payphoneEnabled', payphoneEnabled));
     await Promise.all(ops);
     res.json({ success: true });
   } catch(e) { res.status(500).json({ error: e.message }); }
