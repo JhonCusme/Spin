@@ -927,16 +927,6 @@ header{
 
 <!-- ══ AD BANNER ══ -->
 <div class="ad-zone ad-banner" id="adBanner">
-<!-- Spindraw - Google AdSense -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-7223873610943022"
-     data-ad-slot="5305622596"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
 </div>
 
 <!-- ══ MAIN ══ -->
@@ -1371,7 +1361,27 @@ function updatePlanUI(){
   document.getElementById('planDot').className='plan-dot'+(isPro?' pro':'');
   document.getElementById('planLabel').textContent=isPro?'✦ Plan Pro':'Plan Free';
   document.getElementById('upgradeCta').classList.toggle('hidden',isPro);
-  document.getElementById('adBanner').classList.toggle('hidden',isPro);
+  const adBanner = document.getElementById('adBanner');
+  if (isPro) {
+    adBanner.innerHTML = '';
+    adBanner.classList.add('hidden');
+  } else {
+    adBanner.classList.remove('hidden');
+    if (!adBanner.innerHTML.trim()) {
+      adBanner.innerHTML = `
+<!-- Spindraw - Google AdSense -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-7223873610943022"
+     data-ad-slot="5305622596"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+      `;
+    }
+  }
   ['lockTheme','lockLogo','lockSound','lockFs'].forEach(id=>{
     document.getElementById(id).style.display=isPro?'none':'';
   });
