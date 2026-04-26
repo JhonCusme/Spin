@@ -2198,6 +2198,10 @@ async function loadAdminSettings() {
     document.getElementById('setAdminEmail').value    = s.adminEmail    || '';
     document.getElementById('setPayphoneEnabled').checked = s.payphoneEnabled !== false;
     document.getElementById('setNuveiEnabled').checked = s.nuveiEnabled !== false;
+    document.getElementById('setNuveiApiKey').value   = s.nuveiApiKey   || '';
+    document.getElementById('setNuveiSecret').value   = s.nuveiSecret   || '';
+    document.getElementById('setNuveiMerchantId').value = s.nuveiMerchantId || '';
+    document.getElementById('setNuveiTerminalId').value = s.nuveiTerminalId || '';
   } catch(e) { showToast('Error cargando ajustes','error'); }
 }
 async function saveAdminSettings() {
@@ -2218,6 +2222,10 @@ async function saveAdminSettings() {
     adminEmail: document.getElementById('setAdminEmail').value,
     payphoneEnabled: document.getElementById('setPayphoneEnabled').checked,
     nuveiEnabled: document.getElementById('setNuveiEnabled').checked,
+    nuveiApiKey: document.getElementById('setNuveiApiKey').value,
+    nuveiSecret: document.getElementById('setNuveiSecret').value,
+    nuveiMerchantId: document.getElementById('setNuveiMerchantId').value,
+    nuveiTerminalId: document.getElementById('setNuveiTerminalId').value,
   };
   try {
     await api('PUT','/api/admin/settings', body);
@@ -2593,6 +2601,15 @@ restoreSession().then(() => {
           <input type="checkbox" id="setNuveiEnabled" style="width:16px;height:16px;">
           Habilitar pagos con Nuvei
         </label>
+      </div>
+      <div class="admin-section-title" style="margin-top:8px">Credenciales Nuvei</div>
+      <div class="admin-row-2">
+        <div class="admin-field"><label>API Key</label><input class="admin-input" id="setNuveiApiKey" placeholder="Tu API Key de Nuvei"></div>
+        <div class="admin-field"><label>Secret Key</label><input class="admin-input" id="setNuveiSecret" placeholder="Tu Secret Key de Nuvei"></div>
+      </div>
+      <div class="admin-row-2">
+        <div class="admin-field"><label>Merchant ID</label><input class="admin-input" id="setNuveiMerchantId" placeholder="ID del comercio"></div>
+        <div class="admin-field"><label>Terminal ID</label><input class="admin-input" id="setNuveiTerminalId" placeholder="ID del terminal"></div>
       </div>
       <div class="admin-section-title" style="margin-top:8px">Datos Bancarios (Ecuador)</div>
       <div class="admin-row-2">
