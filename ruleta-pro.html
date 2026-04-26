@@ -1358,6 +1358,7 @@ function openPaywall(){document.getElementById('paywallModal').classList.add('ac
 function closePaywall(){document.getElementById('paywallModal').classList.remove('active');}
 function closePayphoneModal(){document.getElementById('payphoneModal').classList.remove('active');}
 function updatePlanUI(){
+  document.getElementById('demoUnlockBar').style.display = currentUserData?.isAdmin ? '' : 'none';
   document.getElementById('planDot').className='plan-dot'+(isPro?' pro':'');
   document.getElementById('planLabel').textContent=isPro?'✦ Plan Pro':'Plan Free';
   document.getElementById('upgradeCta').classList.toggle('hidden',isPro);
