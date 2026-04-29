@@ -1459,14 +1459,23 @@ function updatePlanUI(){
     adBanner.classList.remove('hidden');
     if (!adBanner.innerHTML.trim()) {
       adBanner.innerHTML = '<!-- Spindraw - Google AdSense --><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7223873610943022" data-ad-slot="5305622596" data-ad-format="auto" data-full-width-responsive="true"></ins>';
-      // Delay ad loading to ensure container has size
-      setTimeout(() => {
-        try {
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (e) {
-          console.warn('AdSense error:', e);
+
+      // Wait for container to have size before loading ad
+      const loadAd = () => {
+        if (adBanner.offsetWidth > 0) {
+          try {
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          } catch (e) {
+            console.warn('AdSense error:', e);
+          }
+        } else {
+          // Retry after a short delay
+          setTimeout(loadAd, 50);
         }
-      }, 100);
+      };
+
+      // Start checking after a brief initial delay
+      setTimeout(loadAd, 10);
     }
   }
   ['lockTheme','lockLogo','lockSound','lockFs'].forEach(id=>{
