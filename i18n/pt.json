@@ -1,0 +1,89 @@
+{
+  "app": {
+    "name": "SpinDraw",
+    "description": "Roleta de Sorteios Online Grátis",
+    "tagline": "Teste sua sorte!"
+  },
+  "nav": {
+    "home": "Início",
+    "admin": "Administração",
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "logout": "Sair",
+    "profile": "Perfil"
+  },
+  "wheel": {
+    "title": "Gire a Roleta!",
+    "subtitle": "Participe de sorteios emocionantes",
+    "spin": "GIRAR",
+    "spinning": "Girando...",
+    "winner": "Parabéns!",
+    "tryAgain": "Tente Novamente",
+    "participants": "participantes",
+    "prize": "prêmio"
+  },
+  "auth": {
+    "loginTitle": "Entrar",
+    "registerTitle": "Criar Conta",
+    "email": "E-mail",
+    "password": "Senha",
+    "confirmPassword": "Confirmar Senha",
+    "firstName": "Nome",
+    "lastName": "Sobrenome",
+    "phone": "Telefone",
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "forgotPassword": "Esqueci minha senha",
+    "noAccount": "Não tem conta?",
+    "hasAccount": "Já tem conta?",
+    "loginSuccess": "Bem-vindo de volta!",
+    "registerSuccess": "Conta criada com sucesso!",
+    "invalidCredentials": "Credenciais inválidas",
+    "emailExists": "Este e-mail já está cadastrado",
+    "weakPassword": "A senha deve ter pelo menos 6 caracteres"
+  },
+  "payments": {
+    "title": "Planos de Assinatura",
+    "monthly": "Mensal",
+    "lifetime": "Vitalício",
+    "free": "Grátis",
+    "pay": "Pagar",
+    "processing": "Processando...",
+    "success": "Pagamento realizado!",
+    "error": "Erro no pagamento",
+    "bankTransfer": "Transferência Bancária",
+    "paypal": "PayPal",
+    "payphone": "PayPhone"
+  },
+  "admin": {
+    "title": "Painel de Administração",
+    "settings": "Configurações",
+    "users": "Usuários",
+    "payments": "Pagamentos",
+    "dashboard": "Dashboard",
+    "save": "Salvar Alterações",
+    "cancel": "Cancelar",
+    "success": "Alterações salvas",
+    "error": "Erro ao salvar"
+  },
+  "footer": {
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "cookies": "Cookies",
+    "contact": "Contato",
+    "copyright": "© 2026 SpinDraw. Todos os direitos reservados."
+  },
+  "errors": {
+    "network": "Erro de conexão",
+    "server": "Erro do servidor",
+    "validation": "Dados inválidos",
+    "unknown": "Erro desconhecido"
+  },
+  "messages": {
+    "loading": "Carregando...",
+    "noData": "Nenhum dado disponível",
+    "confirm": "Tem certeza?",
+    "yes": "Sim",
+    "no": "Não"
+  }
+}

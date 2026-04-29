@@ -30,6 +30,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="i18n.js"></script>
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7223873610943022"
      crossorigin="anonymous" id="adsense-script"></script>
@@ -599,6 +600,18 @@ header{
   .sidebar-right{width:320px;}
   .wheel-wrap{width:460px;height:460px;}
 }
+
+/* ══ LANGUAGE SELECTOR ══ */
+.language-selector{
+  position:absolute;top:14px;right:28px;z-index:100;
+}
+.lang-select{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  color:var(--text);padding:6px 10px;font-size:.8rem;min-width:120px;
+  cursor:pointer;outline:none;
+}
+.lang-select:focus{border-color:var(--accent);}
+.lang-select option{background:var(--bg);color:var(--text);}
 </style>
 </head>
 <body>
@@ -612,7 +625,7 @@ header{
     <canvas id="fsCanvas" width="540" height="540"></canvas>
     <div class="fs-pointer"></div>
   </div>
-  <button id="fsSpinBtn" onclick="handleSpinClick(true)">¡ G I R A R !</button>
+  <button id="fsSpinBtn" onclick="handleSpinClick(true)" data-i18n="wheel.spin">¡ G I R A R !</button>
   <div id="fsResult"></div>
   <div id="fsCountdown">
     <div class="fs-countdown-num" id="fsCountdownNum">3</div>
@@ -851,8 +864,8 @@ header{
       <div class="auth-subtitle" id="authModalSubtitle">Accede o crea tu cuenta gratuita</div>
       <!-- Tabs (hidden when logged in) -->
       <div class="auth-tabs" id="authTabsRow">
-        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab(0)">Iniciar Sesión</button>
-        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab(1)">Registrarse</button>
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab(0)" data-i18n="nav.login">Iniciar Sesión</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab(1)" data-i18n="nav.register">Registrarse</button>
       </div>
     </div>
 
@@ -861,7 +874,7 @@ header{
       <div class="auth-field">
         <label>Usuario</label>
         <div class="auth-input-wrap">
-          <input class="auth-input" id="usernameInput" type="text" placeholder="Tu nombre de usuario"
+          <input class="auth-input" id="usernameInput" type="text" data-i18n-attr="placeholder:auth.email" placeholder="Tu nombre de usuario"
             autocomplete="username" oninput="validateField(this,'user')">
           <span class="auth-input-icon" id="iconUser">👤</span>
         </div>
@@ -870,14 +883,14 @@ header{
       <div class="auth-field">
         <label>Contraseña</label>
         <div class="auth-input-wrap">
-          <input class="auth-input" id="passwordInput" type="password" placeholder="Tu contraseña"
+          <input class="auth-input" id="passwordInput" type="password" data-i18n-attr="placeholder:auth.password" placeholder="Tu contraseña"
             autocomplete="current-password" onkeydown="if(event.key==='Enter')handleAuth()">
           <span class="auth-input-icon" onclick="togglePw('passwordInput',this)" title="Mostrar contraseña">👁️</span>
         </div>
         <div class="field-hint" id="hintLoginPw"></div>
       </div>
       <div class="auth-msg" id="authMessage"></div>
-      <button class="auth-submit" id="authSubmitBtn" onclick="handleAuth()">INICIAR SESIÓN</button>
+      <button class="auth-submit" id="authSubmitBtn" onclick="handleAuth()" data-i18n="auth.login">INICIAR SESIÓN</button>
     </div>
 
     <!-- ── REGISTER FORM ── -->
@@ -905,7 +918,7 @@ header{
       <div class="auth-field">
         <label>Usuario *</label>
         <div class="auth-input-wrap">
-          <input class="auth-input" id="usernameRegInput" type="text" placeholder="usuario123"
+          <input class="auth-input" id="usernameRegInput" type="text" data-i18n-attr="placeholder:auth.email" placeholder="usuario123"
             autocomplete="username" oninput="validateField(this,'userReg')">
           <span class="auth-input-icon" id="iconUserReg"></span>
         </div>
@@ -921,7 +934,7 @@ header{
       <div class="auth-field">
         <label>Contraseña *</label>
         <div class="auth-input-wrap">
-          <input class="auth-input" id="passwordRegInput" type="password" placeholder="Mínimo 6 caracteres"
+          <input class="auth-input" id="passwordRegInput" type="password" data-i18n-attr="placeholder:auth.password" placeholder="Mínimo 6 caracteres"
             autocomplete="new-password" oninput="checkPasswordStrength(this.value)">
           <span class="auth-input-icon" onclick="togglePw('passwordRegInput',this)" title="Mostrar">👁️</span>
         </div>
@@ -938,7 +951,7 @@ header{
       <div class="auth-field">
         <label>Confirmar Contraseña *</label>
         <div class="auth-input-wrap">
-          <input class="auth-input" id="confirmPasswordInput" type="password" placeholder="Repite tu contraseña"
+          <input class="auth-input" id="confirmPasswordInput" type="password" data-i18n-attr="placeholder:auth.confirmPassword" placeholder="Repite tu contraseña"
             autocomplete="new-password" oninput="validateConfirmPw()">
           <span class="auth-input-icon" onclick="togglePw('confirmPasswordInput',this)" title="Mostrar">👁️</span>
         </div>
@@ -1038,7 +1051,7 @@ header{
         <div class="countdown-label">PREPARADOS...</div>
       </div>
     </div>
-    <button class="spin-btn" id="mainSpinBtn" onclick="handleSpinClick(false)">¡ G I R A R !</button>
+    <button class="spin-btn" id="mainSpinBtn" onclick="handleSpinClick(false)" data-i18n="wheel.spin">¡ G I R A R !</button>
     <div class="result-area" id="resultArea"></div>
     <div class="action-btns">
       <button class="share-result-btn" id="shareResultBtn" onclick="shareResult(null)">📸 Compartir</button>
@@ -2922,16 +2935,16 @@ async function confirmPayPhonePayment(id, clientTransactionId) {
 <footer id="footer">
 <div class="footer-content">
 <div class="footer-links">
-<a href="privacidad.html" target="_blank">Política de Privacidad</a>
+<a href="privacidad.html" target="_blank" data-i18n="footer.privacy">Política de Privacidad</a>
 <div class="footer-divider"></div>
-<a href="terminos.html" target="_blank">Términos de Servicio</a>
+<a href="terminos.html" target="_blank" data-i18n="footer.terms">Términos de Servicio</a>
 <div class="footer-divider"></div>
-<a href="cookies.html" target="_blank">Política de Cookies</a>
+<a href="cookies.html" target="_blank" data-i18n="footer.cookies">Política de Cookies</a>
 <div class="footer-divider"></div>
-<a href="contacto.html" target="_blank">Contacto</a>
+<a href="contacto.html" target="_blank" data-i18n="footer.contact">Contacto</a>
 </div>
 <div class="footer-bottom">
-<p>© 2026 SpinDraw. Todos los derechos reservados.</p>
+<p data-i18n="footer.copyright">© 2026 SpinDraw. Todos los derechos reservados.</p>
 <p>Esta plataforma utiliza publicidad de Google AdSense. Contiene contenido generado por usuarios.</p>
 </div>
 </div>

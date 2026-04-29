@@ -1,0 +1,89 @@
+{
+  "app": {
+    "name": "SpinDraw",
+    "description": "Free Online Lottery Wheel",
+    "tagline": "Test your luck!"
+  },
+  "nav": {
+    "home": "Home",
+    "admin": "Administration",
+    "login": "Login",
+    "register": "Sign Up",
+    "logout": "Logout",
+    "profile": "Profile"
+  },
+  "wheel": {
+    "title": "Spin the Wheel!",
+    "subtitle": "Join exciting giveaways",
+    "spin": "SPIN",
+    "spinning": "Spinning...",
+    "winner": "Congratulations!",
+    "tryAgain": "Try Again",
+    "participants": "participants",
+    "prize": "prize"
+  },
+  "auth": {
+    "loginTitle": "Login",
+    "registerTitle": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "phone": "Phone",
+    "login": "Login",
+    "register": "Sign Up",
+    "forgotPassword": "Forgot Password",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginSuccess": "Welcome back!",
+    "registerSuccess": "Account created successfully!",
+    "invalidCredentials": "Invalid credentials",
+    "emailExists": "This email is already registered",
+    "weakPassword": "Password must be at least 6 characters"
+  },
+  "payments": {
+    "title": "Subscription Plans",
+    "monthly": "Monthly",
+    "lifetime": "Lifetime",
+    "free": "Free",
+    "pay": "Pay",
+    "processing": "Processing...",
+    "success": "Payment successful!",
+    "error": "Payment error",
+    "bankTransfer": "Bank Transfer",
+    "paypal": "PayPal",
+    "payphone": "PayPhone"
+  },
+  "admin": {
+    "title": "Administration Panel",
+    "settings": "Settings",
+    "users": "Users",
+    "payments": "Payments",
+    "dashboard": "Dashboard",
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "success": "Changes saved",
+    "error": "Error saving"
+  },
+  "footer": {
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "cookies": "Cookies",
+    "contact": "Contact",
+    "copyright": "© 2026 SpinDraw. All rights reserved."
+  },
+  "errors": {
+    "network": "Network error",
+    "server": "Server error",
+    "validation": "Invalid data",
+    "unknown": "Unknown error"
+  },
+  "messages": {
+    "loading": "Loading...",
+    "noData": "No data available",
+    "confirm": "Are you sure?",
+    "yes": "Yes",
+    "no": "No"
+  }
+}
