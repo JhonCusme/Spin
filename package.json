@@ -25,6 +25,9 @@
     "nodemailer": "^6.9.7"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.3.1",
+    "@capacitor/cli": "^8.3.1",
+    "@capacitor/core": "^8.3.1",
     "nodemon": "^3.0.2"
   }
 }
