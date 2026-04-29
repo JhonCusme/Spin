@@ -1,0 +1,47 @@
+﻿{
+    "name":  "SpinDraw â€” Ruleta de Sorteos",
+    "description":  "Crea y participa en ruletas de sorteos online gratis. Herramienta interactiva para sorteos, rifas y entretenimiento.",
+    "short_name":  "SpinDraw",
+    "start_url":  "/index.html",
+    "scope":  "/",
+    "display":  "standalone",
+    "orientation":  "portrait-primary",
+    "theme_color":  "#7c3aed",
+    "background_color":  "#080b12",
+    "categories":  [
+                       "entertainment",
+                       "games",
+                       "utilities"
+                   ],
+    "lang":  "es",
+    "dir":  "ltr",
+    "prefer_related_applications":  false,
+    "icons":  [
+                  {
+                      "src":  "favicon.svg",
+                      "sizes":  "any",
+                      "type":  "image/svg+xml",
+                      "purpose":  "any maskable"
+                  },
+                  {
+                      "src":  "data:image/svg+xml,\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 viewBox=\u00270 0 192 192\u0027\u003e\u003crect width=\u0027192\u0027 height=\u0027192\u0027 fill=\u0027%23080b12\u0027/\u003e\u003ccircle cx=\u002796\u0027 cy=\u002796\u0027 r=\u002760\u0027 fill=\u0027%237c3aed\u0027 stroke=\u0027%23ffffff\u0027 stroke-width=\u00274\u0027/\u003e\u003ctext x=\u002796\u0027 y=\u0027110\u0027 text-anchor=\u0027middle\u0027 fill=\u0027white\u0027 font-family=\u0027Arial\u0027 font-size=\u002760\u0027 font-weight=\u0027bold\u0027\u003eðŸŽ¯\u003c/text\u003e\u003c/svg\u003e",
+                      "sizes":  "192x192",
+                      "type":  "image/svg+xml",
+                      "purpose":  "any maskable"
+                  },
+                  {
+                      "src":  "data:image/svg+xml,\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 viewBox=\u00270 0 512 512\u0027\u003e\u003crect width=\u0027512\u0027 height=\u0027512\u0027 fill=\u0027%23080b12\u0027/\u003e\u003ccircle cx=\u0027256\u0027 cy=\u0027256\u0027 r=\u0027160\u0027 fill=\u0027%237c3aed\u0027 stroke=\u0027%23ffffff\u0027 stroke-width=\u00278\u0027/\u003e\u003ctext x=\u0027256\u0027 y=\u0027290\u0027 text-anchor=\u0027middle\u0027 fill=\u0027white\u0027 font-family=\u0027Arial\u0027 font-size=\u0027160\u0027 font-weight=\u0027bold\u0027\u003eðŸŽ¯\u003c/text\u003e\u003c/svg\u003e",
+                      "sizes":  "512x512",
+                      "type":  "image/svg+xml",
+                      "purpose":  "any maskable"
+                  }
+              ],
+    "screenshots":  [
+                        {
+                            "src":  "data:image/svg+xml,\u003csvg xmlns=\u0027http://www.w3.org/2000/svg\u0027 viewBox=\u00270 0 1280 720\u0027\u003e\u003crect width=\u00271280\u0027 height=\u0027720\u0027 fill=\u0027%23080b12\u0027/\u003e\u003ctext x=\u0027640\u0027 y=\u0027360\u0027 text-anchor=\u0027middle\u0027 fill=\u0027%237c3aed\u0027 font-family=\u0027Arial\u0027 font-size=\u002748\u0027\u003eSpinDraw - Ruleta de Sorteos\u003c/text\u003e\u003c/svg\u003e",
+                            "sizes":  "1280x720",
+                            "type":  "image/svg+xml",
+                            "label":  "Pantalla principal de SpinDraw"
+                        }
+                    ]
+}
