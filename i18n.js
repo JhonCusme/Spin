@@ -24,6 +24,25 @@ class I18n {
           participantsTitle: 'Participantes',
           total: 'Total:',
           unlimited: 'Ilimitados con Pro ↑'
+        },
+        paywallModal: {
+          title: '¡Actualiza a Pro!',
+          subtitle: 'Desbloquea todas las funciones premium',
+          monthly: 'Plan Mensual',
+          perMonth: '/mes',
+          bestValue: 'Mejor Valor',
+          lifetime: 'Plan Vitalicio',
+          oneTime: 'Pago único',
+          unlimited: 'Ruletas ilimitadas',
+          multiple: 'Múltiples ruletas',
+          customLogo: 'Logo personalizado',
+          themes: 'Temas premium',
+          sounds: 'Sonidos premium',
+          stream: 'Modo Stream',
+          import: 'Importar participantes',
+          noAds: 'Sin anuncios',
+          upgrade: 'Actualizar Ahora',
+          cancel: 'Cancelar'
         }
       },
       en: {
@@ -42,6 +61,25 @@ class I18n {
           participantsTitle: 'Participants',
           total: 'Total:',
           unlimited: 'Unlimited with Pro ↑'
+        },
+        paywallModal: {
+          title: 'Upgrade to Pro!',
+          subtitle: 'Unlock all premium features',
+          monthly: 'Monthly Plan',
+          perMonth: '/month',
+          bestValue: 'Best Value',
+          lifetime: 'Lifetime Plan',
+          oneTime: 'One-time payment',
+          unlimited: 'Unlimited wheels',
+          multiple: 'Multiple wheels',
+          customLogo: 'Custom logo',
+          themes: 'Premium themes',
+          sounds: 'Premium sounds',
+          stream: 'Stream mode',
+          import: 'Import participants',
+          noAds: 'No ads',
+          upgrade: 'Upgrade Now',
+          cancel: 'Cancel'
         }
       },
       pt: {
@@ -60,6 +98,25 @@ class I18n {
           participantsTitle: 'Participantes',
           total: 'Total:',
           unlimited: 'Ilimitados com Pro ↑'
+        },
+        paywallModal: {
+          title: 'Atualize para Pro!',
+          subtitle: 'Desbloqueie todos os recursos premium',
+          monthly: 'Plano Mensal',
+          perMonth: '/mês',
+          bestValue: 'Melhor Valor',
+          lifetime: 'Plano Vitalício',
+          oneTime: 'Pagamento único',
+          unlimited: 'Roleta ilimitadas',
+          multiple: 'Múltiplas roletas',
+          customLogo: 'Logo personalizado',
+          themes: 'Temas premium',
+          sounds: 'Sons premium',
+          stream: 'Modo Stream',
+          import: 'Importar participantes',
+          noAds: 'Sem anúncios',
+          upgrade: 'Atualizar Agora',
+          cancel: 'Cancelar'
         }
       }
     };
@@ -89,7 +146,9 @@ class I18n {
 
       const response = await fetch(`/i18n/${this.currentLang}.json`);
       if (response.ok) {
-        this.translations[this.currentLang] = await response.json();
+        const loadedTranslations = await response.json();
+        // Fusionar las traducciones cargadas con las básicas
+        this.translations[this.currentLang] = { ...this.translations[this.currentLang], ...loadedTranslations };
         this.initialized = true;
         this.updateUI();
         this.setupLanguageSelector();

@@ -1261,6 +1261,10 @@ function openDrawer(name, btn) {
     // Re-bind events (remove id to avoid duplicates, use delegation via onclick attrs which still work on clones)
     clone.removeAttribute('id');
     drawerContent.appendChild(clone);
+    // Apply translations to the cloned content
+    if (window.i18n && window.i18n.updateUI) {
+      window.i18n.updateUI();
+    }
   }
 
   document.getElementById('mobileDrawer').classList.add('open');
@@ -1475,7 +1479,7 @@ function updatePlanUI(){
       };
 
       // Start checking after a brief initial delay
-      setTimeout(loadAd, 10);
+      setTimeout(loadAd, 100);
     }
   }
   ['lockTheme','lockLogo','lockSound','lockFs'].forEach(id=>{
