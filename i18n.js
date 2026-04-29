@@ -8,12 +8,69 @@ class I18n {
     this.initialized = false;
     // Inicializar traducciones básicas por defecto
     this.translations = {
-      es: { wheel: { defaultName: 'Ruleta 1' } },
-      en: { wheel: { defaultName: 'Wheel 1' } },
-      pt: { wheel: { defaultName: 'Roleta 1' } }
+      es: {
+        wheel: { defaultName: 'Ruleta 1' },
+        sidebar: {
+          menu: 'Menú',
+          participants: 'Participantes',
+          settings: 'Ajustes',
+          theme: 'Tema',
+          logo: 'Logo',
+          sound: 'Sonido',
+          fullscreen: 'Pantalla Completa',
+          admin: 'Admin'
+        },
+        sidebarSettings: {
+          participantsTitle: 'Participantes',
+          total: 'Total:',
+          unlimited: 'Ilimitados con Pro ↑'
+        }
+      },
+      en: {
+        wheel: { defaultName: 'Wheel 1' },
+        sidebar: {
+          menu: 'Menu',
+          participants: 'Participants',
+          settings: 'Settings',
+          theme: 'Theme',
+          logo: 'Logo',
+          sound: 'Sound',
+          fullscreen: 'Fullscreen',
+          admin: 'Admin'
+        },
+        sidebarSettings: {
+          participantsTitle: 'Participants',
+          total: 'Total:',
+          unlimited: 'Unlimited with Pro ↑'
+        }
+      },
+      pt: {
+        wheel: { defaultName: 'Roleta 1' },
+        sidebar: {
+          menu: 'Menu',
+          participants: 'Participantes',
+          settings: 'Configurações',
+          theme: 'Tema',
+          logo: 'Logo',
+          sound: 'Som',
+          fullscreen: 'Tela Cheia',
+          admin: 'Admin'
+        },
+        sidebarSettings: {
+          participantsTitle: 'Participantes',
+          total: 'Total:',
+          unlimited: 'Ilimitados com Pro ↑'
+        }
+      }
     };
-    // Cargar traducciones reales de forma asíncrona
-    this.loadTranslationsAsync();
+    // Esperar a que el DOM esté listo antes de cargar traducciones
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        this.loadTranslationsAsync();
+      });
+    } else {
+      this.loadTranslationsAsync();
+    }
   }
 
   async loadTranslationsAsync() {
