@@ -1819,6 +1819,12 @@ const API = window.location.origin;
 let authToken = localStorage.getItem('sd_token') || null;
 let currentUserData = null;
 
+// Verificar que el token sea válido (no vacío y no undefined)
+if (authToken && (authToken === 'null' || authToken === 'undefined' || authToken.trim() === '')) {
+  authToken = null;
+  localStorage.removeItem('sd_token');
+}
+
 // ── API HELPER ──────────────────────────────
 async function api(method, path, body, isForm) {
   const opts = {
@@ -1827,19 +1833,55 @@ async function api(method, path, body, isForm) {
   };
   if (body && !isForm) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
   if (body && isForm)  opts.body = body;
-  const res = await fetch(API + path, opts);
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Error del servidor');
-  return data;
+
+  try {
+    const res = await fetch(API + path, opts);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `Error ${res.status}: ${res.statusText}`);
+    return data;
+  } catch (error) {
+    // Re-throw network errors with more context
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      throw new Error('Error de conexión. Verifica tu conexión a internet.');
+    }
+    throw error;
+  }
 }
 
 // ── SESSION ─────────────────────────────────
 async function restoreSession() {
   if (!authToken) return;
-  try {
-    const { user } = await api('GET', '/api/auth/me');
-    applySession(user);
-  } catch { authToken = null; localStorage.removeItem('sd_token'); }
+
+  // Intentar hasta 3 veces con backoff exponencial
+  let attempts = 0;
+  const maxAttempts = 3;
+
+  while (attempts < maxAttempts) {
+    try {
+      const { user } = await api('GET', '/api/auth/me');
+      applySession(user);
+      return; // Éxito, salir de la función
+    } catch (error) {
+      attempts++;
+
+      // Solo remover token si es error de autenticación (401/403)
+      if (error.message.includes('401') || error.message.includes('403') ||
+          error.message.includes('Token') || error.message.includes('inválido')) {
+        authToken = null;
+        localStorage.removeItem('sd_token');
+        currentUserData = null;
+        return; // Error de auth, salir
+      }
+
+      // Para otros errores, esperar y reintentar
+      if (attempts < maxAttempts) {
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempts) * 1000));
+      }
+    }
+  }
+
+  // Si fallaron todos los intentos, mostrar mensaje pero mantener token
+  console.warn('No se pudo restaurar la sesión después de', maxAttempts, 'intentos');
 }
 
 function applySession(user) {
@@ -1856,7 +1898,16 @@ function applySession(user) {
 // ── AUTO-SAVE ruletas cada 30s ───────────────
 setInterval(async () => {
   if (!authToken || !currentUserData) return;
-  try { await api('PUT', '/api/auth/ruletas', { ruletas }); } catch {}
+  try {
+    await api('PUT', '/api/auth/ruletas', { ruletas });
+  } catch (error) {
+    // Si es error de autenticación, cerrar sesión
+    if (error.message.includes('401') || error.message.includes('403') ||
+        error.message.includes('Token')) {
+      logout();
+    }
+    // Otros errores se ignoran silenciosamente
+  }
 }, 30000);
 
 // ════════════════════════════════════════════
