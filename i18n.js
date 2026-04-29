@@ -93,7 +93,15 @@ class I18n {
   }
 
   t(key, params = {}) {
-    console.log('Translating key:', key, 'currentLang:', this.currentLang, 'translations:', this.translations);
+    // Valores por defecto hardcodeados para casos críticos
+    const defaults = {
+      'wheel.defaultName': this.currentLang === 'es' ? 'Ruleta 1' : this.currentLang === 'en' ? 'Wheel 1' : 'Roleta 1'
+    };
+
+    if (defaults[key]) {
+      return defaults[key];
+    }
+
     // Buscar en las traducciones del idioma actual
     const keys = key.split('.');
     let value = this.translations[this.currentLang];
