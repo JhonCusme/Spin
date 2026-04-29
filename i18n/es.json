@@ -113,6 +113,22 @@
     "upgrade": "Actualizar Ahora",
     "cancel": "Cancelar"
   },
+  "paywall": {
+    "title": "Método de Pago",
+    "subtitle": "Elige cómo quieres pagar por SpinDraw Pro.",
+    "paypal": "PayPal",
+    "bankTransfer": "Transferencia Bancaria",
+    "back": "Atrás",
+    "transferTitle": "Pago por Transferencia",
+    "transferSubtitle": "Realiza la transferencia a la siguiente cuenta y sube el comprobante.",
+    "bank": "Banco",
+    "account": "Cuenta",
+    "clabe": "CLABE",
+    "beneficiary": "Beneficiario",
+    "type": "Tipo",
+    "note": "Nota",
+    "amount": "Monto"
+  },
   "admin": {
     "title": "Panel de Administración",
     "settings": "Configuración",

@@ -266,7 +266,7 @@ header{
   color:var(--muted);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;gap:3px;
 }
 .ad-zone.hidden{display:none;}
-.ad-banner{height:88px;margin:8px 28px 0;flex-shrink:0;}
+.ad-banner{height:88px;margin:8px 28px 0;flex-shrink:0;width:100%;max-width:728px;min-width:300px;box-sizing:border-box;}
 
 /* ══ LAYOUT ══ */
 .main-wrap{display:flex;flex:1;overflow:hidden;}
@@ -1474,26 +1474,34 @@ function updatePlanUI(){
 
       // Wait for container to have size before loading ad (with max retries)
       let retryCount = 0;
-      const maxRetries = 20;
+      const maxRetries = 30;
       const loadAd = () => {
         retryCount++;
-        if (adBanner.offsetWidth > 0 && adBanner.offsetHeight > 0) {
-          try {
-            (adsbygoogle = window.adsbygoogle || []).push({});
-            console.log('AdSense loaded successfully');
-          } catch (e) {
-            console.warn('AdSense error:', e);
-          }
+        const hasWidth = adBanner.offsetWidth > 100;
+        const hasHeight = adBanner.offsetHeight > 50;
+        
+        if (hasWidth && hasHeight) {
+          // Use requestAnimationFrame to ensure layout is settled
+          requestAnimationFrame(() => {
+            setTimeout(() => {
+              try {
+                (adsbygoogle = window.adsbygoogle || []).push({});
+                console.log('AdSense loaded successfully with size:', adBanner.offsetWidth, 'x', adBanner.offsetHeight);
+              } catch (e) {
+                console.warn('AdSense error:', e.message);
+              }
+            }, 50);
+          });
         } else if (retryCount < maxRetries) {
           // Retry after a short delay
-          setTimeout(loadAd, 50);
+          setTimeout(loadAd, 100);
         } else {
-          console.warn('AdSense: Max retries reached, container size:', adBanner.offsetWidth);
+          console.warn('AdSense: Max retries reached, container size:', adBanner.offsetWidth, 'x', adBanner.offsetHeight);
         }
       };
 
-      // Start checking after a brief initial delay
-      setTimeout(loadAd, 150);
+      // Start checking after initial delay to ensure full page load
+      setTimeout(loadAd, 300);
     }
   }
   ['lockTheme','lockLogo','lockSound','lockFs'].forEach(id=>{
