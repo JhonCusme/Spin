@@ -23,7 +23,25 @@ class I18n {
         sidebarSettings: {
           participantsTitle: 'Participantes',
           total: 'Total:',
-          unlimited: 'Ilimitados con Pro ↑'
+          unlimited: 'Ilimitados con Pro ↑',
+          importText: 'Importa una lista de nombres de una sola vez.',
+          unlock: 'Desbloquear con Pro',
+          importButton: 'IMPORTAR LISTA',
+          clear: 'Limpiar todo',
+          history: 'Historial',
+          settingsTitle: 'Ajustes del Giro',
+          countdown: '⏱ Cuenta regresiva — Free',
+          off: 'OFF',
+          autoRemove: '🗑 Auto-eliminar ganador — Pro',
+          autoRemoveDesc: 'Elimina al ganador de la lista automáticamente.',
+          autoRemoveToggle: 'Eliminar ganador auto',
+          autoRemoveSub: 'Lo quita de la lista al terminar',
+          suspense: '🎭 Modo Suspenso — Free',
+          suspenseToggle: 'Frenar con drama',
+          suspenseSub: 'Desacelera lentamente al final',
+          revancha: '🔥 Revancha — Free',
+          revanchaToggle: 'Botón de Revancha',
+          revanchaSub: 'Aparece botón para volver a girar'
         },
         paywallModal: {
           title: '¡Actualiza a Pro!',
@@ -60,7 +78,25 @@ class I18n {
         sidebarSettings: {
           participantsTitle: 'Participants',
           total: 'Total:',
-          unlimited: 'Unlimited with Pro ↑'
+          unlimited: 'Unlimited with Pro ↑',
+          importText: 'Import a list of names at once.',
+          unlock: 'Unlock with Pro',
+          importButton: 'IMPORT LIST',
+          clear: 'Clear all',
+          history: 'History',
+          settingsTitle: 'Spin Settings',
+          countdown: '⏱ Countdown — Free',
+          off: 'OFF',
+          autoRemove: '🗑 Auto-remove winner — Pro',
+          autoRemoveDesc: 'Automatically removes the winner from the list.',
+          autoRemoveToggle: 'Auto-remove winner',
+          autoRemoveSub: 'Removes from list when finished',
+          suspense: '🎭 Suspense Mode — Free',
+          suspenseToggle: 'Dramatic braking',
+          suspenseSub: 'Slows down slowly at the end',
+          revancha: '🔥 Revancha — Free',
+          revanchaToggle: 'Revancha Button',
+          revanchaSub: 'Shows button to spin again'
         },
         paywallModal: {
           title: 'Upgrade to Pro!',
@@ -97,7 +133,25 @@ class I18n {
         sidebarSettings: {
           participantsTitle: 'Participantes',
           total: 'Total:',
-          unlimited: 'Ilimitados com Pro ↑'
+          unlimited: 'Ilimitados com Pro ↑',
+          importText: 'Importe uma lista de nomes de uma só vez.',
+          unlock: 'Desbloquear com Pro',
+          importButton: 'IMPORTAR LISTA',
+          clear: 'Limpar tudo',
+          history: 'Histórico',
+          settingsTitle: 'Configurações do Giro',
+          countdown: '⏱ Contagem regressiva — Free',
+          off: 'OFF',
+          autoRemove: '🗑 Auto-remover vencedor — Pro',
+          autoRemoveDesc: 'Remove o vencedor da lista automaticamente.',
+          autoRemoveToggle: 'Remover vencedor auto',
+          autoRemoveSub: 'Remove da lista ao terminar',
+          suspense: '🎭 Modo Suspense — Free',
+          suspenseToggle: 'Frenagem dramática',
+          suspenseSub: 'Desacelera lentamente no final',
+          revancha: '🔥 Revanche — Free',
+          revanchaToggle: 'Botão de Revanche',
+          revanchaSub: 'Mostra botão para girar novamente'
         },
         paywallModal: {
           title: 'Atualize para Pro!',
@@ -120,14 +174,8 @@ class I18n {
         }
       }
     };
-    // Esperar a que el DOM esté listo antes de cargar traducciones
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => {
-        this.loadTranslationsAsync();
-      });
-    } else {
-      this.loadTranslationsAsync();
-    }
+    // Cargar traducciones
+    this.loadTranslationsAsync();
   }
 
   async loadTranslationsAsync() {
