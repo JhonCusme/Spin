@@ -6,6 +6,50 @@
 <title>Términos de Servicio — SpinDraw</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+// Language selector for legal pages
+function initLanguageSelector() {
+  const currentLang = getCurrentLanguage();
+  const selector = document.createElement('div');
+  selector.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  `;
+  selector.innerHTML = `
+    <select id="lang-select" style="
+      background: #141926;
+      border: 1px solid #1e2535;
+      border-radius: 8px;
+      color: #e8eaf0;
+      padding: 6px 10px;
+      font-size: .8rem;
+      min-width: 120px;
+      cursor: pointer;
+      outline: none;
+    ">
+      <option value="es" ${currentLang === 'es' ? 'selected' : ''}>🇪🇸 Español</option>
+      <option value="en" ${currentLang === 'en' ? 'selected' : ''}>🇺🇸 English</option>
+      <option value="pt" ${currentLang === 'pt' ? 'selected' : ''}>🇧🇷 Português</option>
+    </select>
+  `;
+  document.body.appendChild(selector);
+
+  document.getElementById('lang-select').addEventListener('change', (e) => {
+    const lang = e.target.value;
+    localStorage.setItem('spindraw_lang', lang);
+    const currentPage = window.location.pathname.split('/').pop().split('.')[0];
+    window.location.href = `${currentPage}-${lang}.html`;
+  });
+}
+
+function getCurrentLanguage() {
+  return localStorage.getItem('spindraw_lang') || 'es';
+}
+
+document.addEventListener('DOMContentLoaded', initLanguageSelector);
+</script>
 <style>
 :root{
   --bg:#080b12; --surface:#0f1420; --card:#141926; --border:#1e2535;

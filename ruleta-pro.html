@@ -618,9 +618,9 @@ header{
 
 <!-- ══ FULLSCREEN ══ -->
 <div id="fullscreenOverlay">
-  <button id="fsClose" onclick="exitFullscreen()">✕ Salir</button>
+  <button id="fsClose" onclick="exitFullscreen()">✕ <span data-i18n="fullscreen.exit">Salir</span></button>
   <div id="fsLogoArea"></div>
-  <div id="fsTitle">SPINDRAW</div>
+  <div id="fsTitle" data-i18n="fullscreen.title">SPINDRAW</div>
   <div id="fsWheelWrap">
     <canvas id="fsCanvas" width="540" height="540"></canvas>
     <div class="fs-pointer"></div>
@@ -629,17 +629,17 @@ header{
   <div id="fsResult"></div>
   <div id="fsCountdown">
     <div class="fs-countdown-num" id="fsCountdownNum">3</div>
-    <div class="countdown-label">PREPARADOS...</div>
+    <div class="countdown-label" data-i18n="wheel.ready">PREPARADOS...</div>
   </div>
   <div id="fsCelebration" onclick="hideCelebration()">
     <div class="celebration-winner">
       <span class="celebration-trophy">🏆</span>
-      <div class="celebration-label">¡ G A N A D O R !</div>
+      <div class="celebration-label" data-i18n="celebration.winner">¡ G A N A D O R !</div>
       <div class="celebration-name" id="celebName">—</div>
       <div class="celebration-streak" id="celebStreak"></div>
     </div>
-    <button class="celebration-share" onclick="shareResult(event)">📸 Compartir resultado</button>
-    <div class="celebration-tap">Toca para continuar</div>
+    <button class="celebration-share" onclick="shareResult(event)">📸 <span data-i18n="celebration.share">Compartir resultado</span></button>
+    <div class="celebration-tap" data-i18n="wheel.tapContinue">Toca para continuar</div>
   </div>
 </div>
 
@@ -649,11 +649,11 @@ header{
 <div id="paymentMethodModal">
   <div class="paywall-box">
     <div class="paywall-crown">💳</div>
-    <div class="paywall-title">Método de Pago</div>
-    <div class="paywall-sub">Elige cómo quieres pagar por SpinDraw Pro.</div>
-    <button class="btn-upgrade" onclick="buyProPayPal(selectedPlan)">PayPal</button><br>
-    <button class="btn-upgrade" onclick="buyProTransfer(selectedPlan)">Transferencia Bancaria</button><br>
-    <button class="btn-cancel" onclick="closePaymentMethodModal()">Atrás</button>
+    <div class="paywall-title" data-i18n="paywall.title">Método de Pago</div>
+    <div class="paywall-sub" data-i18n="paywall.subtitle">Elige cómo quieres pagar por SpinDraw Pro.</div>
+    <button class="btn-upgrade" onclick="buyProPayPal(selectedPlan)" data-i18n="paywall.paypal">PayPal</button><br>
+    <button class="btn-upgrade" onclick="buyProTransfer(selectedPlan)" data-i18n="paywall.bankTransfer">Transferencia Bancaria</button><br>
+    <button class="btn-cancel" onclick="closePaymentMethodModal()" data-i18n="paywall.back">Atrás</button>
   </div>
 </div>
 
@@ -661,20 +661,20 @@ header{
 <div id="transferModal">
   <div class="paywall-box">
     <div class="paywall-crown">🏦</div>
-    <div class="paywall-title">Pago por Transferencia</div>
-    <div class="paywall-sub">Realiza la transferencia a la siguiente cuenta y sube el comprobante.</div>
+    <div class="paywall-title" data-i18n="paywall.transferTitle">Pago por Transferencia</div>
+    <div class="paywall-sub" data-i18n="paywall.transferSubtitle">Realiza la transferencia a la siguiente cuenta y sube el comprobante.</div>
     <div class="transfer-details">
-      <p><strong>Banco:</strong> <span id="bankBankName"></span></p>
-      <p><strong>Cuenta:</strong> <span id="bankAccount"></span></p>
-      <p><strong>CLABE:</strong> <span id="bankId"></span></p>
-      <p><strong>Beneficiario:</strong> <span id="bankName"></span></p>
-      <p><strong>Tipo:</strong> <span id="bankType"></span></p>
-      <p><strong>Nota:</strong> <span id="bankNote"></span></p>
-      <p><strong>Monto:</strong> <span id="transferAmount">$4.99</span></p>
+      <p><strong data-i18n="paywall.bank">Banco:</strong> <span id="bankBankName"></span></p>
+      <p><strong data-i18n="paywall.account">Cuenta:</strong> <span id="bankAccount"></span></p>
+      <p><strong data-i18n="paywall.clabe">CLABE:</strong> <span id="bankId"></span></p>
+      <p><strong data-i18n="paywall.beneficiary">Beneficiario:</strong> <span id="bankName"></span></p>
+      <p><strong data-i18n="paywall.type">Tipo:</strong> <span id="bankType"></span></p>
+      <p><strong data-i18n="paywall.note">Nota:</strong> <span id="bankNote"></span></p>
+      <p><strong data-i18n="paywall.amount">Monto:</strong> <span id="transferAmount">$4.99</span></p>
     </div>
     <input type="file" id="comprobanteFile" accept="image/*,application/pdf" style="margin:10px 0;">
-    <button class="btn-upgrade" id="uploadComprobanteBtn" onclick="uploadComprobante()">Subir Comprobante</button><br>
-    <button class="btn-cancel" id="cancelTransferBtn" onclick="closeTransferModal()">Cancelar</button>
+    <button class="btn-upgrade" id="uploadComprobanteBtn" onclick="uploadComprobante()" data-i18n="paywall.upload">Subir Comprobante</button><br>
+    <button class="btn-cancel" id="cancelTransferBtn" onclick="closeTransferModal()" data-i18n="paywall.cancel">Cancelar</button>
   </div>
 </div>
 
@@ -860,8 +860,8 @@ header{
     <div class="auth-header">
       <button class="auth-close" onclick="closeAccountModal()">✕</button>
       <div class="auth-avatar" id="authAvatarIcon">✦</div>
-      <div class="auth-title" id="authModalTitle">BIENVENIDO</div>
-      <div class="auth-subtitle" id="authModalSubtitle">Accede o crea tu cuenta gratuita</div>
+      <div class="auth-title" id="authModalTitle" data-i18n="authModal.welcome">BIENVENIDO</div>
+      <div class="auth-subtitle" id="authModalSubtitle" data-i18n="authModal.subtitle">Accede o crea tu cuenta gratuita</div>
       <!-- Tabs (hidden when logged in) -->
       <div class="auth-tabs" id="authTabsRow">
         <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab(0)" data-i18n="nav.login">Iniciar Sesión</button>
@@ -872,7 +872,7 @@ header{
     <!-- ── LOGIN FORM ── -->
     <div class="auth-body" id="loginForm">
       <div class="auth-field">
-        <label>Usuario</label>
+        <label data-i18n="authModal.username">Usuario</label>
         <div class="auth-input-wrap">
           <input class="auth-input" id="usernameInput" type="text" data-i18n-attr="placeholder:auth.email" placeholder="Tu nombre de usuario"
             autocomplete="username" oninput="validateField(this,'user')">
@@ -881,7 +881,7 @@ header{
         <div class="field-hint" id="hintUser"></div>
       </div>
       <div class="auth-field">
-        <label>Contraseña</label>
+        <label data-i18n="authModal.password">Contraseña</label>
         <div class="auth-input-wrap">
           <input class="auth-input" id="passwordInput" type="password" data-i18n-attr="placeholder:auth.password" placeholder="Tu contraseña"
             autocomplete="current-password" onkeydown="if(event.key==='Enter')handleAuth()">
@@ -897,7 +897,7 @@ header{
     <div class="auth-body" id="registerForm" style="display:none">
       <div class="auth-row">
         <div class="auth-field">
-          <label>Nombre *</label>
+          <label data-i18n="authModal.firstName">Nombre *</label>
           <div class="auth-input-wrap">
             <input class="auth-input" id="firstNameInput" type="text" placeholder="Ana"
               oninput="validateField(this,'name')">
@@ -906,7 +906,7 @@ header{
           <div class="field-hint" id="hintFirst"></div>
         </div>
         <div class="auth-field">
-          <label>Apellido *</label>
+          <label data-i18n="authModal.lastName">Apellido *</label>
           <div class="auth-input-wrap">
             <input class="auth-input" id="lastNameInput" type="text" placeholder="García"
               oninput="validateField(this,'name')">
@@ -916,23 +916,23 @@ header{
         </div>
       </div>
       <div class="auth-field">
-        <label>Usuario *</label>
+        <label data-i18n="authModal.usernameRequired">Usuario *</label>
         <div class="auth-input-wrap">
           <input class="auth-input" id="usernameRegInput" type="text" data-i18n-attr="placeholder:auth.email" placeholder="usuario123"
             autocomplete="username" oninput="validateField(this,'userReg')">
           <span class="auth-input-icon" id="iconUserReg"></span>
         </div>
-        <div class="field-hint" id="hintUserReg">Mínimo 3 caracteres, sin espacios</div>
+        <div class="field-hint" id="hintUserReg" data-i18n="authModal.usernameHint">Mínimo 3 caracteres, sin espacios</div>
       </div>
       <div class="auth-field">
-        <label>Teléfono (opcional)</label>
+        <label data-i18n="authModal.phone">Teléfono (opcional)</label>
         <div class="auth-input-wrap">
           <input class="auth-input" id="phoneInput" type="tel" placeholder="+593 99 000 0000">
           <span class="auth-input-icon">📱</span>
         </div>
       </div>
       <div class="auth-field">
-        <label>Contraseña *</label>
+        <label data-i18n="authModal.passwordRequired">Contraseña *</label>
         <div class="auth-input-wrap">
           <input class="auth-input" id="passwordRegInput" type="password" data-i18n-attr="placeholder:auth.password" placeholder="Mínimo 6 caracteres"
             autocomplete="new-password" oninput="checkPasswordStrength(this.value)">
@@ -945,11 +945,11 @@ header{
             <div class="pw-bar" id="bar3"></div>
             <div class="pw-bar" id="bar4"></div>
           </div>
-          <div class="pw-label" id="pwLabel">Escribe una contraseña</div>
+          <div class="pw-label" id="pwLabel" data-i18n="authModal.passwordHint">Escribe una contraseña</div>
         </div>
       </div>
       <div class="auth-field">
-        <label>Confirmar Contraseña *</label>
+        <label data-i18n="authModal.confirmPassword">Confirmar Contraseña *</label>
         <div class="auth-input-wrap">
           <input class="auth-input" id="confirmPasswordInput" type="password" data-i18n-attr="placeholder:auth.confirmPassword" placeholder="Repite tu contraseña"
             autocomplete="new-password" oninput="validateConfirmPw()">
@@ -959,10 +959,10 @@ header{
       </div>
       <label class="auth-terms">
         <input type="checkbox" id="termsCheckbox">
-        <span>Acepto los <a href="#" onclick="return false">Términos y Condiciones</a> y la <a href="#" onclick="return false">Política de Privacidad</a></span>
+        <span data-i18n="authModal.terms">Acepto los <a href="#" onclick="return false">Términos y Condiciones</a> y la <a href="#" onclick="return false">Política de Privacidad</a></span>
       </label>
       <div class="auth-msg" id="authMessageReg"></div>
-      <button class="auth-submit" id="authSubmitRegBtn" onclick="handleAuth()">CREAR CUENTA</button>
+      <button class="auth-submit" id="authSubmitRegBtn" onclick="handleAuth()" data-i18n="authModal.createAccount">CREAR CUENTA</button>
     </div>
 
     <!-- ── PROFILE VIEW (logged in) ── -->
@@ -994,9 +994,9 @@ header{
 
 <!-- ══ DEMO BAR ══ -->
 <div id="demoUnlockBar">
-  <span>🎯 <strong>Demo:</strong> Prueba todas las funciones</span>
-  <button onclick="simulateUpgrade()">Activar Pro</button>
-  <button onclick="deactivatePro()">Volver a Free</button>
+  <span>🎯 <strong data-i18n="demo.title">Demo:</strong> <span data-i18n="demo.subtitle">Prueba todas las funciones</span></span>
+  <button onclick="simulateUpgrade()" data-i18n="demo.activate">Activar Pro</button>
+  <button onclick="deactivatePro()" data-i18n="demo.deactivate">Volver a Free</button>
 </div>
 
 <!-- ══ HEADER ══ -->
@@ -1048,18 +1048,19 @@ header{
       <img id="wheelLogoImg" src="" alt="logo">
       <div id="mainCountdown">
         <div class="countdown-num" id="mainCountdownNum">3</div>
+        <div class="countdown-label" data-i18n="wheel.ready">PREPARADOS...</div>
         <div class="countdown-label">PREPARADOS...</div>
       </div>
     </div>
     <button class="spin-btn" id="mainSpinBtn" onclick="handleSpinClick(false)" data-i18n="wheel.spin">¡ G I R A R !</button>
     <div class="result-area" id="resultArea"></div>
     <div class="action-btns">
-      <button class="share-result-btn" id="shareResultBtn" onclick="shareResult(null)">📸 Compartir</button>
-      <button class="revancha-btn" id="revanchaBtn" onclick="triggerRevancha()">🔥 ¡Revancha!</button>
+      <button class="share-result-btn" id="shareResultBtn" onclick="shareResult(null)" data-i18n="wheel.share">📸 Compartir</button>
+      <button class="revancha-btn" id="revanchaBtn" onclick="triggerRevancha()" data-i18n="wheel.revancha">🔥 ¡Revancha!</button>
     </div>
     <div class="streak-bar" id="streakBar">
       <span style="font-size:1.1rem">🔥</span>
-      <span style="color:var(--muted);font-size:.78rem">Racha: <span style="color:var(--gold);font-weight:600" id="streakName">—</span></span>
+      <span style="color:var(--muted);font-size:.78rem" data-i18n="wheel.streak">Racha:</span> <span style="color:var(--gold);font-weight:600" id="streakName">—</span></span>
       <span style="margin-left:auto;font-size:.75rem;color:var(--gold);font-weight:700" id="streakCount"></span>
     </div>
     <canvas id="shareCanvas" width="800" height="600"></canvas>
@@ -1070,76 +1071,76 @@ header{
 
     <!-- PARTICIPANTS -->
     <div class="panel active" id="panel-participants">
-      <div class="panel-title">Participantes</div>
+      <div class="panel-title" data-i18n="sidebarSettings.participantsTitle">Participantes</div>
       <div class="input-row">
         <input type="text" id="nameInput" placeholder="Nombre..." maxlength="30" onkeydown="if(event.key==='Enter')addEntry()">
         <button class="add-btn" onclick="addEntry()">+</button>
       </div>
       <div class="limit-bar">
-        <span>Total: <span class="count" id="countDisplay">0 / 4</span></span>
-        <span class="upgrade-link" id="limitUpgradeLink" onclick="openPaywall()">Ilimitados con Pro ↑</span>
+        <span><span data-i18n="sidebarSettings.total">Total:</span> <span class="count" id="countDisplay">0 / 4</span></span>
+        <span class="upgrade-link" id="limitUpgradeLink" onclick="openPaywall()" data-i18n="sidebarSettings.unlimited">Ilimitados con Pro ↑</span>
       </div>
       <!-- Import (Pro) -->
       <div class="pro-blocked" id="importBlocked">
         <div class="lock-icon">📋</div>
-        <p>Importa una lista de nombres de una sola vez.</p>
-        <button class="btn-unlock" onclick="openPaywall()">Desbloquear con Pro</button>
+        <p data-i18n="sidebarSettings.importText">Importa una lista de nombres de una sola vez.</p>
+        <button class="btn-unlock" onclick="openPaywall()" data-i18n="sidebarSettings.unlock">Desbloquear con Pro</button>
       </div>
       <div id="importUnlocked" style="display:none;flex-direction:column;gap:6px">
         <textarea class="import-box" id="importBox" placeholder="Un nombre por línea:&#10;Ana García&#10;Carlos López&#10;María Pérez"></textarea>
-        <button style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:8px;font-weight:700;cursor:pointer;font-size:.78rem;letter-spacing:1px" onclick="importList()">IMPORTAR LISTA</button>
+        <button style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:8px;font-weight:700;cursor:pointer;font-size:.78rem;letter-spacing:1px" onclick="importList()" data-i18n="sidebarSettings.importButton">IMPORTAR LISTA</button>
       </div>
       <div class="entries-list" id="entriesList"></div>
-      <button class="clear-btn" id="clearBtn" onclick="clearAll()">Limpiar todo</button>
+      <button class="clear-btn" id="clearBtn" onclick="clearAll()" data-i18n="sidebarSettings.clear">Limpiar todo</button>
       <div>
-        <div class="section-head">Historial</div>
+        <div class="section-head" data-i18n="sidebarSettings.history">Historial</div>
         <div class="history-list" id="historyList"></div>
       </div>
     </div>
 
     <!-- SETTINGS -->
     <div class="panel" id="panel-settings">
-      <div class="panel-title">Ajustes del Giro</div>
+      <div class="panel-title" data-i18n="sidebarSettings.settingsTitle">Ajustes del Giro</div>
       <div>
-        <div class="section-head">⏱ Cuenta regresiva — Free</div>
+        <div class="section-head" data-i18n="sidebarSettings.countdown">⏱ Cuenta regresiva — Free</div>
         <div class="countdown-selector" id="cdSelector">
-          <button class="cd-btn active" onclick="setCountdown(0,this)">OFF</button>
+          <button class="cd-btn active" onclick="setCountdown(0,this)" data-i18n="sidebarSettings.off">OFF</button>
           <button class="cd-btn" onclick="setCountdown(3,this)">3s</button>
           <button class="cd-btn" onclick="setCountdown(5,this)">5s</button>
           <button class="cd-btn" onclick="setCountdown(10,this)">10s</button>
         </div>
       </div>
       <div>
-        <div class="section-head">🗑 Auto-eliminar ganador — Pro</div>
+        <div class="section-head" data-i18n="sidebarSettings.autoRemove">🗑 Auto-eliminar ganador — Pro</div>
         <div class="pro-blocked" id="autoRemoveBlocked" style="padding:12px">
-          <p>Elimina al ganador de la lista automáticamente.</p>
+          <p data-i18n="sidebarSettings.autoRemoveDesc">Elimina al ganador de la lista automáticamente.</p>
           <button class="btn-unlock" onclick="openPaywall()">Pro</button>
         </div>
         <div id="autoRemoveUnlocked" style="display:none">
           <div class="toggle-row">
-            <div><div class="toggle-label">Eliminar ganador auto</div><div class="toggle-sub">Lo quita de la lista al terminar</div></div>
+            <div><div class="toggle-label" data-i18n="sidebarSettings.autoRemoveToggle">Eliminar ganador auto</div><div class="toggle-sub" data-i18n="sidebarSettings.autoRemoveSub">Lo quita de la lista al terminar</div></div>
             <label class="toggle"><input type="checkbox" id="autoRemoveToggle"><span class="toggle-slider"></span></label>
           </div>
         </div>
       </div>
       <div>
-        <div class="section-head">🎭 Modo Suspenso — Free</div>
+        <div class="section-head" data-i18n="sidebarSettings.suspense">🎭 Modo Suspenso — Free</div>
         <div class="toggle-row">
-          <div><div class="toggle-label">Frenar con drama</div><div class="toggle-sub">Desacelera lentamente al final</div></div>
+          <div><div class="toggle-label" data-i18n="sidebarSettings.suspenseToggle">Frenar con drama</div><div class="toggle-sub" data-i18n="sidebarSettings.suspenseSub">Desacelera lentamente al final</div></div>
           <label class="toggle"><input type="checkbox" id="suspenseToggle" checked><span class="toggle-slider"></span></label>
         </div>
       </div>
       <div>
-        <div class="section-head">🔥 Revancha — Free</div>
+        <div class="section-head" data-i18n="sidebarSettings.revancha">🔥 Revancha — Free</div>
         <div class="toggle-row">
-          <div><div class="toggle-label">Botón de Revancha</div><div class="toggle-sub">Aparece botón para volver a girar</div></div>
+          <div><div class="toggle-label" data-i18n="sidebarSettings.revanchaToggle">Botón de Revancha</div><div class="toggle-sub" data-i18n="sidebarSettings.revanchaSub">Aparece botón para volver a girar</div></div>
           <label class="toggle"><input type="checkbox" id="revanchaToggle" checked><span class="toggle-slider"></span></label>
         </div>
       </div>
       <div>
-        <div class="section-head">🏆 Racha de victorias — Free</div>
+        <div class="section-head" data-i18n="sidebarSettings.streak">🏆 Racha de victorias — Free</div>
         <div class="toggle-row">
-          <div><div class="toggle-label">Mostrar racha</div><div class="toggle-sub">Quién va ganando más seguido</div></div>
+          <div><div class="toggle-label" data-i18n="sidebarSettings.streakToggle">Mostrar racha</div><div class="toggle-sub" data-i18n="sidebarSettings.streakSub">Quién va ganando más seguido</div></div>
           <label class="toggle"><input type="checkbox" id="streakToggle" checked><span class="toggle-slider"></span></label>
         </div>
       </div>
@@ -1147,55 +1148,55 @@ header{
 
     <!-- THEME -->
     <div class="panel" id="panel-theme">
-      <div class="panel-title">Tema Visual</div>
+      <div class="panel-title" data-i18n="theme.title">Tema Visual</div>
       <div class="pro-blocked" id="themeBlocked">
         <div class="lock-icon">🎨</div>
-        <p>Personaliza colores y fondo de la ruleta.</p>
-        <button class="btn-unlock" onclick="openPaywall()">Desbloquear con Pro</button>
+        <p data-i18n="theme.desc">Personaliza colores y fondo de la ruleta.</p>
+        <button class="btn-unlock" onclick="openPaywall()" data-i18n="sidebarSettings.unlock">Desbloquear con Pro</button>
       </div>
       <div id="themeUnlocked" style="display:none;flex-direction:column;gap:14px">
-        <div class="section-head">Paleta de segmentos</div>
+        <div class="section-head" data-i18n="theme.palette">Paleta de segmentos</div>
         <div class="color-row" id="paletteRow"></div>
-        <div class="section-head" style="margin-top:4px">Fondo de la ruleta</div>
+        <div class="section-head" style="margin-top:4px" data-i18n="theme.background">Fondo de la ruleta</div>
         <div class="theme-grid" id="themeGrid"></div>
       </div>
     </div>
 
     <!-- LOGO -->
     <div class="panel" id="panel-logo">
-      <div class="panel-title">Logo Personalizado</div>
+      <div class="panel-title" data-i18n="logo.title">Logo Personalizado</div>
       <div class="pro-blocked" id="logoBlocked">
         <div class="lock-icon">🖼️</div>
-        <p>Muestra tu logo en el centro de la ruleta.</p>
-        <button class="btn-unlock" onclick="openPaywall()">Desbloquear con Pro</button>
+        <p data-i18n="logo.desc">Muestra tu logo en el centro de la ruleta.</p>
+        <button class="btn-unlock" onclick="openPaywall()" data-i18n="sidebarSettings.unlock">Desbloquear con Pro</button>
       </div>
       <div id="logoUnlocked" style="display:none;flex-direction:column;gap:10px">
         <div class="upload-zone" onclick="document.getElementById('logoFileInput').click()">
           <div class="icon">📁</div>
-          <p>Haz clic para subir tu logo (PNG, JPG, SVG)</p>
+          <p data-i18n="logo.upload">Haz clic para subir tu logo (PNG, JPG, SVG)</p>
           <input type="file" id="logoFileInput" accept="image/*" onchange="handleLogoUpload(event)">
           <img id="logoPreview" src="" alt="preview">
         </div>
-        <button class="clear-btn" onclick="clearLogo()">Quitar logo</button>
+        <button class="clear-btn" onclick="clearLogo()" data-i18n="logo.remove">Quitar logo</button>
       </div>
     </div>
 
     <!-- SOUND -->
     <div class="panel" id="panel-sound">
-      <div class="panel-title">Sonidos</div>
+      <div class="panel-title" data-i18n="sound.title">Sonidos</div>
       <div class="pro-blocked" id="soundBlocked">
         <div class="lock-icon">🔊</div>
-        <p>Efectos de sonido al girar y al ganar.</p>
-        <button class="btn-unlock" onclick="openPaywall()">Desbloquear con Pro</button>
+        <p data-i18n="sound.desc">Efectos de sonido al girar y al ganar.</p>
+        <button class="btn-unlock" onclick="openPaywall()" data-i18n="sidebarSettings.unlock">Desbloquear con Pro</button>
       </div>
       <div id="soundUnlocked" style="display:none;flex-direction:column;gap:10px">
         <div class="sound-options">
-          <div class="sound-option"><input type="radio" name="sound" id="sNone" value="none" checked onchange="setSound('none')"><label for="sNone">🔇 Sin sonido</label></div>
-          <div class="sound-option"><input type="radio" name="sound" id="sCasino" value="casino" onchange="setSound('casino')"><label for="sCasino">🎰 Casino (tick mecánico)</label></div>
-          <div class="sound-option"><input type="radio" name="sound" id="sFanfare" value="fanfare" onchange="setSound('fanfare')"><label for="sFanfare">🎺 Fanfarria al ganar</label></div>
-          <div class="sound-option"><input type="radio" name="sound" id="sDrum" value="drum" onchange="setSound('drum')"><label for="sDrum">🥁 Redoble de tambor</label></div>
+          <div class="sound-option"><input type="radio" name="sound" id="sNone" value="none" checked onchange="setSound('none')"><label for="sNone" data-i18n="sound.none">🔇 Sin sonido</label></div>
+          <div class="sound-option"><input type="radio" name="sound" id="sCasino" value="casino" onchange="setSound('casino')"><label for="sCasino" data-i18n="sound.casino">🎰 Casino (tick mecánico)</label></div>
+          <div class="sound-option"><input type="radio" name="sound" id="sFanfare" value="fanfare" onchange="setSound('fanfare')"><label for="sFanfare" data-i18n="sound.fanfare">🎺 Fanfarria al ganar</label></div>
+          <div class="sound-option"><input type="radio" name="sound" id="sDrum" value="drum" onchange="setSound('drum')"><label for="sDrum" data-i18n="sound.drum">🥁 Redoble de tambor</label></div>
         </div>
-        <button class="spin-btn" style="font-size:.82rem;padding:8px 16px;letter-spacing:1px" onclick="testSound()">▶ Probar sonido</button>
+        <button class="spin-btn" style="font-size:.82rem;padding:8px 16px;letter-spacing:1px" onclick="testSound()" data-i18n="sound.test">▶ Probar sonido</button>
       </div>
     </div>
 
@@ -1295,7 +1296,7 @@ setTimeout(resizeMainCanvas, 100);
 // ══ STATE ══
 const FREE_LIMIT=4;
 let isPro = false;
-let ruletas=[{id:1,name:'Ruleta 1',entries:[],history:[],wins:{}}];
+let ruletas=[{id:1,name:i18n.t('wheel.defaultName'),entries:[],history:[],wins:{}}];
 let activeRuletaIdx=0;
 let countdownSecs=0;
 let selectedSound='none';
@@ -1939,7 +1940,7 @@ async function restoreSession() {
 function applySession(user) {
   currentUserData = user;
   isPro = user.isPro;
-  ruletas = user.ruletas?.length ? user.ruletas : [{id:1,name:'Ruleta 1',entries:[],history:[],wins:{}}];
+  ruletas = user.ruletas?.length ? user.ruletas : [{id:1,name:i18n.t('wheel.defaultName'),entries:[],history:[],wins:{}}];
   activeRuletaIdx = 0;
   updateHeaderAvatar(user.username);
   renderRuletasTabs(); renderList(); drawWheel(0); updatePlanUI();
@@ -2117,7 +2118,7 @@ function logout() {
     authToken=null; currentUserData=null;
     localStorage.removeItem('sd_token');
     isPro=false;
-    ruletas=[{id:1,name:'Ruleta 1',entries:[],history:[],wins:{}}];
+    ruletas=[{id:1,name:i18n.t('wheel.defaultName'),entries:[],history:[],wins:{}}];
     activeRuletaIdx=0;
     updateHeaderAvatar('Invitado');
     renderRuletasTabs(); renderList(); drawWheel(0); updatePlanUI();
@@ -2473,7 +2474,7 @@ function showToast(msg, type='info') {
 // ══ INIT ══
 restoreSession().then(() => {
   if (!currentUserData) {
-    ruletas = [{id:1,name:'Ruleta 1',entries:[],history:[],wins:{}}];
+    ruletas = [{id:1,name:i18n.t('wheel.defaultName'),entries:[],history:[],wins:{}}];
     ['Ana García','Carlos López','María Pérez','Luis Torres'].forEach(n=>ar().entries.push({name:n}));
   }
   renderRuletasTabs(); renderList(); drawWheel(0); updatePlanUI();
@@ -2614,19 +2615,19 @@ restoreSession().then(() => {
   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:500px;max-height:calc(100vh - 32px);overflow-y:auto;animation:authSlideIn .3s ease;">
     <div style="text-align:center;margin-bottom:20px;">
       <div style="font-size:2rem;margin-bottom:6px;">👑</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:var(--gold);">SPINDRAW PRO</div>
-      <div style="font-size:.82rem;color:var(--muted);margin-top:4px;">Elige tu plan y método de pago</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:var(--gold);" data-i18n="paywallModal.title">SPINDRAW PRO</div>
+      <div style="font-size:.82rem;color:var(--muted);margin-top:4px;" data-i18n="paywallModal.subtitle">Elige tu plan y método de pago</div>
     </div>
     <div class="plan-cards">
       <!-- MONTHLY -->
       <div class="plan-card">
-        <div class="plan-card-name">Mensual</div>
+        <div class="plan-card-name" data-i18n="paywallModal.monthly">Mensual</div>
         <div class="plan-card-price" id="priceMonthly">$4.99</div>
-        <div class="plan-card-period">por mes</div>
+        <div class="plan-card-period" data-i18n="paywallModal.perMonth">por mes</div>
         <div class="plan-card-btns">
           <button class="btn-paypal" onclick="startPayment('monthly','paypal')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#003087"><path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 3.993-.032.17a.804.804 0 0 1-.794.68H7.72a.483.483 0 0 1-.477-.558L7.418 21h1.518l.95-6.02h1.385c4.678 0 7.537-2.36 8.428-6.872.09-.46.153-.9.168-1.33.63.45 1.07 1.02 1.2 1.7z"/></svg>
-            PayPal / Tarjeta
+            <span data-i18n="paywallModal.paypalButton">PayPal / Tarjeta</span>
           </button>
           <button class="btn-payphone" onclick="startPayPhonePayment('monthly')">
             💳 PayPhone (EC) - Recurrente
@@ -2634,19 +2635,19 @@ restoreSession().then(() => {
           <button class="btn-nuvei" onclick="startNuveiPayment('monthly')">
             💳 Nuvei (EC) - Recurrente
           </button>
-          <button class="btn-transfer" onclick="startPayment('monthly','transfer')">🏦 Transferencia (EC)</button>
+          <button class="btn-transfer" onclick="startPayment('monthly','transfer')">🏦 <span data-i18n="paywallModal.transferButton">Transferencia (EC)</span></button>
         </div>
       </div>
       <!-- LIFETIME -->
       <div class="plan-card popular">
-        <div class="popular-badge">⭐ MEJOR VALOR</div>
-        <div class="plan-card-name">Vitalicio</div>
+        <div class="popular-badge">⭐ <span data-i18n="paywallModal.bestValue">MEJOR VALOR</span></div>
+        <div class="plan-card-name" data-i18n="paywallModal.lifetime">Vitalicio</div>
         <div class="plan-card-price" id="priceLifetime">$29.99</div>
-        <div class="plan-card-period">pago único</div>
+        <div class="plan-card-period" data-i18n="paywallModal.oneTime">pago único</div>
         <div class="plan-card-btns">
           <button class="btn-paypal" onclick="startPayment('lifetime','paypal')">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="#003087"><path d="M20.067 8.478c.492.88.556 2.014.3 3.327-.74 3.806-3.276 5.12-6.514 5.12h-.5a.805.805 0 0 0-.794.68l-.04.22-.63 3.993-.032.17a.804.804 0 0 1-.794.68H7.72a.483.483 0 0 1-.477-.558L7.418 21h1.518l.95-6.02h1.385c4.678 0 7.537-2.36 8.428-6.872.09-.46.153-.9.168-1.33.63.45 1.07 1.02 1.2 1.7z"/></svg>
-            PayPal / Tarjeta
+            <span data-i18n="paywallModal.paypalButton">PayPal / Tarjeta</span>
           </button>
           <button class="btn-payphone" onclick="startPayPhonePayment('lifetime')">
             💳 PayPhone (EC)
@@ -2654,20 +2655,20 @@ restoreSession().then(() => {
           <button class="btn-nuvei" onclick="startNuveiPayment('lifetime')">
             💳 Nuvei (EC)
           </button>
-          <button class="btn-transfer" onclick="startPayment('lifetime','transfer')">🏦 Transferencia (EC)</button>
+          <button class="btn-transfer" onclick="startPayment('lifetime','transfer')">🏦 <span data-i18n="paywallModal.transferButton">Transferencia (EC)</span></button>
         </div>
       </div>
     </div>
     <div style="margin-top:16px;background:var(--bg);border-radius:10px;padding:12px;">
-      <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:1.5px;margin-bottom:8px;">✦ TODO LO QUE INCLUYE PRO</div>
+      <div style="font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:1.5px;margin-bottom:8px;">✦ <span data-i18n="paywallModal.features">TODO LO QUE INCLUYE PRO</span></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:.78rem;color:var(--text);">
-        <div>✔ Participantes ilimitados</div><div>✔ Múltiples ruletas</div>
-        <div>✔ Logo personalizado</div><div>✔ Temas y colores</div>
-        <div>✔ Sonidos</div><div>✔ Modo Stream</div>
-        <div>✔ Importar listas</div><div>✔ Sin anuncios</div>
+        <div>✔ <span data-i18n="paywallModal.unlimited">Participantes ilimitados</span></div><div>✔ <span data-i18n="paywallModal.multiple">Múltiples ruletas</span></div>
+        <div>✔ <span data-i18n="paywallModal.customLogo">Logo personalizado</span></div><div>✔ <span data-i18n="paywallModal.themes">Temas y colores</span></div>
+        <div>✔ <span data-i18n="paywallModal.sounds">Sonidos</span></div><div>✔ <span data-i18n="paywallModal.stream">Modo Stream</span></div>
+        <div>✔ <span data-i18n="paywallModal.import">Importar listas</span></div><div>✔ <span data-i18n="paywallModal.noAds">Sin anuncios</span></div>
       </div>
     </div>
-    <button onclick="closePaywall()" style="width:100%;background:none;border:1px solid var(--border);color:var(--muted);border-radius:50px;padding:10px;margin-top:14px;cursor:pointer;">Ahora no</button>
+    <button onclick="closePaywall()" style="width:100%;background:none;border:1px solid var(--border);color:var(--muted);border-radius:50px;padding:10px;margin-top:14px;cursor:pointer;" data-i18n="paywallModal.notNow">Ahora no</button>
   </div>
 </div>
 
@@ -2676,11 +2677,11 @@ restoreSession().then(() => {
   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:500px;max-height:calc(100vh - 32px);overflow-y:auto;animation:authSlideIn .3s ease;">
     <div style="text-align:center;margin-bottom:20px;">
       <div style="font-size:2rem;margin-bottom:6px;">💳</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:#00d4aa;">PAYPHONE</div>
-      <div style="font-size:.82rem;color:var(--muted);margin-top:4px;">Suscripción mensual recurrente</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:#00d4aa;" data-i18n="payphoneModal.title">PAYPHONE</div>
+      <div style="font-size:.82rem;color:var(--muted);margin-top:4px;" data-i18n="payphoneModal.subtitle">Suscripción mensual recurrente</div>
     </div>
     <div id="payphone-container"></div>
-    <button onclick="closePayphoneModal()" style="width:100%;background:none;border:1px solid var(--border);color:var(--muted);border-radius:50px;padding:10px;margin-top:14px;cursor:pointer;">Cancelar</button>
+    <button onclick="closePayphoneModal()" style="width:100%;background:none;border:1px solid var(--border);color:var(--muted);border-radius:50px;padding:10px;margin-top:14px;cursor:pointer;" data-i18n="payphoneModal.cancel">Cancelar</button>
   </div>
 </div>
 
@@ -2688,7 +2689,7 @@ restoreSession().then(() => {
 <div class="modal-overlay" id="transferModal">
   <div class="modal-box">
     <div class="modal-header">
-      <h3>🏦 Pago por Transferencia</h3>
+      <h3>🏦 <span data-i18n="transferModal.title">Pago por Transferencia</span></h3>
       <button class="modal-close" onclick="closeTransferModal()">✕</button>
     </div>
     <div class="modal-body">
@@ -2696,20 +2697,20 @@ restoreSession().then(() => {
         Plan: <strong id="transferPlan">—</strong> — <strong id="transferAmount" style="color:var(--gold)">—</strong>
       </div>
       <div class="bank-data-box">
-        <div style="font-size:.7rem;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:4px;">DATOS BANCARIOS</div>
-        <div class="bank-row"><span class="bank-label">Nombre:</span><span class="bank-value" id="bankName">—</span></div>
-        <div class="bank-row"><span class="bank-label">Banco:</span><span class="bank-value" id="bankBankName">—</span></div>
-        <div class="bank-row"><span class="bank-label">Cuenta:</span><span class="bank-value" id="bankAccount">—</span></div>
-        <div class="bank-row"><span class="bank-label">Tipo:</span><span class="bank-value" id="bankType">—</span></div>
-        <div class="bank-row"><span class="bank-label">Cédula:</span><span class="bank-value" id="bankId">—</span></div>
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:4px;" data-i18n="transferModal.bankData">DATOS BANCARIOS</div>
+        <div class="bank-row"><span class="bank-label" data-i18n="transferModal.name">Nombre:</span><span class="bank-value" id="bankName">—</span></div>
+        <div class="bank-row"><span class="bank-label" data-i18n="transferModal.bank">Banco:</span><span class="bank-value" id="bankBankName">—</span></div>
+        <div class="bank-row"><span class="bank-label" data-i18n="transferModal.account">Cuenta:</span><span class="bank-value" id="bankAccount">—</span></div>
+        <div class="bank-row"><span class="bank-label" data-i18n="transferModal.type">Tipo:</span><span class="bank-value" id="bankType">—</span></div>
+        <div class="bank-row"><span class="bank-label" data-i18n="transferModal.id">Cédula:</span><span class="bank-value" id="bankId">—</span></div>
         <div class="bank-note" id="bankNote"></div>
       </div>
       <div class="transfer-field">
-        <label>Referencia / Número de transacción</label>
+        <label data-i18n="transferModal.reference">Referencia / Número de transacción</label>
         <input class="transfer-input" id="transferRef" placeholder="Ej: TRX-20241234">
       </div>
       <div class="transfer-field">
-        <label>Comprobante de pago *</label>
+        <label data-i18n="transferModal.receipt">Comprobante de pago *</label>
         <div class="file-upload-zone" onclick="document.getElementById('transferFile').click()">
           <div style="font-size:1.5rem;margin-bottom:6px;">📎</div>
           <div style="font-size:.8rem;color:var(--muted)">Haz clic para adjuntar (JPG, PNG o PDF, máx 5MB)</div>
@@ -2724,7 +2725,7 @@ restoreSession().then(() => {
     </div>
     <div class="modal-footer">
       <input type="hidden" id="transferModalPlan">
-      <button id="transferSubmitBtn" onclick="submitTransfer()" style="width:100%;background:linear-gradient(135deg,var(--accent),#0080ff);color:#fff;border:none;border-radius:50px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;cursor:pointer;">ENVIAR COMPROBANTE</button>
+      <button id="transferSubmitBtn" onclick="submitTransfer()" style="width:100%;background:linear-gradient(135deg,var(--accent),#0080ff);color:#fff;border:none;border-radius:50px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;cursor:pointer;" data-i18n="transferModal.submit">ENVIAR COMPROBANTE</button>
     </div>
   </div>
 </div>
@@ -2733,123 +2734,123 @@ restoreSession().then(() => {
 <div class="modal-overlay" id="adminModal">
   <div class="modal-box" style="max-width:700px;">
     <div class="modal-header">
-      <h3>⚙️ Panel Administrador</h3>
+      <h3>⚙️ <span data-i18n="adminPanel.title">Panel Administrador</span></h3>
       <button class="modal-close" onclick="closeAdminPanel()">✕</button>
     </div>
     <div class="admin-tabs">
-      <button class="admin-tab-btn active" data-status="pending" onclick="showAdminTab('dashboard',this)">Dashboard</button>
-      <button class="admin-tab-btn" data-status="all" onclick="showAdminTab('payments',this)">Pagos</button>
-      <button class="admin-tab-btn" onclick="showAdminTab('users',this)">Usuarios</button>
-      <button class="admin-tab-btn" onclick="showAdminTab('settings',this)">Ajustes</button>
+      <button class="admin-tab-btn active" data-status="pending" onclick="showAdminTab('dashboard',this)" data-i18n="adminPanel.tabs.dashboard">Dashboard</button>
+      <button class="admin-tab-btn" data-status="all" onclick="showAdminTab('payments',this)" data-i18n="adminPanel.tabs.payments">Pagos</button>
+      <button class="admin-tab-btn" onclick="showAdminTab('users',this)" data-i18n="adminPanel.tabs.users">Usuarios</button>
+      <button class="admin-tab-btn" onclick="showAdminTab('settings',this)" data-i18n="adminPanel.tabs.settings">Ajustes</button>
     </div>
     <!-- DASHBOARD -->
     <div class="admin-tab-content active" id="adminTab-dashboard">
       <div class="admin-stats">
-        <div class="admin-stat"><div class="admin-stat-num" id="adTotalUsers">—</div><div class="admin-stat-label">Usuarios</div></div>
-        <div class="admin-stat"><div class="admin-stat-num" id="adProUsers">—</div><div class="admin-stat-label">Pro activos</div></div>
-        <div class="admin-stat"><div class="admin-stat-num" id="adPending" style="color:var(--gold)">—</div><div class="admin-stat-label">Pagos pendientes</div></div>
-        <div class="admin-stat"><div class="admin-stat-num" id="adRevenue" style="color:var(--green)">—</div><div class="admin-stat-label">Ingresos totales</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" id="adTotalUsers">—</div><div class="admin-stat-label" data-i18n="adminPanel.stats.users">Usuarios</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" id="adProUsers">—</div><div class="admin-stat-label" data-i18n="adminPanel.stats.proUsers">Pro activos</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" id="adPending" style="color:var(--gold)">—</div><div class="admin-stat-label" data-i18n="adminPanel.stats.pendingPayments">Pagos pendientes</div></div>
+        <div class="admin-stat"><div class="admin-stat-num" id="adRevenue" style="color:var(--green)">—</div><div class="admin-stat-label" data-i18n="adminPanel.stats.totalRevenue">Ingresos totales</div></div>
       </div>
-      <div class="admin-section-title">Resumen</div>
-      <p>Usa las pestañas de arriba para gestionar pagos, usuarios y ajustes.</p>
+      <div class="admin-section-title" data-i18n="adminPanel.dashboard.summaryTitle">Resumen</div>
+      <p data-i18n="adminPanel.dashboard.summaryText">Usa las pestañas de arriba para gestionar pagos, usuarios y ajustes.</p>
     </div>
     <!-- PAYMENTS -->
     <div class="admin-tab-content" id="adminTab-payments">
       <div style="display:flex;gap:6px;margin-bottom:12px;">
-        <button class="admin-tab-btn active" data-status="pending" onclick="loadAdminPayments('pending', 'adminPaymentsList2')">Pendientes</button>
-        <button class="admin-tab-btn" data-status="completed" onclick="loadAdminPayments('completed', 'adminPaymentsList2')">Completados</button>
-        <button class="admin-tab-btn" data-status="all" onclick="loadAdminPayments('', 'adminPaymentsList2')">Todos</button>
+        <button class="admin-tab-btn active" data-status="pending" onclick="loadAdminPayments('pending', 'adminPaymentsList2')" data-i18n="adminPanel.payments.filters.pending">Pendientes</button>
+        <button class="admin-tab-btn" data-status="completed" onclick="loadAdminPayments('completed', 'adminPaymentsList2')" data-i18n="adminPanel.payments.filters.completed">Completados</button>
+        <button class="admin-tab-btn" data-status="all" onclick="loadAdminPayments('', 'adminPaymentsList2')" data-i18n="adminPanel.payments.filters.all">Todos</button>
       </div>
       <div id="adminPaymentsList2"></div>
     </div>
     <!-- USERS -->
     <div class="admin-tab-content" id="adminTab-users">
       <div style="display:flex;gap:8px;margin-bottom:12px;">
-        <input id="adminUserSearch" class="admin-input" placeholder="Buscar usuario o email..." oninput="loadAdminUsers()" style="flex:1">
+        <input id="adminUserSearch" class="admin-input" placeholder="Buscar usuario o email..." oninput="loadAdminUsers()" style="flex:1" data-i18n-placeholder="adminPanel.users.searchPlaceholder">
       </div>
       <div id="adminUsersList"></div>
     </div>
     <!-- SETTINGS -->
     <div class="admin-tab-content" id="adminTab-settings">
-      <div class="admin-section-title">Precios</div>
+      <div class="admin-section-title" data-i18n="adminPanel.settings.pricesTitle">Precios</div>
       <div class="admin-row-2">
-        <div class="admin-field"><label>Precio Mensual (USD)</label><input class="admin-input" id="setMonthlyPrice" type="number" step="0.01" placeholder="4.99"></div>
-        <div class="admin-field"><label>Precio Vitalicio (USD)</label><input class="admin-input" id="setLifetimePrice" type="number" step="0.01" placeholder="29.99"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.monthlyPrice">Precio Mensual (USD)</label><input class="admin-input" id="setMonthlyPrice" type="number" step="0.01" placeholder="4.99"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.lifetimePrice">Precio Vitalicio (USD)</label><input class="admin-input" id="setLifetimePrice" type="number" step="0.01" placeholder="29.99"></div>
       </div>
-      <div class="admin-section-title" style="margin-top:8px">Pagos</div>
+      <div class="admin-section-title" style="margin-top:8px" data-i18n="adminPanel.settings.paymentsTitle">Pagos</div>
       <div class="admin-field">
         <label style="display:flex;align-items:center;gap:8px;">
           <input type="checkbox" id="setPayphoneEnabled" style="width:16px;height:16px;">
-          Habilitar pagos con PayPhone
+          <span data-i18n="adminPanel.settings.enablePayphone">Habilitar pagos con PayPhone</span>
         </label>
       </div>
       <div class="admin-field">
         <label style="display:flex;align-items:center;gap:8px;">
           <input type="checkbox" id="setNuveiEnabled" style="width:16px;height:16px;">
-          Habilitar pagos con Nuvei
+          <span data-i18n="adminPanel.settings.enableNuvei">Habilitar pagos con Nuvei</span>
         </label>
       </div>
       <div class="admin-field">
-        <label>Modo Nuvei</label>
+        <label data-i18n="adminPanel.settings.nuveiMode">Modo Nuvei</label>
         <select class="admin-input" id="setNuveiMode">
-          <option value="staging">Staging (Pruebas)</option>
-          <option value="production">Production (Producción)</option>
+          <option value="staging" data-i18n="adminPanel.settings.nuveiModeStaging">Staging (Pruebas)</option>
+          <option value="production" data-i18n="adminPanel.settings.nuveiModeProduction">Production (Producción)</option>
         </select>
       </div>
-      <div class="admin-section-title" style="margin-top:8px">Credenciales Nuvei</div>
+      <div class="admin-section-title" style="margin-top:8px" data-i18n="adminPanel.settings.nuveiCredentials">Credenciales Nuvei</div>
       <div class="admin-row-2">
-        <div class="admin-field"><label>API Key</label><input class="admin-input" id="setNuveiApiKey" placeholder="Tu API Key de Nuvei"></div>
-        <div class="admin-field"><label>Secret Key</label><input class="admin-input" id="setNuveiSecret" placeholder="Tu Secret Key de Nuvei"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.apiKey">API Key</label><input class="admin-input" id="setNuveiApiKey" placeholder="Tu API Key de Nuvei" data-i18n-placeholder="adminPanel.settings.apiKeyPlaceholder"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.secretKey">Secret Key</label><input class="admin-input" id="setNuveiSecret" placeholder="Tu Secret Key de Nuvei" data-i18n-placeholder="adminPanel.settings.secretKeyPlaceholder"></div>
       </div>
       <div class="admin-row-2">
-        <div class="admin-field"><label>Merchant ID</label><input class="admin-input" id="setNuveiMerchantId" placeholder="ID del comercio"></div>
-        <div class="admin-field"><label>Terminal ID</label><input class="admin-input" id="setNuveiTerminalId" placeholder="ID del terminal"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.merchantId">Merchant ID</label><input class="admin-input" id="setNuveiMerchantId" placeholder="ID del comercio" data-i18n-placeholder="adminPanel.settings.merchantIdPlaceholder"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.terminalId">Terminal ID</label><input class="admin-input" id="setNuveiTerminalId" placeholder="ID del terminal" data-i18n-placeholder="adminPanel.settings.terminalIdPlaceholder"></div>
       </div>
-      <div class="admin-section-title" style="margin-top:8px">Datos Bancarios (Ecuador)</div>
+      <div class="admin-section-title" style="margin-top:8px" data-i18n="adminPanel.settings.bankData">Datos Bancarios (Ecuador)</div>
       <div class="admin-row-2">
-        <div class="admin-field"><label>Nombre completo</label><input class="admin-input" id="setBankName" placeholder="Tu Nombre"></div>
-        <div class="admin-field"><label>Banco</label><input class="admin-input" id="setBankBank" placeholder="Banco Pichincha"></div>
-      </div>
-      <div class="admin-row-2">
-        <div class="admin-field"><label>Número de cuenta</label><input class="admin-input" id="setBankAccount" placeholder="2200000000"></div>
-        <div class="admin-field"><label>Tipo de cuenta</label><input class="admin-input" id="setBankType" placeholder="Ahorros"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.fullName">Nombre completo</label><input class="admin-input" id="setBankName" placeholder="Tu Nombre" data-i18n-placeholder="adminPanel.settings.fullNamePlaceholder"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.bank">Banco</label><input class="admin-input" id="setBankBank" placeholder="Banco Pichincha" data-i18n-placeholder="adminPanel.settings.bankPlaceholder"></div>
       </div>
       <div class="admin-row-2">
-        <div class="admin-field"><label>Cédula / RUC</label><input class="admin-input" id="setBankId" placeholder="1700000000"></div>
-        <div class="admin-field"><label>WhatsApp</label><input class="admin-input" id="setWhatsapp" placeholder="+593900000000"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.accountNumber">Número de cuenta</label><input class="admin-input" id="setBankAccount" placeholder="2200000000" data-i18n-placeholder="adminPanel.settings.accountNumberPlaceholder"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.accountType">Tipo de cuenta</label><input class="admin-input" id="setBankType" placeholder="Ahorros" data-i18n-placeholder="adminPanel.settings.accountTypePlaceholder"></div>
       </div>
-      <div class="admin-field"><label>Nota para transferencias</label><input class="admin-input" id="setBankNote" placeholder="Indicar usuario SpinDraw en la referencia"></div>
-      <div class="admin-section-title" style="margin-top:8px">Email Admin</div>
-      <div class="admin-field"><label>Email para notificaciones</label><input class="admin-input" id="setAdminEmail" type="email" placeholder="admin@tudominio.com"></div>
+      <div class="admin-row-2">
+        <div class="admin-field"><label data-i18n="adminPanel.settings.idNumber">Cédula / RUC</label><input class="admin-input" id="setBankId" placeholder="1700000000" data-i18n-placeholder="adminPanel.settings.idNumberPlaceholder"></div>
+        <div class="admin-field"><label data-i18n="adminPanel.settings.whatsapp">WhatsApp</label><input class="admin-input" id="setWhatsapp" placeholder="+593900000000" data-i18n-placeholder="adminPanel.settings.whatsappPlaceholder"></div>
+      </div>
+      <div class="admin-field"><label data-i18n="adminPanel.settings.transferNote">Nota para transferencias</label><input class="admin-input" id="setBankNote" placeholder="Indicar usuario SpinDraw en la referencia" data-i18n-placeholder="adminPanel.settings.transferNotePlaceholder"></div>
+      <div class="admin-section-title" style="margin-top:8px" data-i18n="adminPanel.settings.adminEmailTitle">Email Admin</div>
+      <div class="admin-field"><label data-i18n="adminPanel.settings.adminEmail">Email para notificaciones</label><input class="admin-input" id="setAdminEmail" type="email" placeholder="admin@tudominio.com" data-i18n-placeholder="adminPanel.settings.adminEmailPlaceholder"></div>
       
-      <div class="admin-section-title" style="margin-top:8px">Configuración de Google & AdSense</div>
+      <div class="admin-section-title" style="margin-top:8px" data-i18n="adminPanel.settings.googleConfig">Configuración de Google & AdSense</div>
       <div class="admin-field">
-        <label>Email de Soporte (aparecerá en páginas legales)</label>
-        <input class="admin-input" id="setSupportEmail" type="email" placeholder="soporte@tudominio.com">
+        <label data-i18n="adminPanel.settings.supportEmail">Email de Soporte (aparecerá en páginas legales)</label>
+        <input class="admin-input" id="setSupportEmail" type="email" placeholder="soporte@tudominio.com" data-i18n-placeholder="adminPanel.settings.supportEmailPlaceholder">
       </div>
       <div class="admin-field">
-        <label>Google Analytics ID (ejemplo: G-ABCDEF123456)</label>
-        <input class="admin-input" id="setGoogleAnalyticsId" placeholder="G-XXXXXXXXXX">
-        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">
+        <label data-i18n="adminPanel.settings.googleAnalyticsId">Google Analytics ID (ejemplo: G-ABCDEF123456)</label>
+        <input class="admin-input" id="setGoogleAnalyticsId" placeholder="G-XXXXXXXXXX" data-i18n-placeholder="adminPanel.settings.googleAnalyticsIdPlaceholder">
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px" data-i18n="adminPanel.settings.googleAnalyticsHelp">
           Obtén tu ID en: <a href="https://analytics.google.com" target="_blank" style="color:var(--accent)">Google Analytics</a>
         </div>
       </div>
       <div class="admin-field">
-        <label>Google Site Verification Code (para Search Console)</label>
-        <input class="admin-input" id="setGoogleSiteVerification" placeholder="Ej: google-site-verification=XXXXXXXXXXXXXXXXXXXXXXX">
-        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">
+        <label data-i18n="adminPanel.settings.googleSiteVerification">Google Site Verification Code (para Search Console)</label>
+        <input class="admin-input" id="setGoogleSiteVerification" placeholder="Ej: google-site-verification=XXXXXXXXXXXXXXXXXXXXXXX" data-i18n-placeholder="adminPanel.settings.googleSiteVerificationPlaceholder">
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px" data-i18n="adminPanel.settings.googleSiteVerificationHelp">
           Obtén el código en: <a href="https://search.google.com/search-console" target="_blank" style="color:var(--accent)">Google Search Console</a>
         </div>
       </div>
       <div class="admin-field">
-        <label>AdSense Client Code (ejemplo: ca-pub-XXXXXXXXXX)</label>
-        <input class="admin-input" id="setAdSenseCode" placeholder="ca-pub-XXXXXXXXXX">
-        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">
+        <label data-i18n="adminPanel.settings.adSenseCode">AdSense Client Code (ejemplo: ca-pub-XXXXXXXXXX)</label>
+        <input class="admin-input" id="setAdSenseCode" placeholder="ca-pub-XXXXXXXXXX" data-i18n-placeholder="adminPanel.settings.adSenseCodePlaceholder">
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px" data-i18n="adminPanel.settings.adSenseHelp">
           Obtén tu código en: <a href="https://adsense.google.com" target="_blank" style="color:var(--accent)">Google AdSense</a>
         </div>
       </div>
       
-      <button onclick="saveAdminSettings()" style="width:100%;background:linear-gradient(135deg,var(--accent),#0080ff);color:#fff;border:none;border-radius:50px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;margin-top:8px;">GUARDAR CAMBIOS</button>
+      <button onclick="saveAdminSettings()" style="width:100%;background:linear-gradient(135deg,var(--accent),#0080ff);color:#fff;border:none;border-radius:50px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;margin-top:8px;" data-i18n="adminPanel.settings.saveChanges">GUARDAR CAMBIOS</button>
     </div>
   </div>
 </div>
@@ -2886,7 +2887,7 @@ document.addEventListener('DOMContentLoaded', () => {
     adminBtn.className = 'nav-tab';
     adminBtn.id = 'adminNavBtn';
     adminBtn.style.display = 'none';
-    adminBtn.innerHTML = '<span class="icon">⚙️</span>Admin';
+    adminBtn.innerHTML = '<span class="icon">⚙️</span><span data-i18n="sidebar.admin">Admin</span>';
     adminBtn.onclick = openAdminPanel;
     sidebar.appendChild(adminBtn);
   }

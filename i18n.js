@@ -101,6 +101,34 @@ class I18n {
       const [attr, key] = attrData.split(':');
       element.setAttribute(attr, this.t(key));
     });
+
+    // Actualizar enlaces de páginas legales según el idioma
+    this.updateLegalLinks();
+  }
+
+  updateLegalLinks() {
+    const langSuffix = this.currentLang === 'es' ? '' : `-${this.currentLang}`;
+
+    // Actualizar enlaces del footer
+    const privacyLink = document.querySelector('a[href*="privacidad.html"]');
+    if (privacyLink) {
+      privacyLink.href = `privacidad${langSuffix}.html`;
+    }
+
+    const termsLink = document.querySelector('a[href*="terminos.html"]');
+    if (termsLink) {
+      termsLink.href = `terminos${langSuffix}.html`;
+    }
+
+    const cookiesLink = document.querySelector('a[href*="cookies.html"]');
+    if (cookiesLink) {
+      cookiesLink.href = `cookies${langSuffix}.html`;
+    }
+
+    const contactLink = document.querySelector('a[href*="contacto.html"]');
+    if (contactLink) {
+      contactLink.href = `contacto${langSuffix}.html`;
+    }
   }
 
   updateMetaTags() {

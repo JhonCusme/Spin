@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="pt">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contacto — SpinDraw</title>
+<title>Contato — SpinDraw</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script>
@@ -45,7 +45,7 @@ function initLanguageSelector() {
 }
 
 function getCurrentLanguage() {
-  return localStorage.getItem('spindraw_lang') || 'es';
+  return localStorage.getItem('spindraw_lang') || 'pt';
 }
 
 document.addEventListener('DOMContentLoaded', initLanguageSelector);
@@ -129,9 +129,9 @@ h1{font-size:2.5rem;margin-bottom:10px;color:var(--accent);font-family:'Bebas Ne
 <body>
 <div class="container">
 <header>
-<div class="breadcrumb"><a href="ruleta-pro.html">Inicio</a> / Contacto</div>
-<h1>CONTACTO</h1>
-<p class="subtitle">¿Preguntas? Estamos aquí para ayudarte</p>
+<div class="breadcrumb"><a href="ruleta-pro.html">Início</a> / Contato</div>
+<h1>CONTATO</h1>
+<p class="subtitle">Perguntas? Estamos aqui para ajudar</p>
 </header>
 
 <div class="content-grid">
@@ -139,146 +139,127 @@ h1{font-size:2.5rem;margin-bottom:10px;color:var(--accent);font-family:'Bebas Ne
 <div class="info-box">
 <h2>📧 Email</h2>
 <div class="info-item">
-<div class="info-label">Soporte General</div>
+<div class="info-label">Suporte Geral</div>
 <div class="info-value"><a href="mailto:cusmejhonalexander@gmail.com">cusmejhonalexander@gmail.com</a></div>
 </div>
+
 <div class="info-item">
-<div class="info-label">Privacidad y Datos</div>
+<div class="info-label">Consultas Comerciais</div>
 <div class="info-value"><a href="mailto:cusmejhonalexander@gmail.com">cusmejhonalexander@gmail.com</a></div>
-</div>
-<div class="info-item">
-<div class="info-label">Reportar Problemas</div>
-<parameter name="newString"><div class="info-value"><a href="mailto:cusmejhonalexander@gmail.com">cusmejhonalexander@gmail.com</a></div>
 </div>
 </div>
 
 <div class="info-box">
-<h2>🕐 Horarios</h2>
+<h2>🌐 Online</h2>
 <div class="info-item">
-<div class="info-label">Tiempo de Respuesta</div>
-<div class="info-value">24-48 horas</div>
+<div class="info-label">Site</div>
+<div class="info-value"><a href="https://spin-22w3.onrender.com/" target="_blank">spin-22w3.onrender.com</a></div>
 </div>
+
 <div class="info-item">
-<div class="info-label">Disponibilidad</div>
-<div class="info-value">Lunes a Viernes<br>09:00 - 18:00 UTC</div>
-</div>
-<div class="info-item">
-<div class="info-label">Soporte de Emergencia</div>
-<div class="info-value">Available on demand</div>
+<div class="info-label">Tempo de Resposta</div>
+<div class="info-value">Dentro de 48 horas</div>
 </div>
 </div>
 
 </div>
 
 <div class="form-box">
-<h2 style="margin-bottom:20px;color:var(--accent);">📬 Envíanos un Mensaje</h2>
+<h2>Envie-nos uma Mensagem</h2>
 <form id="contactForm">
 <div class="form-inline">
 <div class="form-group">
-<label for="nombre">Nombre *</label>
-<input type="text" id="nombre" name="nombre" required placeholder="Tu nombre completo">
+<label for="firstName">Nome</label>
+<input type="text" id="firstName" name="firstName" required>
 </div>
 <div class="form-group">
-<label for="email">Email *</label>
-<input type="email" id="email" name="email" required placeholder="tu@email.com">
+<label for="lastName">Sobrenome</label>
+<input type="text" id="lastName" name="lastName" required>
 </div>
 </div>
 
 <div class="form-group">
-<label for="asunto">Asunto *</label>
-<input type="text" id="asunto" name="asunto" required placeholder="¿Cómo podemos ayudarte?">
+<label for="email">Email</label>
+<input type="email" id="email" name="email" required>
 </div>
 
 <div class="form-group">
-<label for="categoria">Categoría *</label>
-<select id="categoria" name="categoria" required>
-<option value="">-- Selecciona una categoría --</option>
-<option value="soporte">Soporte Técnico</option>
-<option value="pago">Problemas de Pago</option>
-<option value="privacidad">Privacidad y Datos</option>
-<option value="reporte">Reporte de Problema</option>
-<option value="feedback">Feedback/Sugerencias</option>
-<option value="otro">Otro</option>
+<label for="subject">Assunto</label>
+<select id="subject" name="subject" required>
+<option value="">Selecione um assunto</option>
+<option value="support">Suporte Técnico</option>
+<option value="billing">Perguntas de Cobrança</option>
+<option value="business">Consulta Empresarial</option>
+<option value="feedback">Feedback</option>
+<option value="other">Outro</option>
 </select>
 </div>
 
 <div class="form-group">
-<label for="mensaje">Mensaje *</label>
-<textarea id="mensaje" name="mensaje" required placeholder="Cuéntanos con más detalle..."></textarea>
+<label for="message">Mensagem</label>
+<textarea id="message" name="message" placeholder="Conte-nos como podemos ajudá-lo..." required></textarea>
 </div>
 
-<button type="submit" class="submit-btn">Enviar Mensaje</button>
+<button type="submit" class="submit-btn" id="submitBtn">ENVIAR MENSAGEM</button>
 </form>
 </div>
 
 <div class="faq">
-<h2>❓ Preguntas Frecuentes</h2>
+<h2>Perguntas Frequentes</h2>
 
 <div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)">¿Cuándo responden a los correos?</div>
-<div class="faq-answer">
-Respondemos a todos los correos dentro de 24-48 horas. Durante fines de semana y festivos puede tomar más tiempo.
-</div>
+<div class="faq-question" onclick="toggleFAQ(this)">Como criar uma roleta de sorteio?</div>
+<div class="faq-answer">Vá para a página principal e clique em "Criar Roleta". Adicione participantes e prêmios, depois gire!</div>
 </div>
 
 <div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)">¿Cómo puedo cambiar mi contraseña?</div>
-<div class="faq-answer">
-Puedes cambiar tu contraseña en: Panel de Usuario → Configuración → Seguridad → Cambiar Contraseña
-</div>
+<div class="faq-question" onclick="toggleFAQ(this)">Quais são as diferenças entre os planos?</div>
+<div class="faq-answer">O plano gratuito tem recursos básicos. Os planos Pro incluem personalização avançada, analytics e suporte prioritário.</div>
 </div>
 
 <div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)">¿Cómo cancelo mi suscripción?</div>
-<div class="faq-answer">
-Puedes cancelar en: Panel de Usuario → Suscripciones → Cancelar. Se efectuará inmediatamente sin penalidades.
-</div>
+<div class="faq-question" onclick="toggleFAQ(this)">Como faço upgrade da minha conta?</div>
+<div class="faq-answer">Clique no seu perfil no canto superior direito, depois selecione "Upgrade para Pro" para ver os planos disponíveis.</div>
 </div>
 
 <div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)">¿Qué métodos de pago aceptan?</div>
-<div class="faq-answer">
-Aceptamos tarjetas de crédito/débito, transferencias bancarias y billeteras digitales a través de nuestros proveedores de pago seguros.
-</div>
+<div class="faq-question" onclick="toggleFAQ(this)">Posso exportar os resultados da minha roleta?</div>
+<div class="faq-answer">Sim! Usuários Pro podem exportar resultados como PDF ou compartilhar diretamente nas redes sociais.</div>
 </div>
 
-<div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)">¿Puedo solicitar eliminación de datos?</div>
-<div class="faq-answer">
-Sí, puedes solicitar la eliminación completa de tus datos escribiendo a privacy@spindraw.com con tu ID de usuario.
-</div>
-</div>
-
-<div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)">¿Cómo reporto un problema de seguridad?</div>
-<div class="faq-answer">
-Reporta problemas de seguridad a reports@spindraw.com directamente. Por favor no publiques vulnerabilidades públicamente.
-</div>
-</div>
-
-</div>
-
-</div>
-
-<div class="footer-nav">
-<a href="ruleta-pro.html">← Volver al inicio</a>
-<a href="privacidad.html">Política de Privacidad</a>
-<a href="terminos.html">Términos de Servicio</a>
 </div>
 
 <script>
-function toggleFaq(element) {
+function toggleFAQ(element) {
   const answer = element.nextElementSibling;
   answer.classList.toggle('active');
-  element.style.color = answer.classList.contains('active') ? 'var(--gold)' : 'var(--accent)';
 }
 
 document.getElementById('contactForm').addEventListener('submit', function(e) {
   e.preventDefault();
-  alert('Gracias por tu mensaje. Nos pondremos en contacto pronto.');
-  this.reset();
+
+  const submitBtn = document.getElementById('submitBtn');
+  const originalText = submitBtn.textContent;
+  submitBtn.textContent = 'ENVIANDO...';
+  submitBtn.disabled = true;
+
+  // Simulate form submission (replace with actual API call)
+  setTimeout(() => {
+    alert('Obrigado pela sua mensagem! Responderemos dentro de 48 horas.');
+    document.getElementById('contactForm').reset();
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+  }, 2000);
 });
 </script>
 
+<div class="footer-nav">
+<a href="privacidad-pt.html">Política de Privacidade</a>
+<a href="terminos-pt.html">Termos de Serviço</a>
+<a href="cookies-pt.html">Política de Cookies</a>
+<a href="ruleta-pro.html">Voltar ao SpinDraw</a>
+</div>
+
+</div>
 </body>
 </html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — SpinDraw</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+// Language selector for legal pages
+function initLanguageSelector() {
+  const currentLang = getCurrentLanguage();
+  const selector = document.createElement('div');
+  selector.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  `;
+  selector.innerHTML = `
+    <select id="lang-select" style="
+      background: #141926;
+      border: 1px solid #1e2535;
+      border-radius: 8px;
+      color: #e8eaf0;
+      padding: 6px 10px;
+      font-size: .8rem;
+      min-width: 120px;
+      cursor: pointer;
+      outline: none;
+    ">
+      <option value="es" ${currentLang === 'es' ? 'selected' : ''}>🇪🇸 Español</option>
+      <option value="en" ${currentLang === 'en' ? 'selected' : ''}>🇺🇸 English</option>
+      <option value="pt" ${currentLang === 'pt' ? 'selected' : ''}>🇧🇷 Português</option>
+    </select>
+  `;
+  document.body.appendChild(selector);
+
+  document.getElementById('lang-select').addEventListener('change', (e) => {
+    const lang = e.target.value;
+    localStorage.setItem('spindraw_lang', lang);
+    const currentPage = window.location.pathname.split('/').pop().split('.')[0];
+    window.location.href = `${currentPage}-${lang}.html`;
+  });
+}
+
+function getCurrentLanguage() {
+  return localStorage.getItem('spindraw_lang') || 'en';
+}
+
+document.addEventListener('DOMContentLoaded', initLanguageSelector);
+</script>
+<style>
+:root{
+  --bg:#080b12; --surface:#0f1420; --card:#141926; --border:#1e2535;
+  --accent:#00e5ff; --accent2:#7c3aed; --gold:#fbbf24; --green:#10b981;
+  --text:#e8eaf0; --muted:#5a6380; --r:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text);
+  line-height:1.6; min-height:100vh;
+}
+.container{max-width:900px;margin:0 auto;padding:40px 20px;}
+header{text-align:center;margin-bottom:60px;padding:40px 0 0;}
+h1{font-size:2.5rem;margin-bottom:10px;color:var(--accent);}
+.breadcrumb{font-size:0.9rem;color:var(--muted);margin-bottom:20px;}
+.breadcrumb a{color:var(--accent);text-decoration:none;}
+.breadcrumb a:hover{text-decoration:underline;}
+.content{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:40px;}
+h2{font-size:1.6rem;margin:30px 0 15px;color:var(--accent2);}
+h3{font-size:1.2rem;margin:20px 0 10px;color:var(--accent);}
+p{margin-bottom:15px;color:var(--text)}
+ul,ol{margin:15px 0 15px 30px;color:var(--text)}
+li{margin-bottom:8px}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
+.footer-nav{margin-top:40px;padding-top:20px;border-top:1px solid var(--border);text-align:center;}
+.footer-nav a{margin:0 15px;display:inline-block;}
+.last-update{color:var(--muted);font-size:0.9rem;margin-top:20px;text-align:center;}
+.warning{background:rgba(239,68,68,0.1);border-left:4px solid #ef4444;padding:15px;margin:20px 0;border-radius:4px;}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<div class="breadcrumb"><a href="ruleta-pro.html">Home</a> / Terms of Service</div>
+<h1>Terms of Service</h1>
+</header>
+
+<div class="content">
+
+<h2>1. Acceptance of Terms</h2>
+<p>By accessing and using SpinDraw ("the Service"), you agree to be bound by these Terms of Service. If you do not agree to any of these terms, do not use the Service.</p>
+
+<h2>2. Service Description</h2>
+<p>SpinDraw is an entertainment and giveaway platform that allows users to:</p>
+<ul>
+<li>Create custom giveaway wheels</li>
+<li>Participate in public giveaways</li>
+<li>Access premium features through subscription</li>
+<li>Use analytics and statistics tools</li>
+</ul>
+
+<h2>3. Usage Requirements</h2>
+<p>To use SpinDraw, you must:</p>
+<ul>
+<li>Be at least 18 years old (or the legal age in your jurisdiction)</li>
+<li>Provide accurate and up-to-date information</li>
+<li>Maintain the confidentiality of your password</li>
+<li>Be responsible for all activities on your account</li>
+<li>Comply with all applicable laws and regulations</li>
+</ul>
+
+<h2>4. Prohibited Conduct</h2>
+<div class="warning">
+<p><strong>You may not:</strong></p>
+<ul style="margin-left:15px">
+<li>Use SpinDraw for illegal or fraudulent activities</li>
+<li>Send spam, malware, or malicious code</li>
+<li>Access unauthorized accounts or systems</li>
+<li>Excessively accumulate content (scraping)</li>
+<li>Discriminate against or harass other users</li>
+<li>Infringe on third-party intellectual property</li>
+<li>Bypass security systems</li>
+<li>Conduct illegal gambling or unauthorized lotteries</li>
+</ul>
+</div>
+
+<h2>5. User Content</h2>
+<p>You are responsible for all content you upload or create on SpinDraw. By submitting content, you grant SpinDraw a license to use, display, and distribute it on the platform.</p>
+<ul>
+<li>You may not violate third-party rights</li>
+<li>Content may not contain illegal or offensive material</li>
+<li>SpinDraw may remove content that violates these terms</li>
+<li>You retain intellectual property rights to your content</li>
+</ul>
+
+<h2>6. Subscriptions and Payments</h2>
+<h3>6.1 Available Plans:</h3>
+<ul>
+<li><strong>Free:</strong> Free access with limitations</li>
+<li><strong>Pro (Monthly):</strong> $9.99/month, auto-renewal</li>
+<li><strong>Pro (Lifetime):</strong> One-time payment, permanent access</li>
+</ul>
+
+<h3>6.2 Payment Terms:</h3>
+<ul>
+<li>Payments are processed securely through authorized payment providers</li>
+<li>Monthly subscriptions auto-renew</li>
+<li>You can cancel anytime from your admin panel</li>
+<li>Refunds are subject to our payment providers' refund policies</li>
+<li>Transactions are non-refundable after processing</li>
+</ul>
+
+<h2>7. Limitation of Liability</h2>
+<p>SpinDraw is provided "AS IS" without warranties. To the maximum extent permitted by law:</p>
+<ul>
+<li>We are not liable for indirect or consequential damages</li>
+<li>Our liability is limited to the amount you paid</li>
+<li>We do not guarantee continuous service availability</li>
+<li>We may suspend service for maintenance</li>
+</ul>
+
+<h2>8. Indemnification</h2>
+<p>You agree to indemnify and defend SpinDraw from any claim, damage, or cost (including legal fees) related to:</p>
+<ul>
+<li>Your use of the Service</li>
+<li>Violation of these Terms</li>
+<li>Content you provide</li>
+<li>Infringement of third-party rights</li>
+</ul>
+
+<h2>9. Suspension and Termination</h2>
+<p>SpinDraw reserves the right to:</p>
+<ul>
+<li>Suspend your account for violations of these terms</li>
+<li>Terminate service with notice</li>
+<li>Retain data according to legal retention requirements</li>
+<li>Remove access to premium features</li>
+</ul>
+
+<h2>10. Service Changes</h2>
+<p>We may modify or discontinue SpinDraw or its features at any time. Significant changes will be communicated in advance.</p>
+
+<h2>11. Intellectual Property</h2>
+<p>All content, design, and functionality of SpinDraw is protected by copyright and intellectual property rights. You may not reproduce or distribute without permission.</p>
+
+<h2>12. Third-Party Links</h2>
+<p>SpinDraw may contain links to third-party websites. We are not responsible for their content or practices. Access at your own risk.</p>
+
+<h2>13. Governing Law</h2>
+<p>These Terms are governed by the laws of SpinDraw's country of operation, without regard to conflict of law principles.</p>
+
+</div>
+
+<div class="footer-nav">
+<a href="privacidad-en.html">Privacy Policy</a>
+<a href="cookies-en.html">Cookie Policy</a>
+<a href="contacto-en.html">Contact</a>
+<a href="ruleta-pro.html">Back to SpinDraw</a>
+</div>
+
+<div class="last-update">Last updated: April 29, 2026</div>
+
+</div>
+</body>
+</html>

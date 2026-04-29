@@ -20,7 +20,13 @@
     "winner": "Parabéns!",
     "tryAgain": "Tente Novamente",
     "participants": "participantes",
-    "prize": "prêmio"
+    "prize": "prêmio",
+    "ready": "PREPARADOS...",
+    "tapContinue": "Toque para continuar",
+    "defaultName": "Roleta 1",
+    "share": "Compartilhar",
+    "revancha": "Revancha!",
+    "streak": "Sequência:"
   },
   "auth": {
     "loginTitle": "Entrar",
@@ -73,6 +79,58 @@
     "contact": "Contato",
     "copyright": "© 2026 SpinDraw. Todos os direitos reservados."
   },
+  "legal": {
+    "breadcrumb": {
+      "home": "Início",
+      "privacy": "Política de Privacidade",
+      "terms": "Termos de Serviço",
+      "cookies": "Política de Cookies",
+      "contact": "Contato"
+    },
+    "privacy": {
+      "title": "Política de Privacidade",
+      "intro": "Na SpinDraw, estamos comprometidos em proteger sua privacidade. Esta Política de Privacidade explica como coletamos, usamos, divulgamos e protegemos suas informações.",
+      "sections": {
+        "info": "Informações que Coletamos",
+        "use": "Como Usamos suas Informações",
+        "sharing": "Compartilhamento de Informações",
+        "security": "Segurança de Dados",
+        "rights": "Seus Direitos",
+        "changes": "Alterações nesta Política",
+        "contact": "Contato"
+      }
+    },
+    "terms": {
+      "title": "Termos de Serviço",
+      "acceptance": "Ao acessar e usar a SpinDraw, você aceita estes termos.",
+      "sections": {
+        "use": "Uso do Serviço",
+        "accounts": "Contas de Usuário",
+        "content": "Conteúdo do Usuário",
+        "prohibited": "Atividades Proibidas",
+        "termination": "Terminação",
+        "liability": "Limitação de Responsabilidade",
+        "changes": "Alterações nos Termos"
+      }
+    },
+    "cookies": {
+      "title": "Política de Cookies",
+      "intro": "Usamos cookies para melhorar sua experiência em nosso site.",
+      "sections": {
+        "what": "O que são Cookies?",
+        "types": "Tipos de Cookies",
+        "control": "Como Controlar Cookies",
+        "changes": "Alterações nesta Política"
+      }
+    },
+    "contact": {
+      "title": "Contato",
+      "intro": "Se você tiver dúvidas sobre estes termos ou políticas, entre em contato:",
+      "email": "Email",
+      "response": "Nos esforçamos para responder a todas as consultas dentro de 48 horas."
+    },
+    "lastUpdate": "Última atualização"
+  },
   "errors": {
     "network": "Erro de conexão",
     "server": "Erro do servidor",
@@ -89,7 +147,7 @@
   },
   "sidebar": {
     "menu": "Menu",
-    "participants": "Participantes",
+    "participants": "Lista",
     "settings": "Configurações",
     "theme": "Tema",
     "logo": "Logo",
@@ -118,5 +176,258 @@
     "colors": "Cores",
     "save": "Salvar",
     "reset": "Reiniciar"
+  },
+  "fullscreen": {
+    "exit": "Sair",
+    "title": "SPINDRAW"
+  },
+  "celebration": {
+    "winner": "G A N H A D O R !",
+    "share": "Compartilhar resultado"
+  },
+  "paywall": {
+    "title": "Método de Pagamento",
+    "subtitle": "Escolha como deseja pagar pelo SpinDraw Pro.",
+    "paypal": "PayPal",
+    "bankTransfer": "Transferência Bancária",
+    "back": "Voltar",
+    "transferTitle": "Pagamento por Transferência",
+    "transferSubtitle": "Faça a transferência para a conta a seguir e envie o comprovante.",
+    "bank": "Banco:",
+    "account": "Conta:",
+    "clabe": "CLABE:",
+    "beneficiary": "Beneficiário:",
+    "type": "Tipo:",
+    "note": "Nota:",
+    "amount": "Valor:",
+    "upload": "Enviar Comprovante",
+    "cancel": "Cancelar"
+  },
+  "authModal": {
+    "welcome": "BEM-VINDO",
+    "subtitle": "Acesse ou crie sua conta gratuita",
+    "username": "Usuário",
+    "password": "Senha",
+    "firstName": "Nome *",
+    "lastName": "Sobrenome *",
+    "usernameRequired": "Usuário *",
+    "usernameHint": "Mínimo 3 caracteres, sem espaços",
+    "phone": "Telefone (opcional)",
+    "passwordRequired": "Senha *",
+    "passwordHint": "Digite uma senha",
+    "confirmPassword": "Confirmar Senha *",
+    "terms": "Aceito os Termos e Condições e a Política de Privacidade",
+    "createAccount": "CRIAR CONTA"
+  },
+  "demo": {
+    "title": "Demo:",
+    "subtitle": "Teste todas as funções",
+    "activate": "Ativar Pro",
+    "deactivate": "Voltar ao Free"
+  },
+  "sidebarSettings": {
+    "participantsTitle": "Participantes",
+    "total": "Total:",
+    "unlimited": "Ilimitados com Pro ↑",
+    "importText": "Importe uma lista de nomes de uma só vez.",
+    "unlock": "Desbloquear com Pro",
+    "importButton": "IMPORTAR LISTA",
+    "clear": "Limpar tudo",
+    "history": "Histórico",
+    "settingsTitle": "Configurações do Giro",
+    "countdown": "Contagem regressiva — Free",
+    "off": "OFF",
+    "autoRemove": "Auto-remover vencedor — Pro",
+    "autoRemoveDesc": "Remove automaticamente o vencedor da lista.",
+    "autoRemoveToggle": "Remover vencedor auto",
+    "autoRemoveSub": "Remove da lista ao terminar",
+    "suspense": "Modo Suspense — Free",
+    "suspenseToggle": "Frear com drama",
+    "suspenseSub": "Desacelera lentamente no final",
+    "revancha": "Revancha — Free",
+    "revanchaToggle": "Botão de Revancha",
+    "revanchaSub": "Aparece botão para girar novamente",
+    "streak": "Sequência de vitórias — Free",
+    "streakToggle": "Mostrar sequência",
+    "streakSub": "Quem está ganhando mais seguido"
+  },
+  "theme": {
+    "title": "Tema Visual",
+    "desc": "Personalize cores e fundo da roleta.",
+    "palette": "Paleta de segmentos",
+    "background": "Fundo da roleta"
+  },
+  "logo": {
+    "title": "Logo Personalizado",
+    "desc": "Mostre seu logo no centro da roleta.",
+    "upload": "Clique para enviar seu logo (PNG, JPG, SVG)",
+    "remove": "Remover Logo"
+  },
+  "sound": {
+    "title": "Sons",
+    "desc": "Efeitos sonoros ao girar e ganhar.",
+    "none": "🔇 Sem som",
+    "casino": "🎰 Cassino (tick mecânico)",
+    "fanfare": "🎺 Fanfarra ao ganhar",
+    "drum": "🥁 Rolo de tambor",
+    "test": "▶ Testar Som"
+  },
+
+  "adminPanel": {
+    "title": "Painel Administrador",
+    "dashboard": "Dashboard",
+    "payments": "Pagamentos",
+    "users": "Usuários",
+    "settings": "Configurações",
+    "stats": {
+      "users": "Usuários",
+      "proUsers": "Pro ativos",
+      "pending": "Pagamentos pendentes",
+      "revenue": "Receita total"
+    },
+    "summary": "Resumo",
+    "loading": "Carregando...",
+    "noResults": "Sem resultados",
+    "approve": "✓ Aprovar",
+    "reject": "✗ Rejeitar",
+    "removePro": "Remover Pro",
+    "addPro": "+30d Pro",
+    "lifetime": "Vitalício",
+    "viewReceipt": "📎 Ver comprovante",
+    "ref": "Ref:"
+  },
+  "paywallModal": {
+    "title": "SPINDRAW PRO",
+    "subtitle": "Escolha seu plano e método de pagamento",
+    "monthly": "Mensal",
+    "perMonth": "por mês",
+    "lifetime": "Vitalício",
+    "oneTime": "pagamento único",
+    "bestValue": "⭐ MELHOR VALOR",
+    "paypalButton": "PayPal",
+    "transferButton": "🏦 Transferência (EC)",
+    "features": "✦ TUDO INCLUÍDO NO PRO",
+    "unlimited": "✔ Participantes ilimitados",
+    "multiple": "✔ Múltiplas roletas",
+    "customLogo": "✔ Logo personalizado",
+    "themes": "✔ Temas e cores",
+    "sounds": "✔ Sons",
+    "stream": "✔ Modo Stream",
+    "import": "✔ Importar listas",
+    "noAds": "✔ Sem anúncios",
+    "notNow": "Agora não"
+  },
+  "payphoneModal": {
+    "title": "PAYPHONE",
+    "subtitle": "Assinatura mensal recorrente",
+    "cancel": "Cancelar"
+  },
+  "transferModal": {
+    "title": "🏦 Pagamento por Transferência",
+    "bankData": "DADOS BANCÁRIOS",
+    "name": "Nome:",
+    "bank": "Banco:",
+    "account": "Conta:",
+    "type": "Tipo:",
+    "id": "Cédula:",
+    "reference": "Referência / Número da transação",
+    "receipt": "Comprovante de pagamento *",
+    "receiptHint": "Clique para anexar (JPG, PNG ou PDF, máx 5MB)",
+    "reviewTime": "⏳ Revisamos comprovantes em no máximo 24 horas. Notificamos por email quando seu Pro estiver ativo.",
+    "questions": "Dúvidas? Escreva-nos pelo WhatsApp.",
+    "submit": "ENVIAR COMPROVANTE"
+  },
+  "paywallModal": {
+    "title": "Atualize para PRO!",
+    "subtitle": "Desbloqueie todos os recursos premium",
+    "features": "Recursos PRO:",
+    "paypalButton": "Pagar com PayPal",
+    "payphoneButton": "Pagar com PayPhone",
+    "nuveiButton": "Pagar com Nuvei",
+    "transferButton": "Transferência Bancária",
+    "notNow": "Agora não"
+  },
+  "adminPanel": {
+    "title": "Painel Administrador",
+    "tabs": {
+      "dashboard": "Dashboard",
+      "payments": "Pagamentos",
+      "users": "Usuários",
+      "settings": "Configurações"
+    },
+    "stats": {
+      "users": "Usuários",
+      "proUsers": "Pro ativos",
+      "pendingPayments": "Pagamentos pendentes",
+      "totalRevenue": "Receita total"
+    },
+    "dashboard": {
+      "summaryTitle": "Resumo",
+      "summaryText": "Use as abas acima para gerenciar pagamentos, usuários e configurações."
+    },
+    "payments": {
+      "filters": {
+        "pending": "Pendentes",
+        "completed": "Concluídos",
+        "all": "Todos"
+      }
+    },
+    "users": {
+      "searchPlaceholder": "Buscar usuário ou email..."
+    },
+    "settings": {
+      "pricesTitle": "Preços",
+      "monthlyPrice": "Preço Mensal (USD)",
+      "lifetimePrice": "Preço Vitalício (USD)",
+      "paymentsTitle": "Pagamentos",
+      "enablePayphone": "Habilitar pagamentos com PayPhone",
+      "enableNuvei": "Habilitar pagamentos com Nuvei",
+      "nuveiMode": "Modo Nuvei",
+      "nuveiModeStaging": "Staging (Testes)",
+      "nuveiModeProduction": "Production (Produção)",
+      "nuveiCredentials": "Credenciais Nuvei",
+      "apiKey": "API Key",
+      "apiKeyPlaceholder": "Sua API Key da Nuvei",
+      "secretKey": "Secret Key",
+      "secretKeyPlaceholder": "Sua Secret Key da Nuvei",
+      "merchantId": "Merchant ID",
+      "merchantIdPlaceholder": "ID do comércio",
+      "terminalId": "Terminal ID",
+      "terminalIdPlaceholder": "ID do terminal",
+      "bankData": "Dados Bancários (Equador)",
+      "fullName": "Nome completo",
+      "fullNamePlaceholder": "Seu Nome",
+      "bank": "Banco",
+      "bankPlaceholder": "Banco Pichincha",
+      "accountNumber": "Número da conta",
+      "accountNumberPlaceholder": "2200000000",
+      "accountType": "Tipo de conta",
+      "accountTypePlaceholder": "Poupança",
+      "idNumber": "Cédula / RUC",
+      "idNumberPlaceholder": "1700000000",
+      "whatsapp": "WhatsApp",
+      "whatsappPlaceholder": "+593900000000",
+      "transferNote": "Nota para transferências",
+      "transferNotePlaceholder": "Indicar usuário SpinDraw na referência",
+      "adminEmailTitle": "Email Admin",
+      "adminEmail": "Email para notificações",
+      "adminEmailPlaceholder": "admin@seudominio.com",
+      "googleConfig": "Configuração do Google & AdSense",
+      "supportEmail": "Email de Suporte (aparecerá nas páginas legais)",
+      "supportEmailPlaceholder": "suporte@seudominio.com",
+      "googleAnalyticsId": "Google Analytics ID (exemplo: G-ABCDEF123456)",
+      "googleAnalyticsIdPlaceholder": "G-XXXXXXXXXX",
+      "googleAnalyticsHelp": "Obtenha seu ID em: Google Analytics",
+      "googleSiteVerification": "Código de Verificação do Google Site (para Search Console)",
+      "googleSiteVerificationPlaceholder": "Ex: google-site-verification=XXXXXXXXXXXXXXXXXXXXXXX",
+      "googleSiteVerificationHelp": "Obtenha o código em: Google Search Console",
+      "adSenseCode": "Código do Cliente AdSense (exemplo: ca-pub-XXXXXXXXXX)",
+      "adSenseCodePlaceholder": "ca-pub-XXXXXXXXXX",
+      "adSenseHelp": "Obtenha seu código em: Google AdSense",
+      "saveChanges": "SALVAR ALTERAÇÕES"
+    }
+  },
+  "sidebar": {
+    "admin": "Admin"
   }
 }
