@@ -81,19 +81,6 @@
     "revanchaToggle": "Botón de Revancha",
     "revanchaSub": "Aparece botón para volver a girar"
   },
-  "payments": {
-    "title": "Planes de Suscripción",
-    "monthly": "Mensual",
-    "lifetime": "Vitalicio",
-    "free": "Gratis",
-    "pay": "Pagar",
-    "processing": "Procesando...",
-    "success": "¡Pago exitoso!",
-    "error": "Error en el pago",
-    "bankTransfer": "Transferencia Bancaria",
-    "paypal": "PayPal",
-    "payphone": "PayPhone"
-  },
   "paywallModal": {
     "title": "¡Actualiza a Pro!",
     "subtitle": "Desbloquea todas las funciones premium",
@@ -113,92 +100,6 @@
     "upgrade": "Actualizar Ahora",
     "cancel": "Cancelar"
   },
-  "paywall": {
-    "title": "Método de Pago",
-    "subtitle": "Elige cómo quieres pagar por SpinDraw Pro.",
-    "paypal": "PayPal",
-    "bankTransfer": "Transferencia Bancaria",
-    "back": "Atrás",
-    "transferTitle": "Pago por Transferencia",
-    "transferSubtitle": "Realiza la transferencia a la siguiente cuenta y sube el comprobante.",
-    "bank": "Banco",
-    "account": "Cuenta",
-    "clabe": "CLABE",
-    "beneficiary": "Beneficiario",
-    "type": "Tipo",
-    "note": "Nota",
-    "amount": "Monto"
-  },
-  "admin": {
-    "title": "Panel de Administración",
-    "settings": "Configuración",
-    "users": "Usuarios",
-    "payments": "Pagos",
-    "dashboard": "Dashboard",
-    "save": "Guardar Cambios",
-    "cancel": "Cancelar",
-    "success": "Cambios guardados",
-    "error": "Error al guardar"
-  },
-  "footer": {
-    "privacy": "Privacidad",
-    "terms": "Términos",
-    "cookies": "Cookies",
-    "contact": "Contacto",
-    "copyright": "© 2026 SpinDraw. Todos los derechos reservados."
-  },
-  "legal": {
-    "breadcrumb": {
-      "home": "Inicio",
-      "privacy": "Política de Privacidad",
-      "terms": "Términos de Servicio",
-      "cookies": "Política de Cookies",
-      "contact": "Contacto"
-    },
-    "privacy": {
-      "title": "Política de Privacidad",
-      "intro": "En SpinDraw somos comprometidos con proteger su privacidad. Esta Política de Privacidad explica cómo recopilamos, utilizamos, divulgamos y salvaguardamos su información.",
-      "sections": {
-        "info": "Información que Recopilamos",
-        "use": "Cómo Usamos su Información",
-        "sharing": "Compartición de Información",
-        "security": "Seguridad de Datos",
-        "rights": "Sus Derechos",
-        "changes": "Cambios a esta Política",
-        "contact": "Contacto"
-      }
-    },
-    "terms": {
-      "title": "Términos de Servicio",
-      "acceptance": "Al acceder y usar SpinDraw, acepta estos términos.",
-      "sections": {
-        "use": "Uso del Servicio",
-        "accounts": "Cuentas de Usuario",
-        "content": "Contenido del Usuario",
-        "prohibited": "Actividades Prohibidas",
-        "termination": "Terminación",
-        "liability": "Limitación de Responsabilidad",
-        "changes": "Cambios a los Términos"
-      }
-    },
-    "cookies": {
-      "title": "Política de Cookies",
-      "intro": "Utilizamos cookies para mejorar su experiencia en nuestro sitio web.",
-      "sections": {
-        "what": "¿Qué son las Cookies?",
-        "types": "Tipos de Cookies",
-        "control": "Cómo Controlar las Cookies",
-        "changes": "Cambios a esta Política"
-      }
-    },
-    "contact": {
-      "title": "Contacto",
-      "intro": "Si tiene preguntas sobre estos términos o políticas, contáctenos:",
-      "email": "Email",
-      "response": "Nos esforzamos por responder a todas las consultas dentro de 48 horas."
-    },
-    "lastUpdate": "Última actualización"
-  },
   "errors": {
     "network": "Error de conexión",
     "server": "Error del servidor",
@@ -212,15 +113,6 @@
     "yes": "Sí",
     "no": "No",
     "success": "¡Éxito!"
-  },
-  "sidebar": {
-    "menu": "Menú",
-    "participants": "Lista",
-    "settings": "Ajustes",
-    "theme": "Tema",
-    "logo": "Logo",
-    "sound": "Sonidos",
-    "fullscreen": "Modo Stream"
   },
   "header": {
     "planFree": "Plan Free",
@@ -293,32 +185,6 @@
     "activate": "Activar Pro",
     "deactivate": "Volver a Free"
   },
-  "sidebarSettings": {
-    "participantsTitle": "Participantes",
-    "total": "Total:",
-    "unlimited": "Ilimitados con Pro ↑",
-    "importText": "Importa una lista de nombres de una sola vez.",
-    "unlock": "Desbloquear con Pro",
-    "importButton": "IMPORTAR LISTA",
-    "clear": "Limpiar todo",
-    "history": "Historial",
-    "settingsTitle": "Ajustes del Giro",
-    "countdown": "Cuenta regresiva — Free",
-    "off": "OFF",
-    "autoRemove": "Auto-eliminar ganador — Pro",
-    "autoRemoveDesc": "Elimina al ganador de la lista automáticamente.",
-    "autoRemoveToggle": "Eliminar ganador auto",
-    "autoRemoveSub": "Lo quita de la lista al terminar",
-    "suspense": "Modo Suspenso — Free",
-    "suspenseToggle": "Frenar con drama",
-    "suspenseSub": "Desacelera lentamente al final",
-    "revancha": "Revancha — Free",
-    "revanchaToggle": "Botón de Revancha",
-    "revanchaSub": "Aparece botón para volver a girar",
-    "streak": "Racha de victorias — Free",
-    "streakToggle": "Mostrar racha",
-    "streakSub": "Quién va ganando más seguido"
-  },
   "theme": {
     "title": "Tema Visual",
     "desc": "Personaliza colores y fondo de la ruleta.",
@@ -339,81 +205,6 @@
     "fanfare": "Fanfarria al ganar",
     "drum": "Redoble de tambor",
     "test": "Probar sonido"
-  },
-
-  "adminPanel": {
-    "title": "Panel Administrador",
-    "dashboard": "Dashboard",
-    "payments": "Pagos",
-    "users": "Usuarios",
-    "settings": "Ajustes",
-    "stats": {
-      "users": "Usuarios",
-      "proUsers": "Pro activos",
-      "pending": "Pagos pendientes",
-      "revenue": "Ingresos totales"
-    },
-    "summary": "Resumen",
-    "loading": "Cargando...",
-    "noResults": "Sin resultados",
-    "approve": "Aprobar",
-    "reject": "Rechazar",
-    "removePro": "Quitar Pro",
-    "addPro": "+30d Pro",
-    "lifetime": "Vitalicio",
-    "viewReceipt": "Ver comprobante",
-    "ref": "Ref:"
-  },
-  "paywallModal": {
-    "title": "SPINDRAW PRO",
-    "subtitle": "Elige tu plan y método de pago",
-    "monthly": "Mensual",
-    "perMonth": "por mes",
-    "lifetime": "Vitalicio",
-    "oneTime": "pago único",
-    "bestValue": "MEJOR VALOR",
-    "paypalButton": "PayPal",
-    "transferButton": "Transferencia (EC)",
-    "features": "TODO LO QUE INCLUYE PRO",
-    "unlimited": "Participantes ilimitados",
-    "multiple": "Múltiples ruletas",
-    "customLogo": "Logo personalizado",
-    "themes": "Temas y colores",
-    "sounds": "Sonidos",
-    "stream": "Modo Stream",
-    "import": "Importar listas",
-    "noAds": "Sin anuncios",
-    "notNow": "Ahora no"
-  },
-  "payphoneModal": {
-    "title": "PAYPHONE",
-    "subtitle": "Suscripción mensual recurrente",
-    "cancel": "Cancelar"
-  },
-  "transferModal": {
-    "title": "Pago por Transferencia",
-    "bankData": "DATOS BANCARIOS",
-    "name": "Nombre:",
-    "bank": "Banco:",
-    "account": "Cuenta:",
-    "type": "Tipo:",
-    "id": "Cédula:",
-    "reference": "Referencia / Número de transacción",
-    "receipt": "Comprobante de pago *",
-    "receiptHint": "Haz clic para adjuntar (JPG, PNG o PDF, máx 5MB)",
-    "reviewTime": "Revisamos comprobantes en máximo 24 horas. Te notificamos por email cuando tu Pro esté activo.",
-    "questions": "¿Dudas? Escríbenos por WhatsApp.",
-    "submit": "ENVIAR COMPROBANTE"
-  },
-  "paywallModal": {
-    "title": "¡Actualiza a PRO!",
-    "subtitle": "Desbloquea todas las funciones premium",
-    "features": "Características PRO:",
-    "paypalButton": "Pagar con PayPal",
-    "payphoneButton": "Pagar con PayPhone",
-    "nuveiButton": "Pagar con Nuvei",
-    "transferButton": "Pago por Transferencia",
-    "notNow": "Ahora no"
   },
   "adminPanel": {
     "title": "Panel Administrador",
@@ -495,7 +286,44 @@
       "saveChanges": "GUARDAR CAMBIOS"
     }
   },
-  "sidebar": {
-    "admin": "Admin"
+  "payphoneModal": {
+    "title": "PAYPHONE",
+    "subtitle": "Suscripción mensual recurrente",
+    "cancel": "Cancelar"
+  },
+  "transferModal": {
+    "title": "Pago por Transferencia",
+    "bankData": "DATOS BANCARIOS",
+    "name": "Nombre:",
+    "bank": "Banco:",
+    "account": "Cuenta:",
+    "type": "Tipo:",
+    "id": "Cédula:",
+    "reference": "Referencia / Número de transacción",
+    "receipt": "Comprobante de pago *",
+    "receiptHint": "Haz clic para adjuntar (JPG, PNG o PDF, máx 5MB)",
+    "reviewTime": "Revisamos comprobantes en máximo 24 horas. Te notificamos por email cuando tu Pro esté activo.",
+    "questions": "¿Dudas? Escríbenos por WhatsApp.",
+    "submit": "ENVIAR COMPROBANTE"
+  },
+  "footer": {
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "cookies": "Cookies",
+    "contact": "Contacto",
+    "copyright": "© 2026 SpinDraw. Todos los derechos reservados."
+  },
+  "legal": {
+    "breadcrumb": {
+      "home": "Inicio",
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio",
+      "cookies": "Política de Cookies",
+      "contact": "Contacto"
+    },
+    "privacy": {
+      "title": "Política de Privacidad",
+      "lastUpdate": "Última actualización"
+    }
   }
 }

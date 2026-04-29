@@ -49,13 +49,6 @@
     "weakPassword": "Password must be at least 6 characters"
   },
   "sidebar": {
-    "menu": "Menu",
-    "participants": "Participants",
-    "settings": "Settings",
-    "theme": "Theme",
-    "logo": "Logo",
-    "sound": "Sound",
-    "fullscreen": "Fullscreen",
     "admin": "Admin"
   },
   "sidebarSettings": {
@@ -65,21 +58,24 @@
     "importText": "Import a list of names at once.",
     "unlock": "Unlock with Pro",
     "importButton": "IMPORT LIST",
-    "clear": "Clear all",
+    "clear": "Clear All",
     "history": "History",
     "settingsTitle": "Spin Settings",
-    "countdown": "⏱ Countdown — Free",
+    "countdown": "Countdown — Free",
     "off": "OFF",
-    "autoRemove": "🗑 Auto-remove winner — Pro",
+    "autoRemove": "Auto-remove winner — Pro",
     "autoRemoveDesc": "Automatically removes the winner from the list.",
     "autoRemoveToggle": "Auto remove winner",
-    "autoRemoveSub": "Removes from list when finished",
-    "suspense": "🎭 Suspense Mode — Free",
-    "suspenseToggle": "Dramatic braking",
+    "autoRemoveSub": "Removes them from the list when finished",
+    "suspense": "Suspense Mode — Free",
+    "suspenseToggle": "Brake with drama",
     "suspenseSub": "Slows down slowly at the end",
-    "revancha": "🔥 Rematch — Free",
-    "revanchaToggle": "Rematch Button",
-    "revanchaSub": "Shows button to spin again"
+    "revancha": "Revancha — Free",
+    "revanchaToggle": "Revancha Button",
+    "revanchaSub": "Shows button to spin again",
+    "streak": "Winning Streak — Free",
+    "streakToggle": "Show streak",
+    "streakSub": "Who is winning the most in a row"
   },
   "payments": {
     "title": "Subscription Plans",
@@ -95,23 +91,14 @@
     "payphone": "PayPhone"
   },
   "paywallModal": {
-    "title": "Upgrade to Pro!",
+    "title": "Upgrade to PRO!",
     "subtitle": "Unlock all premium features",
-    "monthly": "Monthly Plan",
-    "perMonth": "/month",
-    "bestValue": "Best Value",
-    "lifetime": "Lifetime Plan",
-    "oneTime": "One-time payment",
-    "unlimited": "Unlimited wheels",
-    "multiple": "Multiple wheels",
-    "customLogo": "Custom logo",
-    "themes": "Premium themes",
-    "sounds": "Premium sounds",
-    "stream": "Stream mode",
-    "import": "Import participants",
-    "noAds": "No ads",
-    "upgrade": "Upgrade Now",
-    "cancel": "Cancel"
+    "features": "PRO Features:",
+    "paypalButton": "Pay with PayPal",
+    "payphoneButton": "Pay with PayPhone",
+    "nuveiButton": "Pay with Nuvei",
+    "transferButton": "Bank Transfer",
+    "notNow": "Not now"
   },
   "admin": {
     "title": "Administration Panel",
@@ -197,15 +184,6 @@
     "no": "No",
     "success": "Success!"
   },
-  "sidebar": {
-    "menu": "Menu",
-    "participants": "List",
-    "settings": "Settings",
-    "theme": "Theme",
-    "logo": "Logo",
-    "sound": "Sounds",
-    "fullscreen": "Stream Mode"
-  },
   "header": {
     "planFree": "Free Plan",
     "upgradePro": "Go Pro",
@@ -277,32 +255,6 @@
     "activate": "Activate Pro",
     "deactivate": "Back to Free"
   },
-  "sidebarSettings": {
-    "participantsTitle": "Participants",
-    "total": "Total:",
-    "unlimited": "Unlimited with Pro ↑",
-    "importText": "Import a list of names at once.",
-    "unlock": "Unlock with Pro",
-    "importButton": "IMPORT LIST",
-    "clear": "Clear All",
-    "history": "History",
-    "settingsTitle": "Spin Settings",
-    "countdown": "Countdown — Free",
-    "off": "OFF",
-    "autoRemove": "Auto-remove winner — Pro",
-    "autoRemoveDesc": "Automatically removes the winner from the list.",
-    "autoRemoveToggle": "Auto remove winner",
-    "autoRemoveSub": "Removes them from the list when finished",
-    "suspense": "Suspense Mode — Free",
-    "suspenseToggle": "Brake with drama",
-    "suspenseSub": "Slows down slowly at the end",
-    "revancha": "Revancha — Free",
-    "revanchaToggle": "Revancha Button",
-    "revanchaSub": "Shows button to spin again",
-    "streak": "Winning Streak — Free",
-    "streakToggle": "Show streak",
-    "streakSub": "Who is winning the most in a row"
-  },
   "theme": {
     "title": "Visual Theme",
     "desc": "Customize wheel colors and background.",
@@ -323,81 +275,6 @@
     "fanfare": "🎺 Fanfare on win",
     "drum": "🥁 Drum roll",
     "test": "▶ Test Sound"
-  },
-
-  "adminPanel": {
-    "title": "Admin Panel",
-    "dashboard": "Dashboard",
-    "payments": "Payments",
-    "users": "Users",
-    "settings": "Settings",
-    "stats": {
-      "users": "Users",
-      "proUsers": "Active Pro",
-      "pending": "Pending Payments",
-      "revenue": "Total Revenue"
-    },
-    "summary": "Summary",
-    "loading": "Loading...",
-    "noResults": "No results",
-    "approve": "✓ Approve",
-    "reject": "✗ Reject",
-    "removePro": "Remove Pro",
-    "addPro": "+30d Pro",
-    "lifetime": "Lifetime",
-    "viewReceipt": "📎 View receipt",
-    "ref": "Ref:"
-  },
-  "paywallModal": {
-    "title": "SPINDRAW PRO",
-    "subtitle": "Choose your plan and payment method",
-    "monthly": "Monthly",
-    "perMonth": "per month",
-    "lifetime": "Lifetime",
-    "oneTime": "one-time payment",
-    "bestValue": "⭐ BEST VALUE",
-    "paypalButton": "PayPal",
-    "transferButton": "🏦 Bank Transfer (EC)",
-    "features": "✦ EVERYTHING INCLUDED IN PRO",
-    "unlimited": "✔ Unlimited participants",
-    "multiple": "✔ Multiple wheels",
-    "customLogo": "✔ Custom logo",
-    "themes": "✔ Themes & colors",
-    "sounds": "✔ Sounds",
-    "stream": "✔ Stream mode",
-    "import": "✔ Import lists",
-    "noAds": "✔ No ads",
-    "notNow": "Not now"
-  },
-  "payphoneModal": {
-    "title": "PAYPHONE",
-    "subtitle": "Monthly recurring subscription",
-    "cancel": "Cancel"
-  },
-  "transferModal": {
-    "title": "🏦 Bank Transfer Payment",
-    "bankData": "BANK DETAILS",
-    "name": "Name:",
-    "bank": "Bank:",
-    "account": "Account:",
-    "type": "Type:",
-    "id": "ID:",
-    "reference": "Reference / Transaction Number",
-    "receipt": "Payment Receipt *",
-    "receiptHint": "Click to attach (JPG, PNG or PDF, max 5MB)",
-    "reviewTime": "⏳ We review receipts within maximum 24 hours. We notify you by email when your Pro is active.",
-    "questions": "Questions? Write to us via WhatsApp.",
-    "submit": "SEND RECEIPT"
-  },
-  "paywallModal": {
-    "title": "Upgrade to PRO!",
-    "subtitle": "Unlock all premium features",
-    "features": "PRO Features:",
-    "paypalButton": "Pay with PayPal",
-    "payphoneButton": "Pay with PayPhone",
-    "nuveiButton": "Pay with Nuvei",
-    "transferButton": "Bank Transfer",
-    "notNow": "Not now"
   },
   "adminPanel": {
     "title": "Admin Panel",
@@ -479,7 +356,24 @@
       "saveChanges": "SAVE CHANGES"
     }
   },
-  "sidebar": {
-    "admin": "Admin"
+  "payphoneModal": {
+    "title": "PAYPHONE",
+    "subtitle": "Monthly recurring subscription",
+    "cancel": "Cancel"
+  },
+  "transferModal": {
+    "title": "🏦 Bank Transfer Payment",
+    "bankData": "BANK DETAILS",
+    "name": "Name:",
+    "bank": "Bank:",
+    "account": "Account:",
+    "type": "Type:",
+    "id": "ID:",
+    "reference": "Reference / Transaction Number",
+    "receipt": "Payment Receipt *",
+    "receiptHint": "Click to attach (JPG, PNG or PDF, max 5MB)",
+    "reviewTime": "⏳ We review receipts within maximum 24 hours. We notify you by email when your Pro is active.",
+    "questions": "Questions? Write to us via WhatsApp.",
+    "submit": "SEND RECEIPT"
   }
 }
