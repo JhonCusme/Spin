@@ -25,6 +25,7 @@ const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 app.use(express.json());
 app.use('/uploads', express.static('/tmp/uploads'));
+app.use('/i18n', express.static(path.join(__dirname, 'i18n')));
 
 // ── MULTER (comprobantes de transferencia) ───────────────────
 const storage = multer.memoryStorage();
