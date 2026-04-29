@@ -46,8 +46,11 @@ class I18n {
 
   async loadTranslations(lang) {
     try {
+      console.log('Loading translations for lang:', lang);
       const response = await fetch(`/i18n/${lang}.json`);
+      console.log('Response status:', response.status);
       this.translations = await response.json();
+      console.log('Translations loaded:', this.translations);
     } catch (error) {
       console.error('Error loading translations:', error);
       // Fallback a español si falla la carga
