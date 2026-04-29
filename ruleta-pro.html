@@ -3,12 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SpinDraw — Crea y participa en ruletas de sorteos online gratis. Herramienta interactiva para sorteos, rifas y entretenimiento.">
+<meta name="keywords" content="ruleta, sorteo, rifa, rueda de fortuna, entretenimiento, online">
+<meta name="author" content="SpinDraw">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="SpinDraw — Ruleta de Sorteos">
+<meta property="og:description" content="Crea y participa en ruletas de sorteos online. Herramienta gratis para sorteos y entretenimiento.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://spindraw.com">
+<meta property="og:image" content="favicon.svg">
+<meta name="theme-color" content="#080b12">
+<meta name="copyright" content="© 2026 SpinDraw. All rights reserved.">
 <title>SpinDraw — Ruleta de Sorteos</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://spindraw.com">
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <!-- Google AdSense -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7223873610943022"
-     crossorigin="anonymous"></script>
+     crossorigin="anonymous" id="adsense-script"></script>
+<!-- Google Analytics (se cargará dinámicamente) -->
+<script id="analytics-loader">
+  // Los scripts de Analytics y AdSense se cargarán dinámicamente desde los settings
+  window.siteAnalyticsId = 'G-XXXXXXXXXX'; // placeholder
+  window.siteAdSenseCode = 'ca-pub-7223873610943022'; // placeholder
+  
+  // Función para inyectar Analytics
+  function injectAnalytics(id) {
+    if (!id || id === 'G-XXXXXXXXXX') return;
+    const script = document.createElement('script');
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+    script.async = true;
+    document.head.appendChild(script);
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', id);
+  }
+  
+  // Inyectar Analytics con ID inicial (será actualizado)
+  injectAnalytics(window.siteAnalyticsId);
+</script>
 <!-- PayPhone -->
 <link rel="stylesheet" href="https://cdn.payphonetodoesposible.com/box/v1.1/payphone-payment-box.css">
 <script type="module" src="https://cdn.payphonetodoesposible.com/box/v1.1/payphone-payment-box.js"></script>
@@ -1992,12 +2027,49 @@ function logout() {
 // ════════════════════════════════════════════
 let siteSettings = null;
 
-async function openPaywall() {
-  // Load prices from server
-  if (!siteSettings) {
-    try { siteSettings = await api('GET','/api/settings/public'); } catch {
-      siteSettings = { prices: { monthly:{amount:4.99}, lifetime:{amount:29.99} }, bank:{}, whatsapp:'', payphoneEnabled: true, nuveiEnabled: false };
+// Load site settings and configure Google Analytics & AdSense
+async function loadSiteSettings() {
+  try {
+    siteSettings = await api('GET','/api/settings/public');
+    
+    // Update Google Analytics ID if configured
+    if (siteSettings.googleAnalyticsId && siteSettings.googleAnalyticsId !== 'G-XXXXXXXXXX') {
+      window.siteAnalyticsId = siteSettings.googleAnalyticsId;
+      // Re-inject Analytics with new ID
+      const oldScript = document.getElementById('analytics-loader');
+      if (oldScript) {
+        const script = document.createElement('script');
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${siteSettings.googleAnalyticsId}`;
+        script.async = true;
+        document.head.appendChild(script);
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', siteSettings.googleAnalyticsId);
+      }
     }
+    
+    // Update AdSense code if configured
+    if (siteSettings.adSenseCode && siteSettings.adSenseCode !== 'ca-pub-7223873610943022') {
+      window.siteAdSenseCode = siteSettings.adSenseCode;
+      const adScript = document.getElementById('adsense-script');
+      if (adScript) {
+        adScript.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${siteSettings.adSenseCode}`;
+      }
+    }
+  } catch(e) {
+    // Fallback if settings fail to load
+    siteSettings = { prices: { monthly:{amount:4.99}, lifetime:{amount:29.99} }, bank:{}, whatsapp:'', payphoneEnabled: true, nuveiEnabled: false };
+  }
+}
+
+// Call on page load
+window.addEventListener('load', loadSiteSettings);
+
+async function openPaywall() {
+  // Load prices from server if not already loaded
+  if (!siteSettings) {
+    await loadSiteSettings();
   }
   const { prices, payphoneEnabled, nuveiEnabled } = siteSettings;
   document.getElementById('priceMonthly').textContent = `$${prices.monthly.amount}`;
@@ -2196,6 +2268,9 @@ async function loadAdminSettings() {
     document.getElementById('setBankNote').value      = s.bank?.note    || '';
     document.getElementById('setWhatsapp').value      = s.whatsapp      || '';
     document.getElementById('setAdminEmail').value    = s.adminEmail    || '';
+    document.getElementById('setSupportEmail').value  = s.supportEmail  || '';
+    document.getElementById('setGoogleAnalyticsId').value = s.googleAnalyticsId || '';
+    document.getElementById('setAdSenseCode').value   = s.adSenseCode   || '';
     document.getElementById('setPayphoneEnabled').checked = s.payphoneEnabled !== false;
     document.getElementById('setNuveiEnabled').checked = s.nuveiEnabled !== false;
     document.getElementById('setNuveiMode').value = s.nuveiMode || 'staging';
@@ -2221,6 +2296,9 @@ async function saveAdminSettings() {
     },
     whatsapp:   document.getElementById('setWhatsapp').value,
     adminEmail: document.getElementById('setAdminEmail').value,
+    supportEmail: document.getElementById('setSupportEmail').value,
+    googleAnalyticsId: document.getElementById('setGoogleAnalyticsId').value,
+    adSenseCode: document.getElementById('setAdSenseCode').value,
     payphoneEnabled: document.getElementById('setPayphoneEnabled').checked,
     nuveiEnabled: document.getElementById('setNuveiEnabled').checked,
     nuveiMode: document.getElementById('setNuveiMode').value,
@@ -2636,6 +2714,27 @@ restoreSession().then(() => {
       <div class="admin-field"><label>Nota para transferencias</label><input class="admin-input" id="setBankNote" placeholder="Indicar usuario SpinDraw en la referencia"></div>
       <div class="admin-section-title" style="margin-top:8px">Email Admin</div>
       <div class="admin-field"><label>Email para notificaciones</label><input class="admin-input" id="setAdminEmail" type="email" placeholder="admin@tudominio.com"></div>
+      
+      <div class="admin-section-title" style="margin-top:8px">Configuración de Google & AdSense</div>
+      <div class="admin-field">
+        <label>Email de Soporte (aparecerá en páginas legales)</label>
+        <input class="admin-input" id="setSupportEmail" type="email" placeholder="soporte@tudominio.com">
+      </div>
+      <div class="admin-field">
+        <label>Google Analytics ID (ejemplo: G-ABCDEF123456)</label>
+        <input class="admin-input" id="setGoogleAnalyticsId" placeholder="G-XXXXXXXXXX">
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">
+          Obtén tu ID en: <a href="https://analytics.google.com" target="_blank" style="color:var(--accent)">Google Analytics</a>
+        </div>
+      </div>
+      <div class="admin-field">
+        <label>AdSense Client Code (ejemplo: ca-pub-XXXXXXXXXX)</label>
+        <input class="admin-input" id="setAdSenseCode" placeholder="ca-pub-XXXXXXXXXX">
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">
+          Obtén tu código en: <a href="https://adsense.google.com" target="_blank" style="color:var(--accent)">Google AdSense</a>
+        </div>
+      </div>
+      
       <button onclick="saveAdminSettings()" style="width:100%;background:linear-gradient(135deg,var(--accent),#0080ff);color:#fff;border:none;border-radius:50px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;cursor:pointer;margin-top:8px;">GUARDAR CAMBIOS</button>
     </div>
   </div>
@@ -2699,5 +2798,41 @@ async function confirmPayPhonePayment(id, clientTransactionId) {
   }
 }
 </script>
-</body>
+
+<!-- Footer with Legal Pages -->
+<style>
+#footer{
+  background:var(--surface);border-top:1px solid var(--border);
+  padding:32px 20px;margin-top:auto;flex-shrink:0;font-size:0.8rem;
+  color:var(--muted);text-align:center;
+}
+.footer-content{max-width:1200px;margin:0 auto;}
+.footer-links{
+  display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;
+}
+.footer-links a{color:var(--accent);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-divider{width:1px;height:14px;background:var(--border);}
+.footer-bottom{
+  margin-top:16px;padding-top:16px;border-top:1px solid var(--border);
+  font-size:0.75rem;color:var(--muted);
+}
+</style>
+<footer id="footer">
+<div class="footer-content">
+<div class="footer-links">
+<a href="privacidad.html" target="_blank">Política de Privacidad</a>
+<div class="footer-divider"></div>
+<a href="terminos.html" target="_blank">Términos de Servicio</a>
+<div class="footer-divider"></div>
+<a href="cookies.html" target="_blank">Política de Cookies</a>
+<div class="footer-divider"></div>
+<a href="contacto.html" target="_blank">Contacto</a>
+</div>
+<div class="footer-bottom">
+<p>© 2026 SpinDraw. Todos los derechos reservados.</p>
+<p>Esta plataforma utiliza publicidad de Google AdSense. Contiene contenido generado por usuarios.</p>
+</div>
+</div>
+</footer>
 </html>

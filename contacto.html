@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacto — SpinDraw</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080b12; --surface:#0f1420; --card:#141926; --border:#1e2535;
+  --accent:#00e5ff; --accent2:#7c3aed; --gold:#fbbf24; --green:#10b981;
+  --red:#ef4444; --text:#e8eaf0; --muted:#5a6380; --r:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text);
+  line-height:1.6; min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 10% 0%,#0d1f3c 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 90% 100%,#1a0d30 0%,transparent 70%);
+}
+.container{max-width:900px;margin:0 auto;padding:40px 20px;}
+header{text-align:center;margin-bottom:60px;padding:40px 0 0;}
+.breadcrumb{font-size:0.9rem;color:var(--muted);margin-bottom:20px;}
+.breadcrumb a{color:var(--accent);text-decoration:none;}
+.breadcrumb a:hover{text-decoration:underline;}
+h1{font-size:2.5rem;margin-bottom:10px;color:var(--accent);font-family:'Bebas Neue',sans-serif;letter-spacing:3px;}
+.subtitle{color:var(--muted);font-size:1.1rem;}
+
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:40px;}
+.info-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:30px;}
+.info-box h2{color:var(--accent2);font-size:1.3rem;margin-bottom:15px;}
+.info-item{margin-bottom:20px;}
+.info-label{color:var(--muted);font-size:0.9rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}
+.info-value{color:var(--text);font-size:1.1rem;}
+.info-value a{color:var(--accent);text-decoration:none;transition:color 0.2s;}
+.info-value a:hover{color:var(--accent2);}
+
+.form-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:30px;grid-column:1/-1;}
+.form-group{margin-bottom:20px;}
+.form-group label{display:block;color:var(--muted);font-size:0.9rem;margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;}
+.form-group input,.form-group textarea,.form-group select{
+  width:100%;padding:12px;background:var(--surface);border:1px solid var(--border);
+  color:var(--text);border-radius:6px;font-family:'Outfit',sans-serif;font-size:1rem;
+  transition:border-color 0.2s;
+}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{
+  outline:none;border-color:var(--accent);box-shadow:0 0 12px rgba(0,229,255,.15);
+}
+.form-group textarea{resize:vertical;min-height:120px;}
+
+.form-inline{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+.form-inline .form-group{margin-bottom:0;}
+
+.submit-btn{
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);
+  color:#fff;border:none;border-radius:50px;padding:14px 56px;
+  font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;
+  cursor:pointer;box-shadow:0 0 32px rgba(0,229,255,.4);
+  transition:transform .15s,box-shadow .15s;width:100%;
+}
+.submit-btn:hover{transform:scale(1.02);box-shadow:0 0 48px rgba(0,229,255,.6);}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+.faq{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:30px;margin-top:40px;}
+.faq h2{color:var(--accent2);font-size:1.3rem;margin-bottom:20px;}
+.faq-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.faq-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.faq-question{color:var(--accent);font-weight:600;margin-bottom:8px;cursor:pointer;}
+.faq-answer{color:var(--text);display:none;}
+.faq-answer.active{display:block;}
+
+.footer-nav{text-align:center;margin-top:40px;}
+.footer-nav a{color:var(--accent);text-decoration:none;margin:0 15px;display:inline-block;}
+.footer-nav a:hover{text-decoration:underline;}
+
+@media(max-width:768px){
+  .content-grid{grid-template-columns:1fr;}
+  .form-inline{grid-template-columns:1fr;}
+  h1{font-size:2rem;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<div class="breadcrumb"><a href="ruleta-pro.html">Inicio</a> / Contacto</div>
+<h1>CONTACTO</h1>
+<p class="subtitle">¿Preguntas? Estamos aquí para ayudarte</p>
+</header>
+
+<div class="content-grid">
+
+<div class="info-box">
+<h2>📧 Email</h2>
+<div class="info-item">
+<div class="info-label">Soporte General</div>
+<div class="info-value"><a href="mailto:cusmejhonalexander@gmail.com">cusmejhonalexander@gmail.com</a></div>
+</div>
+<div class="info-item">
+<div class="info-label">Privacidad y Datos</div>
+<div class="info-value"><a href="mailto:cusmejhonalexander@gmail.com">cusmejhonalexander@gmail.com</a></div>
+</div>
+<div class="info-item">
+<div class="info-label">Reportar Problemas</div>
+<parameter name="newString"><div class="info-value"><a href="mailto:cusmejhonalexander@gmail.com">cusmejhonalexander@gmail.com</a></div>
+</div>
+</div>
+
+<div class="info-box">
+<h2>🕐 Horarios</h2>
+<div class="info-item">
+<div class="info-label">Tiempo de Respuesta</div>
+<div class="info-value">24-48 horas</div>
+</div>
+<div class="info-item">
+<div class="info-label">Disponibilidad</div>
+<div class="info-value">Lunes a Viernes<br>09:00 - 18:00 UTC</div>
+</div>
+<div class="info-item">
+<div class="info-label">Soporte de Emergencia</div>
+<div class="info-value">Available on demand</div>
+</div>
+</div>
+
+</div>
+
+<div class="form-box">
+<h2 style="margin-bottom:20px;color:var(--accent);">📬 Envíanos un Mensaje</h2>
+<form id="contactForm">
+<div class="form-inline">
+<div class="form-group">
+<label for="nombre">Nombre *</label>
+<input type="text" id="nombre" name="nombre" required placeholder="Tu nombre completo">
+</div>
+<div class="form-group">
+<label for="email">Email *</label>
+<input type="email" id="email" name="email" required placeholder="tu@email.com">
+</div>
+</div>
+
+<div class="form-group">
+<label for="asunto">Asunto *</label>
+<input type="text" id="asunto" name="asunto" required placeholder="¿Cómo podemos ayudarte?">
+</div>
+
+<div class="form-group">
+<label for="categoria">Categoría *</label>
+<select id="categoria" name="categoria" required>
+<option value="">-- Selecciona una categoría --</option>
+<option value="soporte">Soporte Técnico</option>
+<option value="pago">Problemas de Pago</option>
+<option value="privacidad">Privacidad y Datos</option>
+<option value="reporte">Reporte de Problema</option>
+<option value="feedback">Feedback/Sugerencias</option>
+<option value="otro">Otro</option>
+</select>
+</div>
+
+<div class="form-group">
+<label for="mensaje">Mensaje *</label>
+<textarea id="mensaje" name="mensaje" required placeholder="Cuéntanos con más detalle..."></textarea>
+</div>
+
+<button type="submit" class="submit-btn">Enviar Mensaje</button>
+</form>
+</div>
+
+<div class="faq">
+<h2>❓ Preguntas Frecuentes</h2>
+
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">¿Cuándo responden a los correos?</div>
+<div class="faq-answer">
+Respondemos a todos los correos dentro de 24-48 horas. Durante fines de semana y festivos puede tomar más tiempo.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">¿Cómo puedo cambiar mi contraseña?</div>
+<div class="faq-answer">
+Puedes cambiar tu contraseña en: Panel de Usuario → Configuración → Seguridad → Cambiar Contraseña
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">¿Cómo cancelo mi suscripción?</div>
+<div class="faq-answer">
+Puedes cancelar en: Panel de Usuario → Suscripciones → Cancelar. Se efectuará inmediatamente sin penalidades.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">¿Qué métodos de pago aceptan?</div>
+<div class="faq-answer">
+Aceptamos tarjetas de crédito/débito, transferencias bancarias y billeteras digitales a través de nuestros proveedores de pago seguros.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">¿Puedo solicitar eliminación de datos?</div>
+<div class="faq-answer">
+Sí, puedes solicitar la eliminación completa de tus datos escribiendo a privacy@spindraw.com con tu ID de usuario.
+</div>
+</div>
+
+<div class="faq-item">
+<div class="faq-question" onclick="toggleFaq(this)">¿Cómo reporto un problema de seguridad?</div>
+<div class="faq-answer">
+Reporta problemas de seguridad a reports@spindraw.com directamente. Por favor no publiques vulnerabilidades públicamente.
+</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="footer-nav">
+<a href="ruleta-pro.html">← Volver al inicio</a>
+<a href="privacidad.html">Política de Privacidad</a>
+<a href="terminos.html">Términos de Servicio</a>
+</div>
+
+<script>
+function toggleFaq(element) {
+  const answer = element.nextElementSibling;
+  answer.classList.toggle('active');
+  element.style.color = answer.classList.contains('active') ? 'var(--gold)' : 'var(--accent)';
+}
+
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  alert('Gracias por tu mensaje. Nos pondremos en contacto pronto.');
+  this.reset();
+});
+</script>
+
+</body>
+</html>

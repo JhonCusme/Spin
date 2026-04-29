@@ -286,9 +286,12 @@ app.get('/api/settings/public', async (req, res) => {
       note:    'Indicar tu usuario SpinDraw en la referencia',
     });
     const whatsapp = await getSetting('whatsapp', '+593900000000');
+    const supportEmail = await getSetting('supportEmail', 'cusmejhonalexander@gmail.com');
+    const googleAnalyticsId = await getSetting('googleAnalyticsId', '');
+    const adSenseCode = await getSetting('adSenseCode', '');
     const payphoneEnabled = await getSetting('payphoneEnabled', true);
     const nuveiEnabled = await getSetting('nuveiEnabled', false);
-    res.json({ prices, bank, whatsapp, payphoneEnabled, nuveiEnabled });
+    res.json({ prices, bank, whatsapp, supportEmail, googleAnalyticsId, adSenseCode, payphoneEnabled, nuveiEnabled });
   } catch(e) {
     // Fallback to defaults on error
     res.json({
@@ -305,6 +308,9 @@ app.get('/api/settings/public', async (req, res) => {
         note:    'Indicar tu usuario SpinDraw en la referencia',
       },
       whatsapp: '+593900000000',
+      supportEmail: 'cusmejhonalexander@gmail.com',
+      googleAnalyticsId: '',
+      adSenseCode: '',
       payphoneEnabled: true,
       nuveiEnabled: false
     });
@@ -1159,11 +1165,14 @@ app.post('/api/admin/users/:id/toggle-pro', adminMiddleware, async (req, res) =>
 // GET /api/admin/settings
 app.get('/api/admin/settings', adminMiddleware, async (req, res) => {
   try {
-    const [prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId] = await Promise.all([
+    const [prices, bank, whatsapp, adminEmail, supportEmail, googleAnalyticsId, adSenseCode, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId] = await Promise.all([
       getSetting('prices', { monthly: { amount: 4.99, label: 'Mensual' }, lifetime: { amount: 29.99, label: 'Vitalicio' } }),
       getSetting('bank', {}),
       getSetting('whatsapp', ''),
       getSetting('adminEmail', ''),
+      getSetting('supportEmail', 'cusmejhonalexander@gmail.com'),
+      getSetting('googleAnalyticsId', ''),
+      getSetting('adSenseCode', ''),
       getSetting('payphoneEnabled', true),
       getSetting('nuveiEnabled', false),
       getSetting('nuveiMode', 'staging'),
@@ -1172,19 +1181,22 @@ app.get('/api/admin/settings', adminMiddleware, async (req, res) => {
       getSetting('nuveiMerchantId', ''),
       getSetting('nuveiTerminalId', ''),
     ]);
-    res.json({ prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId });
+    res.json({ prices, bank, whatsapp, adminEmail, supportEmail, googleAnalyticsId, adSenseCode, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 // PUT /api/admin/settings
 app.put('/api/admin/settings', adminMiddleware, async (req, res) => {
   try {
-    const { prices, bank, whatsapp, adminEmail, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId } = req.body;
+    const { prices, bank, whatsapp, adminEmail, supportEmail, googleAnalyticsId, adSenseCode, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId } = req.body;
     const ops = [];
     if (prices)         ops.push(setSetting('prices', prices));
     if (bank)           ops.push(setSetting('bank', bank));
     if (whatsapp)       ops.push(setSetting('whatsapp', whatsapp));
     if (adminEmail)     ops.push(setSetting('adminEmail', adminEmail));
+    if (supportEmail)   ops.push(setSetting('supportEmail', supportEmail));
+    if (googleAnalyticsId) ops.push(setSetting('googleAnalyticsId', googleAnalyticsId));
+    if (adSenseCode)    ops.push(setSetting('adSenseCode', adSenseCode));
     if (payphoneEnabled !== undefined) ops.push(setSetting('payphoneEnabled', payphoneEnabled));
     if (nuveiEnabled !== undefined) ops.push(setSetting('nuveiEnabled', nuveiEnabled));
     if (nuveiMode !== undefined) ops.push(setSetting('nuveiMode', nuveiMode));

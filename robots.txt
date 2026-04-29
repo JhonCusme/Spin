@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /ruleta-pro.html
+Allow: /privacidad.html
+Allow: /terminos.html
+Allow: /cookies.html
+Allow: /contacto.html
+Disallow: /admin
+Disallow: /api
+Disallow: /private
+Disallow: /*.json
+Disallow: /node_modules
+
+Sitemap: https://spindraw.com/sitemap.xml
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1

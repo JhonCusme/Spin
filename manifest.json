@@ -1,0 +1,18 @@
+{
+  "name": "SpinDraw — Ruleta de Sorteos",
+  "description": "Crea y participa en ruletas de sorteos online gratis. Herramienta interactiva para sorteos, rifas y entretenimiento.",
+  "short_name": "SpinDraw",
+  "start_url": "/ruleta-pro.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#7c3aed",
+  "background_color": "#080b12",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

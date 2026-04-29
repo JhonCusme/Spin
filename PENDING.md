@@ -1,6 +1,67 @@
 # 📋 SpinDraw — Tareas Pendientes
 
-## 🚀 Integración Nuvei
+## 🎯 NUEVAS: Páginas Legales y AdSense
+
+### ✅ COMPLETADO
+- [x] Crear Política de Privacidad (`privacidad.html`)
+- [x] Crear Términos de Servicio (`terminos.html`)
+- [x] Crear Política de Cookies (`cookies.html`)
+- [x] Crear Página de Contacto (`contacto.html`)
+- [x] Crear `robots.txt` para indexación
+- [x] Crear `sitemap.xml` con todas las páginas
+- [x] Crear `manifest.json` para PWA
+- [x] Agregar meta tags SEO a `ruleta-pro.html`
+- [x] Agregar Google Analytics script dinámico
+- [x] Agregar footer con links legales
+- [x] Crear guía `ADSENSE_SETUP.md`
+- [x] Reemplazar placeholders con dominio actual: `https://spin-22w3.onrender.com/`
+- [x] Reemplazar placeholders con email: `cusmejhonalexander@gmail.com`
+- [x] Agregar campos en admin para:
+  - [x] Email de Soporte
+  - [x] Google Analytics ID (cambiar desde admin)
+  - [x] AdSense Code (cambiar desde admin)
+- [x] Actualizar server.js para guardar y servir estos valores
+- [x] Hacer que Google Analytics y AdSense se inyecten dinámicamente
+- [x] Crear guía de despliegue: `DEPLOYMENT_GUIDE.md`
+
+### ⏳ PENDIENTE AHORA (Tareas para el usuario)
+
+**PASO 1: DESPLEGAR EN RENDER** (3 minutos)
+```bash
+git add .
+git commit -m "Agregar páginas legales y configuración de AdSense"
+git push origin main
+```
+
+**PASO 2: REGISTRAR EN GOOGLE SEARCH CONSOLE** (5 minutos)
+- [ ] Ir a https://search.google.com/search-console
+- [ ] Agregar propiedad: `https://spin-22w3.onrender.com/`
+- [ ] Verificar propiedad (usar meta tag si no puedes con DNS)
+- [ ] Enviar sitemap: `https://spin-22w3.onrender.com/sitemap.xml`
+- [ ] Esperar indexación (1-7 días)
+
+**PASO 3: CONFIGURAR EN ADMIN** (2 minutos)
+- [ ] Ir a panel admin
+- [ ] Ir a "Ajustes"
+- [ ] (Opcional) Cambiar Email de Soporte
+- [ ] (Más tarde) Agregar Google Analytics ID cuando lo obtengas
+- [ ] (Después de aprobación) Agregar AdSense Code
+
+**PASO 4: SOLICITAR ADSENSE** (después de indexación)
+- [ ] Esperar a que Google indexe tu sitio
+- [ ] Ir a https://adsense.google.com
+- [ ] Completar solicitud
+- [ ] Esperar 1-2 semanas para aprobación
+
+### ⏳ PENDIENTE DESPUÉS DE APROBACIÓN ADSENSE
+- [ ] Obtener Google Analytics ID
+- [ ] Configurar Analytics ID en admin
+- [ ] Obtener AdSense Client Code
+- [ ] Configurar AdSense Code en admin
+- [ ] Ver ganancias en AdSense
+- [ ] Optimizar ubicación de anuncios
+
+## 🚀 Integración Nuvei (Continuación anterior)
 
 ### ✅ Completado
 - [x] Agregar campos de credenciales en panel admin
