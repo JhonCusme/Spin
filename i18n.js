@@ -1,6 +1,6 @@
 // i18n.js - Sistema de Internacionalización para SpinDraw
 // Sistema simple de traducciones sin dependencias externas
-
+console.log('i18n.js starting...');
 class I18n {
   constructor() {
     this.currentLang = 'es'; // Idioma por defecto
