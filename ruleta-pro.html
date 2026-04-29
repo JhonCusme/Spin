@@ -2109,19 +2109,7 @@ async function loadSiteSettings() {
       }
     }
 
-    // Add Google Site Verification meta tag if configured
-    if (siteSettings.googleSiteVerification && siteSettings.googleSiteVerification.trim()) {
-      // Remove existing verification meta tag if present
-      const existingMeta = document.querySelector('meta[name="google-site-verification"]');
-      if (existingMeta) {
-        existingMeta.remove();
-      }
-      // Add new verification meta tag
-      const metaTag = document.createElement('meta');
-      metaTag.name = 'google-site-verification';
-      metaTag.content = siteSettings.googleSiteVerification.trim();
-      document.head.appendChild(metaTag);
-    }
+    // Google Site Verification meta tag is now added server-side
   } catch(e) {
     // Fallback if settings fail to load
     siteSettings = { prices: { monthly:{amount:4.99}, lifetime:{amount:29.99} }, bank:{}, whatsapp:'', payphoneEnabled: true, nuveiEnabled: false };

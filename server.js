@@ -1215,7 +1215,28 @@ app.put('/api/admin/settings', adminMiddleware, async (req, res) => {
 
 // ── STATIC FILES ────────────────────────────────────────────
 app.use(express.static(__dirname));
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'ruleta-pro.html')));
+
+// Dynamic HTML serving with Google Site Verification
+app.get('/', async (req, res) => {
+  try {
+    let html = fs.readFileSync(path.join(__dirname, 'ruleta-pro.html'), 'utf8');
+
+    // Get Google Site Verification code from settings
+    const googleSiteVerification = await getSetting('googleSiteVerification', '');
+
+    // If verification code exists, add meta tag before </head>
+    if (googleSiteVerification && googleSiteVerification.trim()) {
+      const metaTag = `<meta name="google-site-verification" content="${googleSiteVerification.trim()}" />`;
+      html = html.replace('</head>', `  ${metaTag}\n</head>`);
+    }
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  } catch (error) {
+    console.error('Error serving HTML:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
 
 // ═══════════════════════════════════════════════════════════
 //  START
