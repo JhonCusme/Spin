@@ -71,16 +71,6 @@ async function updateUser(username, updates) {
 }
 
 // sanitizeUser (same)
-function sanitizeUser(u) {
-  return {
-    id: u.username, username: u.username, email: u.email,
-    firstName: u.firstName, lastName: u.lastName, phone: u.phone,
-    isPro: u.isPro, proType: u.proType, proExpiry: u.proExpiry,
-    ruletas: u.ruletas, totalSpins: u.totalSpins, createdAt: u.createdAt,
-    isAdmin: u.username === process.env.ADMIN_USERNAME,
-  };
-}
-
 // ── PAYPAL CLIENT ────────────────────────────────────────────
 function getPayPalClient() {
   const env = process.env.PAYPAL_MODE === 'live'
