@@ -603,14 +603,14 @@ header{
 
 /* ══ LANGUAGE SELECTOR ══ */
 .language-selector{
-  position:absolute;top:8px;right:8px;z-index:100;
+  position:fixed;bottom:20px;right:20px;z-index:1000;
 }
 .lang-select{
   background:var(--card);border:1px solid var(--border);border-radius:8px;
-  color:var(--text);padding:4px 8px;font-size:.75rem;min-width:100px;
-  cursor:pointer;outline:none;
+  color:var(--text);padding:6px 10px;font-size:.8rem;min-width:120px;
+  cursor:pointer;outline:none;box-shadow:0 4px 12px rgba(0,0,0,.15);
 }
-.lang-select:focus{border-color:var(--accent);}
+.lang-select:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,229,255,.2);}
 .lang-select option{background:var(--bg);color:var(--text);}
 </style>
 </head>
@@ -974,18 +974,18 @@ header{
           <div class="profile-username" id="profileUsername">@—</div>
           <div class="profile-plan">
             <span id="profilePlanDot" style="width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block"></span>
-            <span id="profilePlanText">Plan Free</span>
+            <span id="profilePlanText" data-i18n="header.planFree">Plan Free</span>
           </div>
         </div>
       </div>
       <div class="profile-stats">
-        <div class="stat-card"><div class="stat-num" id="statSpins">0</div><div class="stat-label">Giros</div></div>
-        <div class="stat-card"><div class="stat-num" id="statRuletas">1</div><div class="stat-label">Ruletas</div></div>
-        <div class="stat-card"><div class="stat-num" id="statWinners">0</div><div class="stat-label">Ganadores</div></div>
+        <div class="stat-card"><div class="stat-num" id="statSpins">0</div><div class="stat-label" data-i18n="profile.spins">Giros</div></div>
+        <div class="stat-card"><div class="stat-num" id="statRuletas">1</div><div class="stat-label" data-i18n="profile.wheels">Ruletas</div></div>
+        <div class="stat-card"><div class="stat-num" id="statWinners">0</div><div class="stat-label" data-i18n="profile.winners">Ganadores</div></div>
       </div>
       <div class="profile-actions">
-        <button class="auth-submit" onclick="closeAccountModal()">✓ Continuar</button>
-        <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+        <button class="auth-submit" onclick="closeAccountModal()" data-i18n="profile.continue">✓ Continuar</button>
+        <button class="btn-logout" onclick="logout()" data-i18n="nav.logout">Cerrar Sesión</button>
       </div>
     </div>
 
@@ -1004,12 +1004,12 @@ header{
   <div class="logo-wordmark">Spin<span>Draw</span></div>
   <div class="plan-badge">
     <div class="plan-dot" id="planDot"></div>
-    <span id="planLabel">Plan Free</span>
+    <span id="planLabel" data-i18n="header.planFree">Plan Free</span>
   </div>
-  <button class="btn-pro-cta" id="upgradeCta" onclick="openPaywall()">👑 Ir a Pro</button>
+  <button class="btn-pro-cta" id="upgradeCta" onclick="openPaywall()" data-i18n="header.upgradePro">👑 Ir a Pro</button>
   <button onclick="showAccountModal()" id="headerAccountBtn" style="margin-left:10px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:50px;padding:5px 14px 5px 5px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:border-color .15s;">
     <div id="headerAvatar" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.9rem;color:#fff;flex-shrink:0;">✦</div>
-    <span id="currentUserDisplay" style="font-size:.8rem;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Invitado</span>
+    <span id="currentUserDisplay" style="font-size:.8rem;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" data-i18n="header.guest">Invitado</span>
   </button>
 </header>
 
@@ -1022,14 +1022,14 @@ header{
 
   <!-- LEFT NAV -->
   <nav class="sidebar-left">
-    <div style="font-size:.64rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:3px 10px 9px">Menú</div>
-    <button class="nav-tab active" onclick="switchTab('participants',this)"><span class="icon">👥</span>Participantes</button>
-    <button class="nav-tab" onclick="switchTab('settings',this)"><span class="icon">⚙️</span>Ajustes</button>
-    <button class="nav-tab" onclick="switchTab('theme',this)"><span class="icon">🎨</span>Tema <span class="pro-lock" id="lockTheme">PRO</span></button>
-    <button class="nav-tab" onclick="switchTab('logo',this)"><span class="icon">🖼️</span>Logo <span class="pro-lock" id="lockLogo">PRO</span></button>
-    <button class="nav-tab" onclick="switchTab('sound',this)"><span class="icon">🔊</span>Sonidos <span class="pro-lock" id="lockSound">PRO</span></button>
+    <div style="font-size:.64rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:3px 10px 9px" data-i18n="sidebar.menu">Menú</div>
+    <button class="nav-tab active" onclick="switchTab('participants',this)"><span class="icon">👥</span><span data-i18n="sidebar.participants">Participantes</span></button>
+    <button class="nav-tab" onclick="switchTab('settings',this)"><span class="icon">⚙️</span><span data-i18n="sidebar.settings">Ajustes</span></button>
+    <button class="nav-tab" onclick="switchTab('theme',this)"><span class="icon">🎨</span><span data-i18n="sidebar.theme">Tema</span> <span class="pro-lock" id="lockTheme">PRO</span></button>
+    <button class="nav-tab" onclick="switchTab('logo',this)"><span class="icon">🖼️</span><span data-i18n="sidebar.logo">Logo</span> <span class="pro-lock" id="lockLogo">PRO</span></button>
+    <button class="nav-tab" onclick="switchTab('sound',this)"><span class="icon">🔊</span><span data-i18n="sidebar.sound">Sonidos</span> <span class="pro-lock" id="lockSound">PRO</span></button>
     <div style="margin-top:auto;padding-top:14px;border-top:1px solid var(--border)">
-      <button class="nav-tab" onclick="enterFullscreen()"><span class="icon">⛶</span>Modo Stream <span class="pro-lock" id="lockFs">PRO</span></button>
+      <button class="nav-tab" onclick="enterFullscreen()"><span class="icon">⛶</span><span data-i18n="sidebar.fullscreen">Modo Stream</span> <span class="pro-lock" id="lockFs">PRO</span></button>
     </div>
   </nav>
 

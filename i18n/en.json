@@ -84,6 +84,39 @@
     "noData": "No data available",
     "confirm": "Are you sure?",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "success": "Success!"
+  },
+  "sidebar": {
+    "menu": "Menu",
+    "participants": "Participants",
+    "settings": "Settings",
+    "theme": "Theme",
+    "logo": "Logo",
+    "sound": "Sounds",
+    "fullscreen": "Stream Mode"
+  },
+  "header": {
+    "planFree": "Free Plan",
+    "upgradePro": "Go Pro",
+    "guest": "Guest"
+  },
+  "profile": {
+    "title": "My Profile",
+    "plan": "Plan",
+    "logout": "Logout",
+    "spins": "Spins",
+    "wheels": "Wheels",
+    "winners": "Winners",
+    "continue": "Continue"
+  },
+  "settings": {
+    "title": "Wheel Settings",
+    "wheelTitle": "Wheel Title",
+    "participants": "Participants List",
+    "prizes": "Prizes List",
+    "colors": "Colors",
+    "save": "Save",
+    "reset": "Reset"
   }
 }

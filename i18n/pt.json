@@ -84,6 +84,39 @@
     "noData": "Nenhum dado disponível",
     "confirm": "Tem certeza?",
     "yes": "Sim",
-    "no": "Não"
+    "no": "Não",
+    "success": "Sucesso!"
+  },
+  "sidebar": {
+    "menu": "Menu",
+    "participants": "Participantes",
+    "settings": "Configurações",
+    "theme": "Tema",
+    "logo": "Logo",
+    "sound": "Sons",
+    "fullscreen": "Modo Stream"
+  },
+  "header": {
+    "planFree": "Plano Gratuito",
+    "upgradePro": "Ir Pro",
+    "guest": "Convidado"
+  },
+  "profile": {
+    "title": "Meu Perfil",
+    "plan": "Plano",
+    "logout": "Sair",
+    "spins": "Giros",
+    "wheels": "Rôletas",
+    "winners": "Ganhadores",
+    "continue": "Continuar"
+  },
+  "settings": {
+    "title": "Configurações da Roleta",
+    "wheelTitle": "Título da Roleta",
+    "participants": "Lista de Participantes",
+    "prizes": "Lista de Prêmios",
+    "colors": "Cores",
+    "save": "Salvar",
+    "reset": "Reiniciar"
   }
 }

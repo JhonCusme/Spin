@@ -152,9 +152,8 @@ class I18n {
         </select>
       `;
 
-      // Insertar en el header
-      const header = document.querySelector('header') || document.querySelector('.nav') || document.body;
-      header.appendChild(selector);
+      // Insertar en el body (esquina inferior derecha)
+      document.body.appendChild(selector);
 
       // Event listener
       document.getElementById('lang-select').addEventListener('change', (e) => {

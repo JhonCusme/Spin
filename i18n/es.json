@@ -84,6 +84,39 @@
     "noData": "No hay datos disponibles",
     "confirm": "¿Estás seguro?",
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "success": "¡Éxito!"
+  },
+  "sidebar": {
+    "menu": "Menú",
+    "participants": "Participantes",
+    "settings": "Ajustes",
+    "theme": "Tema",
+    "logo": "Logo",
+    "sound": "Sonidos",
+    "fullscreen": "Modo Stream"
+  },
+  "header": {
+    "planFree": "Plan Free",
+    "upgradePro": "Ir a Pro",
+    "guest": "Invitado"
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "plan": "Plan",
+    "logout": "Cerrar Sesión",
+    "spins": "Giros",
+    "wheels": "Ruletas",
+    "winners": "Ganadores",
+    "continue": "Continuar"
+  },
+  "settings": {
+    "title": "Configuración de la Ruleta",
+    "wheelTitle": "Título de la Ruleta",
+    "participants": "Lista de Participantes",
+    "prizes": "Lista de Premios",
+    "colors": "Colores",
+    "save": "Guardar",
+    "reset": "Reiniciar"
   }
 }
