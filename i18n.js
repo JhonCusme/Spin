@@ -1,7 +1,5 @@
 // i18n.js - Sistema de Internacionalización para SpinDraw
 // Sistema simple de traducciones sin dependencias externas
-console.log('i18n.js loaded');
-throw new Error('Test error to see if i18n.js executes');
 
 class I18n {
   constructor() {
@@ -9,7 +7,41 @@ class I18n {
     this.translations = {};
     this.availableLangs = ['es', 'en', 'pt'];
     this.initialized = false;
-    // No inicializar automáticamente, esperar llamada manual con callback
+    // Inicializar traducciones básicas por defecto
+    this.translations = {
+      es: { wheel: { defaultName: 'Ruleta 1' } },
+      en: { wheel: { defaultName: 'Wheel 1' } },
+      pt: { wheel: { defaultName: 'Roleta 1' } }
+    };
+    // Cargar traducciones reales de forma asíncrona
+    this.loadTranslationsAsync();
+  }
+
+  async loadTranslationsAsync() {
+    try {
+      // Cargar idioma guardado o detectar del navegador
+      const savedLang = localStorage.getItem('spindraw_lang');
+      if (savedLang && this.availableLangs.includes(savedLang)) {
+        this.currentLang = savedLang;
+      } else {
+        // Detectar idioma del navegador
+        const browserLang = navigator.language.split('-')[0];
+        if (this.availableLangs.includes(browserLang)) {
+          this.currentLang = browserLang;
+        }
+      }
+
+      const response = await fetch(`/i18n/${this.currentLang}.json`);
+      if (response.ok) {
+        this.translations[this.currentLang] = await response.json();
+        this.initialized = true;
+        this.updateUI();
+        this.setupLanguageSelector();
+      }
+    } catch (error) {
+      console.error('Error loading translations:', error);
+      // Mantener valores por defecto
+    }
   }
 
   async initialize(callback) {
@@ -36,14 +68,10 @@ class I18n {
     this.updateUI();
     this.setupLanguageSelector();
     this.initialized = true;
-    console.log('i18n initialization completed, calling callback');
 
     // Ejecutar callback si se proporciona
     if (callback && typeof callback === 'function') {
-      console.log('Executing callback');
       callback();
-    } else {
-      console.log('No callback provided');
     }
   }
 
@@ -53,11 +81,8 @@ class I18n {
 
   async loadTranslations(lang) {
     try {
-      console.log('Loading translations for lang:', lang);
       const response = await fetch(`/i18n/${lang}.json`);
-      console.log('Response status:', response.status);
       this.translations = await response.json();
-      console.log('Translations loaded:', this.translations);
     } catch (error) {
       console.error('Error loading translations:', error);
       // Fallback a español si falla la carga
@@ -68,8 +93,27 @@ class I18n {
   }
 
   t(key, params = {}) {
+    // Primero intentar con las traducciones completas del idioma actual
+    if (this.translations[this.currentLang]) {
+      const keys = key.split('.');
+      let value = this.translations[this.currentLang];
+
+      for (const k of keys) {
+        value = value?.[k];
+      }
+
+      if (value !== undefined) {
+        // Reemplazar parámetros
+        if (typeof value === 'string') {
+          return value.replace(/\{(\w+)\}/g, (match, param) => params[param] || match);
+        }
+        return value;
+      }
+    }
+
+    // Fallback a traducciones básicas por defecto
     const keys = key.split('.');
-    let value = this.translations;
+    let value = this.translations[this.currentLang] || this.translations.es;
 
     for (const k of keys) {
       value = value?.[k];
