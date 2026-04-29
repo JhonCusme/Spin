@@ -93,43 +93,25 @@ class I18n {
   }
 
   t(key, params = {}) {
-    // Primero intentar con las traducciones completas del idioma actual
-    if (this.translations[this.currentLang]) {
-      const keys = key.split('.');
-      let value = this.translations[this.currentLang];
-
-      for (const k of keys) {
-        value = value?.[k];
-      }
-
-      if (value !== undefined) {
-        // Reemplazar parámetros
-        if (typeof value === 'string') {
-          return value.replace(/\{(\w+)\}/g, (match, param) => params[param] || match);
-        }
-        return value;
-      }
-    }
-
-    // Fallback a traducciones básicas por defecto
+    console.log('Translating key:', key, 'currentLang:', this.currentLang, 'translations:', this.translations);
+    // Buscar en las traducciones del idioma actual
     const keys = key.split('.');
-    let value = this.translations[this.currentLang] || this.translations.es;
+    let value = this.translations[this.currentLang];
 
     for (const k of keys) {
       value = value?.[k];
     }
 
-    if (value === undefined) {
-      console.warn(`Translation missing for key: ${key}`);
-      return key;
+    if (value !== undefined) {
+      // Reemplazar parámetros
+      if (typeof value === 'string') {
+        return value.replace(/\{(\w+)\}/g, (match, param) => params[param] || match);
+      }
+      return value;
     }
 
-    // Reemplazar parámetros
-    if (typeof value === 'string') {
-      return value.replace(/\{(\w+)\}/g, (match, param) => params[param] || match);
-    }
-
-    return value;
+    console.warn(`Translation missing for key: ${key}`);
+    return key;
   }
 
   async changeLanguage(lang) {
