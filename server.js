@@ -1188,7 +1188,7 @@ app.get('/api/admin/settings', adminMiddleware, async (req, res) => {
 // PUT /api/admin/settings
 app.put('/api/admin/settings', adminMiddleware, async (req, res) => {
   try {
-    const { prices, bank, whatsapp, adminEmail, supportEmail, googleAnalyticsId, adSenseCode, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId } = req.body;
+    const { prices, bank, whatsapp, adminEmail, supportEmail, googleAnalyticsId, googleSiteVerification, adSenseCode, payphoneEnabled, nuveiEnabled, nuveiMode, nuveiApiKey, nuveiSecret, nuveiMerchantId, nuveiTerminalId } = req.body;
     const ops = [];
     if (prices)         ops.push(setSetting('prices', prices));
     if (bank)           ops.push(setSetting('bank', bank));
@@ -1196,6 +1196,7 @@ app.put('/api/admin/settings', adminMiddleware, async (req, res) => {
     if (adminEmail)     ops.push(setSetting('adminEmail', adminEmail));
     if (supportEmail)   ops.push(setSetting('supportEmail', supportEmail));
     if (googleAnalyticsId) ops.push(setSetting('googleAnalyticsId', googleAnalyticsId));
+    if (googleSiteVerification) ops.push(setSetting('googleSiteVerification', googleSiteVerification));
     if (adSenseCode)    ops.push(setSetting('adSenseCode', adSenseCode));
     if (payphoneEnabled !== undefined) ops.push(setSetting('payphoneEnabled', payphoneEnabled));
     if (nuveiEnabled !== undefined) ops.push(setSetting('nuveiEnabled', nuveiEnabled));
