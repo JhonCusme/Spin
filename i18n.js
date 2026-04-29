@@ -174,7 +174,9 @@ class I18n {
         }
       }
     };
-    // Cargar traducciones
+    // Aplicar traducciones básicas inmediatamente
+    this.updateUI();
+    // Cargar traducciones completas
     this.loadTranslationsAsync();
   }
 
