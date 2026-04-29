@@ -603,15 +603,23 @@ header{
 
 /* ══ LANGUAGE SELECTOR ══ */
 .language-selector{
-  position:fixed;bottom:20px;right:20px;z-index:1000;
+  display:flex;align-items:center;margin-left:12px;
 }
 .lang-select{
-  background:var(--card);border:1px solid var(--border);border-radius:8px;
-  color:var(--text);padding:6px 10px;font-size:.8rem;min-width:120px;
-  cursor:pointer;outline:none;box-shadow:0 4px 12px rgba(0,0,0,.15);
+  background:var(--card);border:1px solid var(--border);border-radius:20px;
+  color:var(--text);padding:4px 12px;font-size:.75rem;min-width:105px;
+  cursor:pointer;outline:none;box-shadow:0 2px 8px rgba(0,0,0,.1);
+  appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 3 0 3'%3E%3C/polyline%3E%3C/svg%3E");
+  background-position:right 8px center;background-repeat:no-repeat;
 }
 .lang-select:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,229,255,.2);}
 .lang-select option{background:var(--bg);color:var(--text);}
+
+/* Mobile adjustments for language selector */
+@media(max-width:900px){
+  .language-selector{margin-left:8px;}
+  .lang-select{font-size:.7rem;min-width:88px;padding:3px 8px;}
+}
 </style>
 </head>
 <body>
@@ -1207,22 +1215,22 @@ header{
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
     <button class="bnav-btn active" id="bnav-participants" onclick="openDrawer('participants',this)">
-      <span class="bnav-icon">👥</span>Lista
+      <span class="bnav-icon">👥</span><span data-i18n="sidebar.participants">Participantes</span>
     </button>
     <button class="bnav-btn" id="bnav-settings" onclick="openDrawer('settings',this)">
-      <span class="bnav-icon">⚙️</span>Ajustes
+      <span class="bnav-icon">⚙️</span><span data-i18n="sidebar.settings">Ajustes</span>
     </button>
     <button class="bnav-btn" id="bnav-theme" onclick="openDrawer('theme',this)">
-      <span class="bnav-icon">🎨</span>Tema
+      <span class="bnav-icon">🎨</span><span data-i18n="sidebar.theme">Tema</span>
     </button>
     <button class="bnav-btn" id="bnav-logo" onclick="openDrawer('logo',this)">
-      <span class="bnav-icon">🖼️</span>Logo
+      <span class="bnav-icon">🖼️</span><span data-i18n="sidebar.logo">Logo</span>
     </button>
     <button class="bnav-btn" id="bnav-sound" onclick="openDrawer('sound',this)">
-      <span class="bnav-icon">🔊</span>Sonido
+      <span class="bnav-icon">🔊</span><span data-i18n="sidebar.sound">Sonido</span>
     </button>
     <button class="bnav-btn" id="bnav-stream" onclick="enterFullscreen()">
-      <span class="bnav-icon">⛶</span>Stream
+      <span class="bnav-icon">⛶</span><span data-i18n="sidebar.fullscreen">Pantalla Completa</span>
     </button>
   </div>
 </nav>
@@ -1464,22 +1472,28 @@ function updatePlanUI(){
     if (!adBanner.innerHTML.trim()) {
       adBanner.innerHTML = '<!-- Spindraw - Google AdSense --><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7223873610943022" data-ad-slot="5305622596" data-ad-format="auto" data-full-width-responsive="true"></ins>';
 
-      // Wait for container to have size before loading ad
+      // Wait for container to have size before loading ad (with max retries)
+      let retryCount = 0;
+      const maxRetries = 20;
       const loadAd = () => {
-        if (adBanner.offsetWidth > 0) {
+        retryCount++;
+        if (adBanner.offsetWidth > 0 && adBanner.offsetHeight > 0) {
           try {
             (adsbygoogle = window.adsbygoogle || []).push({});
+            console.log('AdSense loaded successfully');
           } catch (e) {
             console.warn('AdSense error:', e);
           }
-        } else {
+        } else if (retryCount < maxRetries) {
           // Retry after a short delay
           setTimeout(loadAd, 50);
+        } else {
+          console.warn('AdSense: Max retries reached, container size:', adBanner.offsetWidth);
         }
       };
 
       // Start checking after a brief initial delay
-      setTimeout(loadAd, 100);
+      setTimeout(loadAd, 150);
     }
   }
   ['lockTheme','lockLogo','lockSound','lockFs'].forEach(id=>{

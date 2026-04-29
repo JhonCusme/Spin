@@ -6,6 +6,18 @@ class I18n {
     this.translations = {};
     this.availableLangs = ['es', 'en', 'pt'];
     this.initialized = false;
+
+    // Detectar idioma inicial
+    const savedLang = localStorage.getItem('spindraw_lang');
+    if (savedLang && this.availableLangs.includes(savedLang)) {
+      this.currentLang = savedLang;
+    } else {
+      const browserLang = navigator.language.split('-')[0];
+      if (this.availableLangs.includes(browserLang)) {
+        this.currentLang = browserLang;
+      }
+    }
+
     // Inicializar traducciones básicas por defecto
     this.translations = {
       es: {
@@ -182,30 +194,25 @@ class I18n {
 
   async loadTranslationsAsync() {
     try {
-      // Cargar idioma guardado o detectar del navegador
-      const savedLang = localStorage.getItem('spindraw_lang');
-      if (savedLang && this.availableLangs.includes(savedLang)) {
-        this.currentLang = savedLang;
-      } else {
-        // Detectar idioma del navegador
-        const browserLang = navigator.language.split('-')[0];
-        if (this.availableLangs.includes(browserLang)) {
-          this.currentLang = browserLang;
-        }
-      }
-
       const response = await fetch(`/i18n/${this.currentLang}.json`);
       if (response.ok) {
         const loadedTranslations = await response.json();
-        // Fusionar las traducciones cargadas con las básicas
-        this.translations[this.currentLang] = { ...this.translations[this.currentLang], ...loadedTranslations };
+        // Fusionar las traducciones cargadas con las básicas (mantener fallback)
+        this.translations[this.currentLang] = { ...this.translations[this.currentLang] || {}, ...loadedTranslations };
+        this.initialized = true;
+        this.updateUI();
+        this.setupLanguageSelector();
+      } else {
+        console.warn('Could not load translation file, using basic translations');
         this.initialized = true;
         this.updateUI();
         this.setupLanguageSelector();
       }
     } catch (error) {
       console.error('Error loading translations:', error);
-      // Mantener valores por defecto
+      this.initialized = true;
+      this.updateUI();
+      this.setupLanguageSelector();
     }
   }
 
@@ -247,7 +254,11 @@ class I18n {
   async loadTranslations(lang) {
     try {
       const response = await fetch(`/i18n/${lang}.json`);
-      this.translations = await response.json();
+      if (response.ok) {
+        const loaded = await response.json();
+        // Merge into the language-specific object to preserve structure
+        this.translations[lang] = { ... (this.translations[lang] || {}), ...loaded };
+      }
     } catch (error) {
       console.error('Error loading translations:', error);
       // Fallback a español si falla la carga
@@ -267,15 +278,16 @@ class I18n {
       return defaults[key];
     }
 
-    // Buscar en las traducciones del idioma actual
+    // Buscar en las traducciones del idioma actual (con fallback robusto)
     const keys = key.split('.');
-    let value = this.translations[this.currentLang];
+    let value = this.translations[this.currentLang] || this.translations;
 
     for (const k of keys) {
-      value = value?.[k];
+      if (!value) break;
+      value = value[k];
     }
 
-    if (value !== undefined) {
+    if (value !== undefined && value !== null) {
       // Reemplazar parámetros
       if (typeof value === 'string') {
         return value.replace(/\{(\w+)\}/g, (match, param) => params[param] || match);
@@ -283,8 +295,20 @@ class I18n {
       return value;
     }
 
-    console.warn(`Translation missing for key: ${key}`);
-    return key;
+    // Fallback a español si no se encuentra
+    if (this.currentLang !== 'es') {
+      let esValue = this.translations.es;
+      for (const k of keys) {
+        if (!esValue) break;
+        esValue = esValue[k];
+      }
+      if (esValue !== undefined && esValue !== null) {
+        return typeof esValue === 'string' ? esValue.replace(/\{(\w+)\}/g, (match, param) => params[param] || match) : esValue;
+      }
+    }
+
+    // Silent fallback - no more console spam
+    return key.split('.').pop() || key; // Return last part of key for better UX
   }
 
   async changeLanguage(lang) {
@@ -406,8 +430,16 @@ class I18n {
         </select>
       `;
 
-      // Insertar en el body (esquina inferior derecha)
-      document.body.appendChild(selector);
+      // Insertar en el header a la derecha, antes del botón de cuenta (no intrusivo)
+      const header = document.querySelector('header');
+      const accountBtn = document.getElementById('headerAccountBtn');
+      if (header && accountBtn) {
+        header.insertBefore(selector, accountBtn);
+      } else if (header) {
+        header.appendChild(selector);
+      } else {
+        document.body.appendChild(selector);
+      }
 
       // Event listener
       document.getElementById('lang-select').addEventListener('change', (e) => {
