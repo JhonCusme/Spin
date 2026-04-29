@@ -39,5 +39,17 @@ services:
     healthCheckPath: /
     routes:
       - type: rewrite
+        source: /privacidad.html
+        destination: /privacidad.html
+      - type: rewrite
+        source: /terminos.html
+        destination: /terminos.html
+      - type: rewrite
+        source: /cookies.html
+        destination: /cookies.html
+      - type: rewrite
+        source: /contacto.html
+        destination: /contacto.html
+      - type: rewrite
         source: /*
         destination: /ruleta-pro.html
