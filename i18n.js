@@ -7,6 +7,7 @@ class I18n {
     this.translations = {};
     this.availableLangs = ['es', 'en', 'pt'];
     this.initialized = false;
+    // No inicializar automáticamente, esperar llamada manual con callback
   }
 
   async initialize(callback) {
@@ -33,10 +34,14 @@ class I18n {
     this.updateUI();
     this.setupLanguageSelector();
     this.initialized = true;
+    console.log('i18n initialization completed, calling callback');
 
     // Ejecutar callback si se proporciona
     if (callback && typeof callback === 'function') {
+      console.log('Executing callback');
       callback();
+    } else {
+      console.log('No callback provided');
     }
   }
 
