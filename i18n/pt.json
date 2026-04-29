@@ -48,6 +48,16 @@
     "emailExists": "Este e-mail já está cadastrado",
     "weakPassword": "A senha deve ter pelo menos 6 caracteres"
   },
+  "sidebar": {
+    "menu": "Menu",
+    "participants": "Participantes",
+    "settings": "Configurações",
+    "theme": "Tema",
+    "logo": "Logo",
+    "sound": "Som",
+    "fullscreen": "Tela Cheia",
+    "admin": "Admin"
+  },
   "payments": {
     "title": "Planos de Assinatura",
     "monthly": "Mensal",
@@ -60,6 +70,25 @@
     "bankTransfer": "Transferência Bancária",
     "paypal": "PayPal",
     "payphone": "PayPhone"
+  },
+  "paywallModal": {
+    "title": "Atualize para Pro!",
+    "subtitle": "Desbloqueie todos os recursos premium",
+    "monthly": "Plano Mensal",
+    "perMonth": "/mês",
+    "bestValue": "Melhor Valor",
+    "lifetime": "Plano Vitalício",
+    "oneTime": "Pagamento único",
+    "unlimited": "Rodeletas ilimitadas",
+    "multiple": "Múltiplas rodeletas",
+    "customLogo": "Logo personalizado",
+    "themes": "Temas premium",
+    "sounds": "Sons premium",
+    "stream": "Modo Stream",
+    "import": "Importar participantes",
+    "noAds": "Sem anúncios",
+    "upgrade": "Atualizar Agora",
+    "cancel": "Cancelar"
   },
   "admin": {
     "title": "Painel de Administração",

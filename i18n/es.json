@@ -48,6 +48,16 @@
     "emailExists": "Este email ya está registrado",
     "weakPassword": "La contraseña debe tener al menos 6 caracteres"
   },
+  "sidebar": {
+    "menu": "Menú",
+    "participants": "Participantes",
+    "settings": "Ajustes",
+    "theme": "Tema",
+    "logo": "Logo",
+    "sound": "Sonido",
+    "fullscreen": "Pantalla Completa",
+    "admin": "Admin"
+  },
   "payments": {
     "title": "Planes de Suscripción",
     "monthly": "Mensual",
@@ -60,6 +70,25 @@
     "bankTransfer": "Transferencia Bancaria",
     "paypal": "PayPal",
     "payphone": "PayPhone"
+  },
+  "paywallModal": {
+    "title": "¡Actualiza a Pro!",
+    "subtitle": "Desbloquea todas las funciones premium",
+    "monthly": "Plan Mensual",
+    "perMonth": "/mes",
+    "bestValue": "Mejor Valor",
+    "lifetime": "Plan Vitalicio",
+    "oneTime": "Pago único",
+    "unlimited": "Ruletas ilimitadas",
+    "multiple": "Múltiples ruletas",
+    "customLogo": "Logo personalizado",
+    "themes": "Temas premium",
+    "sounds": "Sonidos premium",
+    "stream": "Modo Stream",
+    "import": "Importar participantes",
+    "noAds": "Sin anuncios",
+    "upgrade": "Actualizar Ahora",
+    "cancel": "Cancelar"
   },
   "admin": {
     "title": "Panel de Administración",
