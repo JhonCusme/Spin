@@ -1296,7 +1296,7 @@ setTimeout(resizeMainCanvas, 100);
 // ══ STATE ══
 const FREE_LIMIT=4;
 let isPro = false;
-let ruletas=[{id:1,name:i18n.t('wheel.defaultName'),entries:[],history:[],wins:{}}];
+let ruletas = null;
 let activeRuletaIdx=0;
 let countdownSecs=0;
 let selectedSound='none';
@@ -2866,6 +2866,13 @@ function showAdminTab(name, btn) {
   if(name==='users') loadAdminUsers();
   if(name==='payments') loadAdminPayments('pending', 'adminPaymentsList2');
 }
+// Inicializar i18n y ruletas
+i18n.initialize(() => {
+  // Inicializar ruletas con traducciones cargadas
+  ruletas = [{id:1,name:i18n.t('wheel.defaultName'),entries:[],history:[],wins:{}}];
+  console.log('i18n initialized, ruletas:', ruletas);
+});
+
 // Add email field to register form dynamically
 document.addEventListener('DOMContentLoaded', () => {
   const f = document.getElementById('usernameRegInput')?.closest('.auth-field');

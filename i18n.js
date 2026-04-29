@@ -6,10 +6,17 @@ class I18n {
     this.currentLang = 'es'; // Idioma por defecto
     this.translations = {};
     this.availableLangs = ['es', 'en', 'pt'];
-    this.init();
+    this.initialized = false;
   }
 
-  async init() {
+  async initialize(callback) {
+    if (this.initialized) {
+      if (callback && typeof callback === 'function') {
+        callback();
+      }
+      return;
+    }
+
     // Cargar idioma guardado o detectar del navegador
     const savedLang = localStorage.getItem('spindraw_lang');
     if (savedLang && this.availableLangs.includes(savedLang)) {
@@ -25,6 +32,16 @@ class I18n {
     await this.loadTranslations(this.currentLang);
     this.updateUI();
     this.setupLanguageSelector();
+    this.initialized = true;
+
+    // Ejecutar callback si se proporciona
+    if (callback && typeof callback === 'function') {
+      callback();
+    }
+  }
+
+  async init(callback) {
+    return this.initialize(callback);
   }
 
   async loadTranslations(lang) {
