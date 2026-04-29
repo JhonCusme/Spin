@@ -1,6 +1,7 @@
 // i18n.js - Sistema de Internacionalización para SpinDraw
 // Sistema simple de traducciones sin dependencias externas
 console.log('i18n.js loaded');
+throw new Error('Test error to see if i18n.js executes');
 
 class I18n {
   constructor() {
