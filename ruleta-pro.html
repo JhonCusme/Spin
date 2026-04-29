@@ -2108,6 +2108,20 @@ async function loadSiteSettings() {
         adScript.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${siteSettings.adSenseCode}`;
       }
     }
+
+    // Add Google Site Verification meta tag if configured
+    if (siteSettings.googleSiteVerification && siteSettings.googleSiteVerification.trim()) {
+      // Remove existing verification meta tag if present
+      const existingMeta = document.querySelector('meta[name="google-site-verification"]');
+      if (existingMeta) {
+        existingMeta.remove();
+      }
+      // Add new verification meta tag
+      const metaTag = document.createElement('meta');
+      metaTag.name = 'google-site-verification';
+      metaTag.content = siteSettings.googleSiteVerification.trim();
+      document.head.appendChild(metaTag);
+    }
   } catch(e) {
     // Fallback if settings fail to load
     siteSettings = { prices: { monthly:{amount:4.99}, lifetime:{amount:29.99} }, bank:{}, whatsapp:'', payphoneEnabled: true, nuveiEnabled: false };
@@ -2321,6 +2335,7 @@ async function loadAdminSettings() {
     document.getElementById('setAdminEmail').value    = s.adminEmail    || '';
     document.getElementById('setSupportEmail').value  = s.supportEmail  || '';
     document.getElementById('setGoogleAnalyticsId').value = s.googleAnalyticsId || '';
+    document.getElementById('setGoogleSiteVerification').value = s.googleSiteVerification || '';
     document.getElementById('setAdSenseCode').value   = s.adSenseCode   || '';
     document.getElementById('setPayphoneEnabled').checked = s.payphoneEnabled !== false;
     document.getElementById('setNuveiEnabled').checked = s.nuveiEnabled !== false;
@@ -2349,6 +2364,7 @@ async function saveAdminSettings() {
     adminEmail: document.getElementById('setAdminEmail').value,
     supportEmail: document.getElementById('setSupportEmail').value,
     googleAnalyticsId: document.getElementById('setGoogleAnalyticsId').value,
+    googleSiteVerification: document.getElementById('setGoogleSiteVerification').value,
     adSenseCode: document.getElementById('setAdSenseCode').value,
     payphoneEnabled: document.getElementById('setPayphoneEnabled').checked,
     nuveiEnabled: document.getElementById('setNuveiEnabled').checked,
@@ -2776,6 +2792,13 @@ restoreSession().then(() => {
         <input class="admin-input" id="setGoogleAnalyticsId" placeholder="G-XXXXXXXXXX">
         <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">
           Obtén tu ID en: <a href="https://analytics.google.com" target="_blank" style="color:var(--accent)">Google Analytics</a>
+        </div>
+      </div>
+      <div class="admin-field">
+        <label>Google Site Verification Code (para Search Console)</label>
+        <input class="admin-input" id="setGoogleSiteVerification" placeholder="Ej: google-site-verification=XXXXXXXXXXXXXXXXXXXXXXX">
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px">
+          Obtén el código en: <a href="https://search.google.com/search-console" target="_blank" style="color:var(--accent)">Google Search Console</a>
         </div>
       </div>
       <div class="admin-field">
