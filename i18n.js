@@ -123,6 +123,19 @@ class I18n {
     if (ogDesc) {
       ogDesc.setAttribute('content', this.t('app.description'));
     }
+
+    // Actualizar manifest dinámicamente
+    this.updateManifest();
+  }
+
+  updateManifest() {
+    const manifestLink = document.querySelector('link[rel="manifest"]');
+    if (manifestLink) {
+      const manifestFile = this.currentLang === 'es' ? 'manifest.json' :
+                          this.currentLang === 'en' ? 'manifest-en.json' :
+                          this.currentLang === 'pt' ? 'manifest-pt.json' : 'manifest.json';
+      manifestLink.setAttribute('href', manifestFile);
+    }
   }
 
   setupLanguageSelector() {

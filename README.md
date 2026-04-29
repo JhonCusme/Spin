@@ -7,6 +7,7 @@ Una aplicación web progresiva (PWA) interactiva para crear y participar en rule
 ## ✨ Características
 
 - 🎲 **Ruleta Interactiva**: Animaciones suaves y efectos visuales atractivos
+- 🌐 **Multi Idioma**: Soporte completo para Español, Inglés y Portugués
 - 📱 **PWA Completa**: Instalable en móviles y computadoras
 - 💳 **Sistema de Pagos**: Integración con PayPal, PayPhone y Nuvei
 - 👥 **Sistema de Usuarios**: Registro, login y gestión de perfiles
@@ -107,13 +108,56 @@ PAYPAL_CLIENT_SECRET=tu_paypal_client_secret
 2. **Google Analytics**: Configura ID en panel de administración
 3. **Google AdSense**: Configura código de publisher en panel de administración
 
+## 🌐 Internacionalización (i18n)
+
+SpinDraw soporta múltiples idiomas con un sistema completo de traducciones:
+
+### Idiomas Soportados
+- 🇪🇸 **Español** (Idioma por defecto)
+- 🇺🇸 **English**
+- 🇧🇷 **Português**
+
+### Cómo Funciona
+- **Detección automática**: El sistema detecta el idioma del navegador del usuario
+- **Cambio manual**: Selector de idioma en la interfaz
+- **Persistencia**: El idioma seleccionado se guarda en localStorage
+- **Manifest dinámico**: El PWA se adapta al idioma seleccionado
+
+### Archivos de Traducción
+```
+i18n/
+├── es.json    # Traducciones en español
+├── en.json    # Traducciones en inglés
+├── pt.json    # Traducciones en portugués
+└── i18n.js    # Sistema de internacionalización
+```
+
+### Uso en Código
+```javascript
+// Traducción simple
+i18n.t('nav.login'); // "Iniciar Sesión" / "Login" / "Entrar"
+
+// Traducción con parámetros
+i18n.t('wheel.participants', { count: 150 }); // "150 participantes"
+
+// Función global
+__('app.name'); // Acceso directo a traducciones
+```
+
 ## 📁 Estructura del Proyecto
 
 ```
 SpinDraw/
 ├── server.js                 # Servidor principal (Express)
 ├── ruleta-pro.html          # Página principal
-├── manifest.json            # Configuración PWA
+├── manifest.json            # Configuración PWA (español)
+├── manifest-en.json         # Configuración PWA (inglés)
+├── manifest-pt.json         # Configuración PWA (portugués)
+├── i18n.js                  # Sistema de internacionalización
+├── i18n/                    # Archivos de traducciones
+│   ├── es.json
+│   ├── en.json
+│   └── pt.json
 ├── service-worker.js        # Service Worker para PWA
 ├── package.json             # Dependencias y scripts
 ├── firebase-key.json        # Credenciales Firebase
