@@ -42,11 +42,38 @@ services:
         source: /privacidad.html
         destination: /privacidad.html
       - type: rewrite
+        source: /privacidad-en.html
+        destination: /privacidad-en.html
+      - type: rewrite
+        source: /privacidad-pt.html
+        destination: /privacidad-pt.html
+      - type: rewrite
         source: /terminos.html
         destination: /terminos.html
       - type: rewrite
+        source: /terminos-en.html
+        destination: /terminos-en.html
+      - type: rewrite
+        source: /terminos-pt.html
+        destination: /terminos-pt.html
+      - type: rewrite
         source: /cookies.html
         destination: /cookies.html
+      - type: rewrite
+        source: /cookies-en.html
+        destination: /cookies-en.html
+      - type: rewrite
+        source: /cookies-pt.html
+        destination: /cookies-pt.html
+      - type: rewrite
+        source: /contacto.html
+        destination: /contacto.html
+      - type: rewrite
+        source: /contacto-en.html
+        destination: /contacto-en.html
+      - type: rewrite
+        source: /contacto-pt.html
+        destination: /contacto-pt.html
       - type: rewrite
         source: /contacto.html
         destination: /contacto.html
