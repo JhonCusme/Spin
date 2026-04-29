@@ -2867,12 +2867,12 @@ function showAdminTab(name, btn) {
   if(name==='payments') loadAdminPayments('pending', 'adminPaymentsList2');
 }
 // Inicializar i18n y ruletas
+console.log('About to initialize i18n');
 i18n.initialize(() => {
+  console.log('i18n callback executed!');
   // Inicializar ruletas con traducciones cargadas
   ruletas = [{id:1,name:i18n.t('wheel.defaultName'),entries:[],history:[],wins:{}}];
   console.log('i18n initialized, ruletas:', ruletas);
-  console.log('Current translations:', i18n.translations);
-  console.log('wheel.defaultName translation:', i18n.t('wheel.defaultName'));
 });
 
 // Add email field to register form dynamically
