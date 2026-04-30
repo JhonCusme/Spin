@@ -49,6 +49,13 @@
     "weakPassword": "Password must be at least 6 characters"
   },
   "sidebar": {
+    "menu": "Menu",
+    "participants": "Participants",
+    "settings": "Settings",
+    "theme": "Theme",
+    "logo": "Logo",
+    "sound": "Sound",
+    "fullscreen": "Fullscreen",
     "admin": "Admin"
   },
   "sidebarSettings": {

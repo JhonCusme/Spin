@@ -49,6 +49,13 @@
     "weakPassword": "A senha deve ter pelo menos 6 caracteres"
   },
   "sidebar": {
+    "menu": "Menu",
+    "participants": "Participantes",
+    "settings": "Configurações",
+    "theme": "Tema",
+    "logo": "Logo",
+    "sound": "Som",
+    "fullscreen": "Tela Cheia",
     "admin": "Admin"
   },
   "sidebarSettings": {
