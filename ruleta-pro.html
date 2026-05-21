@@ -1298,17 +1298,31 @@ function closeDrawer() {
 // Resize canvas when wheel-wrap changes size
 function resizeMainCanvas() {
   const wrap = document.querySelector('.wheel-wrap');
-  if (!wrap) return;
+  if (!wrap || wrap.offsetWidth === 0) return;
+  
   const size = wrap.offsetWidth;
   const canvas = document.getElementById('mainCanvas');
+  if (!canvas) return;
+  
   if (canvas.width !== size) {
     canvas.width = size;
     canvas.height = size;
     drawWheel(currentAngle);
   }
 }
+
+// Initial resize with multiple attempts
+let resizeAttempts = 0;
+function initResize() {
+  resizeMainCanvas();
+  if (resizeAttempts < 10 && document.querySelector('.wheel-wrap')?.offsetWidth === 0) {
+    resizeAttempts++;
+    setTimeout(initResize, 100);
+  }
+}
+
 window.addEventListener('resize', resizeMainCanvas);
-setTimeout(resizeMainCanvas, 100);
+initResize();
 </script>
 
 <script>
@@ -1871,10 +1885,26 @@ function spawnConfetti(c){
 // ══ FULLSCREEN ══
 function enterFullscreen(){
   if(!isPro){openPaywall();return;}
-  document.getElementById('fullscreenOverlay').classList.add('active');
-  drawWheelOnCanvas(document.getElementById('fsCanvas'),currentAngle);
-  const la=document.getElementById('fsLogoArea');
-  la.innerHTML=logoDataUrl?`<img src="${logoDataUrl}" style="max-height:50px;max-width:200px;object-fit:contain">`:'';
+  const overlay = document.getElementById('fullscreenOverlay');
+  overlay.classList.add('active');
+  
+  // Resize fullscreen canvas
+  setTimeout(() => {
+    const fsCanvas = document.getElementById('fsCanvas');
+    if (fsCanvas) {
+      const wrap = overlay.querySelector('#fsWheelWrap');
+      const size = wrap ? wrap.offsetHeight : window.innerHeight * 0.6;
+      fsCanvas.width = size;
+      fsCanvas.height = size;
+      drawWheelOnCanvas(fsCanvas, currentAngle);
+    }
+    
+    // Update logo
+    const la=document.getElementById('fsLogoArea');
+    if (la) {
+      la.innerHTML=logoDataUrl?`<img src="${logoDataUrl}" style="max-height:50px;max-width:200px;object-fit:contain">`:'';
+    }
+  }, 50);
 }
 function exitFullscreen(){document.getElementById('fullscreenOverlay').classList.remove('active');hideCelebration();}
 
