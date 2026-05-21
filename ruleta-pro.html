@@ -10,8 +10,8 @@
 <meta property="og:title" content="SpinDraw — Ruleta de Sorteos Online Gratis">
 <meta property="og:description" content="Crea y participa en ruletas de sorteos online gratis. Herramienta interactiva para sorteos, rifas y entretenimiento. ¡Prueba tu suerte!">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://spin-22w3.onrender.com">
-<meta property="og:image" content="https://spin-22w3.onrender.com/favicon.svg">
+<meta property="og:url" content="/">
+<meta property="og:image" content="/favicon.svg">
 <meta property="og:image:width" content="512">
 <meta property="og:image:height" content="512">
 <meta property="og:site_name" content="SpinDraw">
@@ -20,12 +20,12 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="SpinDraw — Ruleta de Sorteos Online Gratis">
 <meta name="twitter:description" content="Crea y participa en ruletas de sorteos online gratis. Herramienta interactiva para sorteos, rifas y entretenimiento.">
-<meta name="twitter:image" content="https://spin-22w3.onrender.com/favicon.svg">
+<meta name="twitter:image" content="/favicon.svg">
 <meta name="theme-color" content="#080b12">
 <meta name="copyright" content="© 2026 SpinDraw. All rights reserved.">
 <title>SpinDraw — Ruleta de Sorteos</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
-<link rel="canonical" href="https://spin-22w3.onrender.com">
+<link rel="canonical" href="/">
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,7 @@
   "@type": "WebApplication",
   "name": "SpinDraw",
   "description": "Herramienta interactiva para crear y participar en ruletas de sorteos online gratis",
-  "url": "https://spin-22w3.onrender.com",
+  "url": "/",
   "applicationCategory": "EntertainmentApplication",
   "operatingSystem": "Web Browser",
   "offers": {
@@ -261,15 +261,15 @@ header{
 
 /* ══ ADS ══ */
 .ad-zone{
-  background:var(--surface);border:2px dashed var(--border);border-radius:var(--r);
+  background:transparent;border:none;border-radius:var(--r);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   color:var(--muted);font-size:.7rem;letter-spacing:2px;text-transform:uppercase;gap:3px;
 }
 .ad-zone.hidden{display:none;}
 .ad-banner{
-  height:88px;margin:8px 28px 0;flex-shrink:0;
-  width:calc(100% - 56px);min-width:300px;max-width:728px;box-sizing:content-box;
-  overflow:hidden;
+  height:88px;margin:6px auto 0;flex-shrink:0;
+  width:100%;max-width:728px;padding:0 12px;box-sizing:border-box;
+  overflow:hidden;display:flex;align-items:center;justify-content:center;
 }
 
 /* ══ LAYOUT ══ */
@@ -562,7 +562,7 @@ header{
   /* Demo bar compact */
   #demoUnlockBar{font-size:.72rem;gap:6px;padding:7px 10px;flex-wrap:wrap;}
   /* Ad banner full width */
-  .ad-banner{margin:6px 12px 0;}
+  .ad-banner{margin:6px auto 0;padding:0 8px;}
   /* Spin button */
   .spin-btn{padding:12px 36px;font-size:1.1rem;}
   /* Action buttons */
@@ -1474,11 +1474,8 @@ function updatePlanUI(){
   } else {
     adBanner.classList.remove('hidden');
     if (!adBanner.innerHTML.trim()) {
-      // Calculate optimal ad width based on viewport
-      const viewportWidth = window.innerWidth;
-      const adWidth = Math.min(Math.max(viewportWidth - 56, 300), 728);
-      
-      adBanner.innerHTML = `<div style="width:${adWidth}px;height:88px;margin:0 auto;"><ins class="adsbygoogle" style="display:block;width:100%;height:100%;margin:0;padding:0;" data-ad-client="ca-pub-7223873610943022" data-ad-slot="5305622596" data-ad-format="auto" data-full-width-responsive="false"></ins></div>`;
+      // Use responsive ad dimensions
+      adBanner.innerHTML = `<ins class="adsbygoogle" style="display:block;text-align:center;" data-ad-client="ca-pub-7223873610943022" data-ad-slot="5305622596" data-ad-format="horizontal" data-full-width-responsive="true"></ins>`;
 
       // Load ad after a short delay to ensure layout is ready
       setTimeout(() => {
@@ -1899,7 +1896,7 @@ function testSound(){if(selectedSound==='casino')playTick();else if(selectedSoun
 // ════════════════════════════════════════════
 //  API CONFIG — usa el dominio actual
 // ════════════════════════════════════════════
-const API = window.location.origin;
+const API = window.location.protocol + '//' + window.location.hostname + ':4000';
 let authToken = localStorage.getItem('sd_token') || null;
 let currentUserData = null;
 
@@ -2506,7 +2503,7 @@ function showToast(msg, type='info') {
 restoreSession().then(() => {
   if (!currentUserData) {
     ruletas = [{id:1,name:i18n.t('wheel.defaultName'),entries:[],history:[],wins:{}}];
-    ['Ana García','Carlos López','María Pérez','Luis Torres'].forEach(n=>ar().entries.push({name:n}));
+    ['Ana García','Carlos López','María Pérez','Luis Torres'].forEach(n=>ruletas[0].entries.push({name:n}));
   }
   renderRuletasTabs(); renderList(); drawWheel(0); updatePlanUI();
   updateHeaderAvatar(currentUserData?.username || 'Invitado');

@@ -25,8 +25,16 @@ pids
 *.seed
 *.pid.lock
 
-# Firebase
+# Firebase - CRITICAL: Never commit credentials
 firebase-key.json
+FIREBASE_KEY.json
+
+# Backup files
+*.backup
+*.bak
+*~
+*.tmp
+es.json.backup
 
 # Coverage directory used by tools like istanbul
 coverage/

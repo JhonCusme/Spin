@@ -21,6 +21,24 @@ const crypto       = require('crypto');
 
 const app = express();
 
+// ── VALIDATE ENVIRONMENT VARIABLES ────────────────────────────
+const requiredEnvVars = [
+  'PAYPAL_CLIENT_ID',
+  'PAYPAL_CLIENT_SECRET',
+  'EMAIL_USER',
+  'EMAIL_PASS',
+  'JWT_SECRET'
+];
+
+const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingEnvVars.length > 0) {
+  console.error('❌ ERROR: Missing required environment variables:');
+  missingEnvVars.forEach(varName => console.error(`   - ${varName}`));
+  console.error('\n⚠️  Please set these variables in your .env file or environment.');
+  console.error('Application will not start without these variables.\n');
+  process.exit(1);
+}
+
 // ── MIDDLEWARES ──────────────────────────────────────────────
 app.use(cors({ origin: process.env.FRONTEND_URL || '*' }));
 app.use(express.json());
@@ -277,7 +295,7 @@ app.get('/api/settings/public', async (req, res) => {
       note:    'Indicar tu usuario SpinDraw en la referencia',
     });
     const whatsapp = await getSetting('whatsapp', '+593900000000');
-    const supportEmail = await getSetting('supportEmail', 'cusmejhonalexander@gmail.com');
+    const supportEmail = await getSetting('supportEmail', 'support@spindraw.com');
     const googleAnalyticsId = await getSetting('googleAnalyticsId', '');
     const googleSiteVerification = await getSetting('googleSiteVerification', '');
     const adSenseCode = await getSetting('adSenseCode', '');
@@ -300,7 +318,7 @@ app.get('/api/settings/public', async (req, res) => {
         note:    'Indicar tu usuario SpinDraw en la referencia',
       },
       whatsapp: '+593900000000',
-      supportEmail: 'cusmejhonalexander@gmail.com',
+      supportEmail: 'support@spindraw.com',
       googleAnalyticsId: '',
       googleSiteVerification: '',
       adSenseCode: '',
@@ -331,8 +349,8 @@ app.post('/api/paypal/create-order', authMiddleware, async (req, res) => {
         description: `SpinDraw Pro — ${plan === 'monthly' ? 'Mensual' : 'Vitalicio'}`,
       }],
       application_context: {
-        return_url: `${process.env.FRONTEND_URL || 'https://spin-22w3.onrender.com'}/paypal-success`,
-        cancel_url: `${process.env.FRONTEND_URL || 'https://spin-22w3.onrender.com'}/paypal-cancel`,
+        return_url: `${process.env.FRONTEND_URL || 'https://spindraw.com'}/paypal-success`,
+        cancel_url: `${process.env.FRONTEND_URL || 'https://spindraw.com'}/paypal-cancel`,
         brand_name: 'SpinDraw',
         user_action: 'PAY_NOW',
       }
@@ -1163,7 +1181,7 @@ app.get('/api/admin/settings', adminMiddleware, async (req, res) => {
       getSetting('bank', {}),
       getSetting('whatsapp', ''),
       getSetting('adminEmail', ''),
-      getSetting('supportEmail', 'cusmejhonalexander@gmail.com'),
+      getSetting('supportEmail', 'support@spindraw.com'),
       getSetting('googleAnalyticsId', ''),
       getSetting('googleSiteVerification', ''),
       getSetting('adSenseCode', ''),
@@ -1232,5 +1250,5 @@ app.get('/', async (req, res) => {
 // ═══════════════════════════════════════════════════════════
 //  START
 // ═══════════════════════════════════════════════════════════
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`🚀 SpinDraw server corriendo en puerto ${PORT}`));
