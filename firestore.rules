@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Public settings (readable by everyone, writable only by admin via backend)
+    match /settings/{document=**} {
+      allow read: if true;
+      allow write: if false; // Only backend/admin SDK can write
+    }
+
+    // Users collection
+    match /users/{userId} {
+      // Users can only read/write their own data
+      allow read, write: if request.auth.uid == userId;
+      // But allow public fields to be readable by everyone
+      allow read: if resource.data.public == true;
+    }
+
+    // Ruletas (public user-created wheels)
+    match /ruletas/{ruletaId} {
+      // Creator can do anything with their own ruleta
+      allow read, write: if request.auth.uid == resource.data.createdBy;
+      // Everyone can read public ruletas
+      allow read: if resource.data.public == true;
+      // Anyone can create new ruletas
+      allow create: if request.auth.uid != null;
+    }
+
+    // Spins (results)
+    match /spins/{spinId} {
+      allow read, write: if request.auth.uid == resource.data.userId;
+      allow create: if request.auth.uid != null;
+    }
+
+    // Payments
+    match /payments/{paymentId} {
+      allow read, write: if request.auth.uid == resource.data.userId;
+      allow create: if request.auth.uid != null;
+    }
+
+    // Subscriptions
+    match /subscriptions/{subscriptionId} {
+      allow read, write: if request.auth.uid == resource.data.userId;
+      allow create: if request.auth.uid != null;
+    }
+
+    // Deny all other access by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

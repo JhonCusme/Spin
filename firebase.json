@@ -1,0 +1,28 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "android/**",
+      "package*.json",
+      "render.yaml",
+      "server.js",
+      "i18n.js",
+      "firebase-key.json",
+      ".git",
+      ".gitignore"
+    ],
+    "rewrites": [
+      {
+        "source": "/**",
+        "destination": "/ruleta-pro.html"
+      }
+    ]
+  }
+}
