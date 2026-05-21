@@ -1315,7 +1315,7 @@ setTimeout(resizeMainCanvas, 100);
 // ══ STATE ══ v2
 const FREE_LIMIT=4;
 let isPro = false;
-let ruletas = null;
+let ruletas = [{id:1,name:'Mi Ruleta',entries:[],history:[],wins:{}}];
 let activeRuletaIdx=0;
 let countdownSecs=0;
 let selectedSound='none';
@@ -1335,7 +1335,7 @@ const PALETTES=[
 ];
 let currentPalette=PALETTES[0];
 function getColor(i){return currentPalette[i%currentPalette.length];}
-function ar(){return ruletas[activeRuletaIdx];}
+function ar(){return ruletas && ruletas.length > 0 ? ruletas[activeRuletaIdx] : ruletas[0];}
 
 // ══ PLA
 let selectedPlan = '';
@@ -1655,9 +1655,24 @@ function drawWheelOnCanvas(canvas,angle){
   }
 }
 function drawWheel(angle){
-  drawWheelOnCanvas(document.getElementById('mainCanvas'),angle);
-  if(document.getElementById('fullscreenOverlay').classList.contains('active'))
-    drawWheelOnCanvas(document.getElementById('fsCanvas'),angle);
+  try {
+    const canvas = document.getElementById('mainCanvas');
+    if (canvas && canvas.offsetWidth > 0) {
+      drawWheelOnCanvas(canvas, angle);
+    }
+  } catch(e) {
+    console.error('Error drawing main canvas:', e);
+  }
+  try {
+    if(document.getElementById('fullscreenOverlay').classList.contains('active')) {
+      const fsCanvas = document.getElementById('fsCanvas');
+      if (fsCanvas && fsCanvas.offsetWidth > 0) {
+        drawWheelOnCanvas(fsCanvas, angle);
+      }
+    }
+  } catch(e) {
+    console.error('Error drawing fs canvas:', e);
+  }
 }
 
 // ══ COUNTDOWN ══
@@ -1684,46 +1699,75 @@ function runCountdown(isFs,callback){
 
 // ══ SPIN ══
 function handleSpinClick(isFs){
-  if(spinning)return;
-  if(ar().entries.length<2)return;
+  if(spinning) {
+    console.warn('Already spinning');
+    return;
+  }
+  const r = ar();
+  if(!r || !r.entries || r.entries.length < 2) {
+    showToast('Añade al menos 2 participantes para girar','error');
+    return;
+  }
   runCountdown(isFs,()=>spinWheel(isFs));
 }
 function spinWheel(isFs){
-  if(spinning)return;
+  if(spinning) return;
+  const r = ar();
+  if(!r || !r.entries || r.entries.length < 2) return;
+  
   spinning=true;
-  document.getElementById('mainSpinBtn').disabled=true;
-  document.getElementById('fsSpinBtn').disabled=true;
+  try {
+    document.getElementById('mainSpinBtn').disabled=true;
+    document.getElementById('fsSpinBtn').disabled=true;
+  } catch(e) {}
+  
   document.getElementById('resultArea').innerHTML='';
   document.getElementById('fsResult').textContent='';
-  document.getElementById('shareResultBtn').classList.remove('visible');
-  document.getElementById('revanchaBtn').classList.remove('visible');
-  const suspense=document.getElementById('suspenseToggle').checked;
+  
+  try {
+    document.getElementById('shareResultBtn').classList.remove('visible');
+    document.getElementById('revanchaBtn').classList.remove('visible');
+  } catch(e) {}
+  
+  const suspense=document.getElementById('suspenseToggle')?.checked || false;
   const extraSpins=(Math.floor(Math.random()*5)+6)*Math.PI*2;
   const totalRotation=extraSpins+Math.random()*Math.PI*2;
   const duration=suspense?(4500+Math.random()*2000):(3000+Math.random()*1000);
-  const startAngle=currentAngle;let startTime=null,lastTickAngle=currentAngle;
-  const tickInterval=(Math.PI*2)/ar().entries.length;
+  const startAngle=currentAngle;
+  let startTime=null,lastTickAngle=currentAngle;
+  const tickInterval=(Math.PI*2)/r.entries.length;
   const easeOut=t=>suspense?1-Math.pow(1-t,5):1-Math.pow(1-t,4);
+  
   function animate(ts){
     if(!startTime)startTime=ts;
     const progress=Math.min((ts-startTime)/duration,1);
     currentAngle=startAngle+totalRotation*easeOut(progress);
     drawWheel(currentAngle);
+    
     if(isPro&&selectedSound==='casino'&& (currentAngle-lastTickAngle)>=tickInterval){
-      playTick();lastTickAngle+=tickInterval;
+      playTick();
+      lastTickAngle+=tickInterval;
     }
-    if(progress<1)requestAnimationFrame(animate);
-    else{
+    
+    if(progress<1) {
+      requestAnimationFrame(animate);
+    } else {
       spinning=false;
       currentAngle = ((currentAngle % (Math.PI*2)) + Math.PI*2) % (Math.PI*2);
-      document.getElementById('mainSpinBtn').disabled=false;
-      document.getElementById('fsSpinBtn').disabled=false;
+      
+      try {
+        document.getElementById('mainSpinBtn').disabled=false;
+        document.getElementById('fsSpinBtn').disabled=false;
+      } catch(e) {}
+      
       showResult(isFs);
-      if(isPro&&selectedSound==='fanfare')playFanfare();
-      if(isPro&&selectedSound==='drum')playDrum();
+      
+      if(isPro&&selectedSound==='fanfare') playFanfare();
+      if(isPro&&selectedSound==='drum') playDrum();
     }
   }
-  if(isPro&&selectedSound==='drum')playDrumRoll();
+  
+  if(isPro&&selectedSound==='drum') playDrumRoll();
   requestAnimationFrame(animate);
 }
 
@@ -2503,14 +2547,36 @@ function showToast(msg, type='info') {
 }
 
 // ══ INIT ══
-restoreSession().then(() => {
-  if (!currentUserData) {
-    ruletas = [{id:1,name:i18n.t('wheel.defaultName'),entries:[],history:[],wins:{}}];
+async function initApp() {
+  try {
+    await restoreSession();
+  } catch(e) {
+    console.warn('Session restore error:', e);
+  }
+  
+  // Initialize demo data if not logged in
+  if (!currentUserData && ruletas && ruletas[0].entries.length === 0) {
     ['Ana García','Carlos López','María Pérez','Luis Torres'].forEach(n=>ruletas[0].entries.push({name:n}));
   }
-  renderRuletasTabs(); renderList(); drawWheel(0); updatePlanUI();
-  updateHeaderAvatar(currentUserData?.username || 'Invitado');
-});
+  
+  // Force re-render everything
+  try {
+    renderRuletasTabs();
+    renderList();
+    drawWheel(0);
+    updatePlanUI();
+    updateHeaderAvatar(currentUserData?.username || 'Invitado');
+  } catch(e) {
+    console.error('Init error:', e);
+  }
+}
+
+// Start initialization when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 </script>
 
 <!-- ══ PAYMENT MODAL (upgraded paywall) ══ -->
