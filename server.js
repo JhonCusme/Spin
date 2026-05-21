@@ -281,6 +281,33 @@ function sanitizeUser(u) {
 
 // GET /api/settings/public  (precios y datos bancarios — público)
 app.get('/api/settings/public', async (req, res) => {
+  // Set a timeout for this request
+  const timeout = setTimeout(() => {
+    if (!res.headersSent) {
+      res.json({
+        prices: {
+          monthly:  { amount: 4.99,  label: 'Mensual' },
+          lifetime: { amount: 29.99, label: 'Vitalicio' },
+        },
+        bank: {
+          name:    'Tu Nombre Completo',
+          bank:    'Banco Pichincha',
+          account: '2200000000',
+          type:    'Ahorros',
+          id:      '1700000000',
+          note:    'Indicar tu usuario SpinDraw en la referencia',
+        },
+        whatsapp: '+593900000000',
+        supportEmail: 'support@spindraw.com',
+        googleAnalyticsId: '',
+        googleSiteVerification: '',
+        adSenseCode: '',
+        payphoneEnabled: true,
+        nuveiEnabled: false
+      });
+    }
+  }, 5000); // 5 second timeout
+  
   try {
     const prices = await getSetting('prices', {
       monthly:  { amount: 4.99,  label: 'Mensual' },
@@ -301,8 +328,10 @@ app.get('/api/settings/public', async (req, res) => {
     const adSenseCode = await getSetting('adSenseCode', '');
     const payphoneEnabled = await getSetting('payphoneEnabled', true);
     const nuveiEnabled = await getSetting('nuveiEnabled', false);
+    clearTimeout(timeout);
     res.json({ prices, bank, whatsapp, supportEmail, googleAnalyticsId, googleSiteVerification, adSenseCode, payphoneEnabled, nuveiEnabled });
   } catch(e) {
+    clearTimeout(timeout);
     // Fallback to defaults on error
     res.json({
       prices: {

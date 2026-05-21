@@ -268,8 +268,11 @@ header{
 .ad-zone.hidden{display:none;}
 .ad-banner{
   height:88px;margin:6px auto 0;flex-shrink:0;
-  width:100%;max-width:728px;padding:0 12px;box-sizing:border-box;
+  width:100%;max-width:728px;min-width:300px;padding:0 12px;box-sizing:border-box;
   overflow:hidden;display:flex;align-items:center;justify-content:center;
+}
+@media(max-width:360px){
+  .ad-banner{min-width:280px;max-width:100%;}
 }
 
 /* ══ LAYOUT ══ */
