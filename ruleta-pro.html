@@ -1973,7 +1973,14 @@ function testSound(){if(selectedSound==='casino')playTick();else if(selectedSoun
 // ════════════════════════════════════════════
 //  API CONFIG — usa el dominio actual
 // ════════════════════════════════════════════
-const API = window.location.protocol + '//' + window.location.hostname + ':4000';
+const API = (function(){
+  const proto = window.location.protocol;
+  const host = window.location.hostname;
+  // If running on localhost, default backend port is 4000
+  if (host === 'localhost' || host === '127.0.0.1') return proto + '//' + host + ':4000';
+  // Otherwise assume same origin
+  return proto + '//' + window.location.host;
+})();
 let authToken = localStorage.getItem('sd_token') || null;
 let currentUserData = null;
 
@@ -1992,13 +1999,18 @@ async function api(method, path, body, isForm) {
   if (body && !isForm) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
   if (body && isForm)  opts.body = body;
 
+  // Add timeout to fetch
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
   try {
-    const res = await fetch(API + path, opts);
+    const res = await fetch(API + path, { ...opts, signal: controller.signal });
+    clearTimeout(timeout);
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || `Error ${res.status}: ${res.statusText}`);
     return data;
   } catch (error) {
-    // Re-throw network errors with more context
+    clearTimeout(timeout);
+    if (error.name === 'AbortError') throw new Error('Tiempo de espera agotado al conectar con el servidor.');
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
       throw new Error('Error de conexión. Verifica tu conexión a internet.');
     }
