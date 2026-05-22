@@ -223,14 +223,13 @@ app.post('/api/auth/login', async (req, res) => {
 
     // Try as username
     let userSnap = await db.collection('users').doc(lowerInput).get();
-    let userData;
     if (!userSnap.exists) {
       // Try as email
       const emailSnaps = await db.collection('users').where('email', '==', lowerInput).get();
       if (emailSnaps.empty) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
       userSnap = emailSnaps.docs[0];
     }
-    userData = userSnap.data();
+    const userData = userSnap.data();
 
     const valid = await bcrypt.compare(password, userData.password);
     if (!valid) return res.status(401).json({ error: 'Usuario o contraseña incorrectos' });
@@ -243,12 +242,12 @@ app.post('/api/auth/login', async (req, res) => {
       isPro = false;
       proType = 'none';
       proExpiry = null;
-      await db.collection('users').doc(lowerInput).update({ isPro, proType, proExpiry });
+      await userSnap.ref.update({ isPro, proType, proExpiry });
     }
 
-    await db.collection('users').doc(lowerInput).update({ lastLogin: admin.firestore.FieldValue.serverTimestamp() });
-    const token = signToken({ username: lowerInput, isAdmin: lowerInput === process.env.ADMIN_USERNAME });
-    res.json({ token, user: sanitizeUser(userData) });
+    await userSnap.ref.update({ lastLogin: admin.firestore.FieldValue.serverTimestamp() });
+    const token = signToken({ username: userData.username, isAdmin: userData.username === process.env.ADMIN_USERNAME });
+    res.json({ token, user: sanitizeUser({ ...userData, username: userData.username }) });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -282,10 +281,18 @@ app.put('/api/auth/spins', authMiddleware, async (req, res) => {
 
 function sanitizeUser(u) {
   return {
-    id: u._id, username: u.username, email: u.email,
-    firstName: u.firstName, lastName: u.lastName, phone: u.phone,
-    isPro: u.isPro, proType: u.proType, proExpiry: u.proExpiry,
-    ruletas: u.ruletas, totalSpins: u.totalSpins, createdAt: u.createdAt,
+    id: u.id || u.username || null,
+    username: u.username,
+    email: u.email,
+    firstName: u.firstName,
+    lastName: u.lastName,
+    phone: u.phone,
+    isPro: u.isPro,
+    proType: u.proType,
+    proExpiry: u.proExpiry,
+    ruletas: u.ruletas,
+    totalSpins: u.totalSpins,
+    createdAt: u.createdAt,
     isAdmin: u.username === process.env.ADMIN_USERNAME,
   };
 }
@@ -655,9 +662,11 @@ function getNuveiUrls(mode) {
 app.post('/api/nuvei/create-subscription', authMiddleware, async (req, res) => {
   try {
     const { plan } = req.body;
-    const userId = req.user.uid;
+    const userId = req.user.username;
     const userEmail = req.user.email;
-    const amount = plan === 'monthly' ? siteSettings.prices.monthly.amount : siteSettings.prices.lifetime.amount;
+    const prices = await getSetting('prices', { monthly: { amount: 4.99 }, lifetime: { amount: 29.99 } });
+    const amount = prices[plan]?.amount;
+    if (!amount) return res.status(400).json({ error: 'Plan inválido' });
 
     // Get Nuvei credentials and mode from settings
     const nuveiApiKey = await getSetting('nuveiApiKey', '');
@@ -675,6 +684,7 @@ app.post('/api/nuvei/create-subscription', authMiddleware, async (req, res) => {
     const uniqString = nuveiSecret + timestamp;
     const uniqToken = crypto.createHash('sha256').update(uniqString).toString('hex');
     const authToken = Buffer.from(`${nuveiApiKey};${timestamp};${uniqToken}`).toString('base64');
+    const reference = `sub_${userId}_${Date.now()}`;
 
     // Init reference for checkout
     const nuveiRes = await axios.post(`${urls.cards}/v2/transaction/init_reference/`, {
@@ -685,7 +695,7 @@ app.post('/api/nuvei/create-subscription', authMiddleware, async (req, res) => {
       order: {
         amount: amount,
         description: `SpinDraw Pro ${plan}`,
-        dev_reference: `sub_${userId}_${Date.now()}`,
+        dev_reference: reference,
         vat: 0,
         currency: 'USD'
       },
@@ -701,21 +711,21 @@ app.post('/api/nuvei/create-subscription', authMiddleware, async (req, res) => {
       },
     });
 
-    const reference = nuveiRes.data.reference;
-    const checkoutUrl = nuveiRes.data.checkout_url;
+    const checkoutReference = nuveiRes.data.reference || reference;
+    const checkoutUrl = nuveiRes.data.checkout_url || nuveiRes.data.redirect_url || null;
 
     // Save to DB
     const subRef = await db.collection('subscriptions').add({
       userId,
       plan,
       provider: 'nuvei',
-      reference,
+      reference: checkoutReference,
       status: 'pending',
       amount,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    res.json({ reference, checkoutUrl, subId: subRef.id });
+    res.json({ reference: checkoutReference, checkoutUrl, subId: subRef.id });
   } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -723,9 +733,11 @@ app.post('/api/nuvei/create-subscription', authMiddleware, async (req, res) => {
 app.post('/api/nuvei/create-order', authMiddleware, async (req, res) => {
   try {
     const { plan } = req.body;
-    const userId = req.user.uid;
+    const userId = req.user.username;
     const userEmail = req.user.email;
-    const amount = plan === 'monthly' ? siteSettings.prices.monthly.amount : siteSettings.prices.lifetime.amount;
+    const prices = await getSetting('prices', { monthly: { amount: 4.99 }, lifetime: { amount: 29.99 } });
+    const amount = prices[plan]?.amount;
+    if (!amount) return res.status(400).json({ error: 'Plan inválido' });
 
     // Get Nuvei credentials and mode
     const nuveiApiKey = await getSetting('nuveiApiKey', '');
@@ -743,6 +755,7 @@ app.post('/api/nuvei/create-order', authMiddleware, async (req, res) => {
     const uniqString = nuveiSecret + timestamp;
     const uniqToken = crypto.createHash('sha256').update(uniqString).toString('hex');
     const authToken = Buffer.from(`${nuveiApiKey};${timestamp};${uniqToken}`).toString('base64');
+    const reference = `order_${userId}_${Date.now()}`;
 
     // Create order for bank transfer (PSE)
     const nuveiRes = await axios.post(`${urls.other}/order/`, {
@@ -767,6 +780,7 @@ app.post('/api/nuvei/create-order', authMiddleware, async (req, res) => {
     });
 
     const transaction = nuveiRes.data.transaction;
+    const checkoutUrl = nuveiRes.data.checkoutUrl || nuveiRes.data.redirectUrl || null;
     const transactionId = transaction.id;
     const bankUrl = transaction.bank_url;
 
@@ -1179,7 +1193,8 @@ app.post('/api/admin/payments/:id/reject', adminMiddleware, async (req, res) => 
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    const user = await User.findById(payment.userId);
+    const userSnap = await db.collection('users').doc(payment.userId).get();
+    const user = userSnap.exists ? userSnap.data() : { email: process.env.ADMIN_EMAIL, username: 'Usuario' };
     sendEmail(user.email, '❌ Comprobante rechazado — SpinDraw', `
       <h2>Hola ${user.firstName || user.username},</h2>
       <p>Lamentablemente tu comprobante no pudo ser verificado.</p>

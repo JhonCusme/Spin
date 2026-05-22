@@ -2444,14 +2444,14 @@ async function loadAdminPayments(status, listId = 'adminPaymentsList') {
             <strong style="color:var(--green)">$${p.amount}</strong>
             <span style="color:var(--muted);font-size:.7rem">${new Date(p.createdAt).toLocaleDateString('es-EC')}</span>
           </div>
-          ${p.comprobante?`<a href="${API}/${p.comprobante}" target="_blank" style="color:var(--accent);font-size:.75rem">📎 Ver comprobante</a>`:''}
+          ${p.comprobante?`<a href="${p.comprobante}" target="_blank" rel="noopener" style="color:var(--accent);font-size:.75rem">📎 Ver comprobante</a>`:''}
           ${p.bankRef?`<div style="font-size:.72rem;color:var(--muted)">Ref: ${p.bankRef}</div>`:''}
         </div>
         ${p.status==='pending'?`
         <div class="apr-actions">
-          <input id="note_${p._id}" placeholder="Nota (opcional)" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-size:.75rem;width:140px">
-          <button onclick="approvePayment('${p._id}')" class="btn-approve">✓ Aprobar</button>
-          <button onclick="rejectPayment('${p._id}')" class="btn-reject">✗ Rechazar</button>
+          <input id="note_${p.id}" placeholder="Nota (opcional)" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 8px;color:var(--text);font-size:.75rem;width:140px">
+          <button onclick="approvePayment('${p.id}')" class="btn-approve">✓ Aprobar</button>
+          <button onclick="rejectPayment('${p.id}')" class="btn-reject">✗ Rechazar</button>
         </div>`:`<div style="font-size:.78rem;color:${p.status==='completed'?'var(--green)':'var(--red)'}">
           ${p.status==='completed'?'✓ Aprobado':'✗ Rechazado'}
         </div>`}
@@ -2558,9 +2558,9 @@ async function loadAdminUsers() {
         </div>
         <div class="apr-actions">
           ${u.isPro
-            ? `<button onclick="toggleUserPro('${u._id}',false)" class="btn-reject">Quitar Pro</button>`
-            : `<button onclick="toggleUserPro('${u._id}',true,'monthly',30)" class="btn-approve">+30d Pro</button>
-               <button onclick="toggleUserPro('${u._id}',true,'lifetime')" style="background:var(--gold);color:#000;border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:.75rem">Vitalicio</button>`
+            ? `<button onclick="toggleUserPro('${u.id}',false)" class="btn-reject">Quitar Pro</button>`
+            : `<button onclick="toggleUserPro('${u.id}',true,'monthly',30)" class="btn-approve">+30d Pro</button>
+               <button onclick="toggleUserPro('${u.id}',true,'lifetime')" style="background:var(--gold);color:#000;border:none;border-radius:6px;padding:5px 10px;cursor:pointer;font-size:.75rem">Vitalicio</button>`
           }
         </div>
       </div>`).join('');
