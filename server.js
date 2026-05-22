@@ -23,10 +23,7 @@ const app = express();
 
 // ── VALIDATE ENVIRONMENT VARIABLES ────────────────────────────
 const requiredEnvVars = [
-  'PAYPAL_CLIENT_ID',
-  'PAYPAL_CLIENT_SECRET',
-  'EMAIL_USER',
-  'EMAIL_PASS',
+  // Only truly required env var for app runtime
   'JWT_SECRET'
 ];
 
@@ -35,8 +32,13 @@ if (missingEnvVars.length > 0) {
   console.error('❌ ERROR: Missing required environment variables:');
   missingEnvVars.forEach(varName => console.error(`   - ${varName}`));
   console.error('\n⚠️  Please set these variables in your .env file or environment.');
-  console.error('Application will not start without these variables.\n');
-  process.exit(1);
+  // If JWT_SECRET is missing we must exit, otherwise continue with warnings
+  if (missingEnvVars.includes('JWT_SECRET')) {
+    console.error('Application will not start without JWT_SECRET.\n');
+    process.exit(1);
+  } else {
+    console.warn('Continuing without optional environment variables. Some features may be disabled.');
+  }
 }
 
 // ── MIDDLEWARES ──────────────────────────────────────────────
