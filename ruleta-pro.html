@@ -1307,7 +1307,13 @@ function resizeMainCanvas() {
   if (canvas.width !== size) {
     canvas.width = size;
     canvas.height = size;
-    drawWheel(currentAngle);
+    if (typeof drawWheel === 'function') {
+      drawWheel(currentAngle);
+    } else {
+      setTimeout(() => {
+        if (typeof drawWheel === 'function') drawWheel(currentAngle);
+      }, 50);
+    }
   }
 }
 
@@ -1494,17 +1500,33 @@ function updatePlanUI(){
       // Use responsive ad dimensions
       adBanner.innerHTML = `<ins class="adsbygoogle" style="display:block;text-align:center;" data-ad-client="ca-pub-7223873610943022" data-ad-slot="5305622596" data-ad-format="horizontal" data-full-width-responsive="true"></ins>`;
 
-      // Load ad after a short delay to ensure layout is ready
-      setTimeout(() => {
-        try {
-          if ((adsbygoogle = window.adsbygoogle || []).push) {
-            adsbygoogle.push({});
-            console.log('AdSense loaded');
+      let adLoadAttempts = 0;
+      const tryLoadAd = () => {
+        const adSlot = adBanner.querySelector('ins.adsbygoogle');
+        if (!adSlot) return;
+        const rect = adSlot.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) {
+          if (adLoadAttempts < 6) {
+            adLoadAttempts++;
+            return setTimeout(tryLoadAd, 250);
           }
+          console.warn('AdSense slot still has zero size after retries');
+          return;
+        }
+
+        try {
+          (adsbygoogle = window.adsbygoogle || []).push({});
+          console.log('AdSense loaded');
         } catch (e) {
           console.warn('AdSense load attempted, may retry:', e.message);
+          if (adLoadAttempts < 6) {
+            adLoadAttempts++;
+            setTimeout(tryLoadAd, 300);
+          }
         }
-      }, 300);
+      };
+
+      setTimeout(tryLoadAd, 300);
     }
   }
   ['lockTheme','lockLogo','lockSound','lockFs'].forEach(id=>{
