@@ -472,6 +472,7 @@ app.post('/api/paypal/capture-order', authMiddleware, async (req, res) => {
 // POST /api/payphone/create-subscription
 app.post('/api/payphone/create-subscription', authMiddleware, async (req, res) => {
   try {
+    if (!PAYPHONE_TOKEN || !PAYPHONE_STORE_ID) return res.status(503).json({ error: 'PayPhone no configurado' });
     const { plan } = req.body; // 'monthly'
     const prices = await getSetting('prices', { monthly: { amount: 4.99 } });
     const amount = prices[plan]?.amount;
@@ -510,6 +511,7 @@ app.post('/api/payphone/create-subscription', authMiddleware, async (req, res) =
 // POST /api/payphone/create-order
 app.post('/api/payphone/create-order', authMiddleware, async (req, res) => {
   try {
+    if (!PAYPHONE_TOKEN || !PAYPHONE_STORE_ID) return res.status(503).json({ error: 'PayPhone no configurado' });
     const { plan } = req.body; // 'lifetime'
     const prices = await getSetting('prices', { lifetime: { amount: 29.99 } });
     const amount = prices[plan]?.amount;
@@ -550,6 +552,7 @@ app.post('/api/payphone/create-order', authMiddleware, async (req, res) => {
 // POST /api/payphone/confirm
 app.post('/api/payphone/confirm', authMiddleware, async (req, res) => {
   try {
+    if (!PAYPHONE_TOKEN || !PAYPHONE_STORE_ID) return res.status(503).json({ error: 'PayPhone no configurado' });
     const { id, clientTransactionId } = req.body;
 
     // Confirmar con PayPhone
@@ -578,7 +581,13 @@ app.post('/api/payphone/confirm', authMiddleware, async (req, res) => {
       isSubscription = true;
 
       // Guardar datos de tokenización
-      const cardHolder = encryptAES(data.optionalParameter4, PAYPHONE_ENCRYPT_KEY);
+      let cardHolder = null;
+      try {
+        cardHolder = PAYPHONE_ENCRYPT_KEY ? encryptAES(data.optionalParameter4, PAYPHONE_ENCRYPT_KEY) : null;
+      } catch(e) {
+        console.warn('Could not encrypt cardHolder:', e.message);
+        cardHolder = null;
+      }
       await subDoc.ref.update({
         status: 'active',
         cardToken: data.cardToken,
