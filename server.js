@@ -1293,7 +1293,19 @@ app.put('/api/admin/settings', adminMiddleware, async (req, res) => {
 });
 
 // ── STATIC FILES ────────────────────────────────────────────
-app.use(express.static(__dirname));
+const forbiddenStaticFiles = new Set([
+  '/server.js', '/firebase-key.json', '/firebase.json', '/firestore.rules',
+  '/firestore.indexes.json', '/package.json', '/package-lock.json', '/yarn.lock',
+  '/README.md', '/.env'
+]);
+app.use((req, res, next) => {
+  const normalized = req.path.replace(/\\/g, '/');
+  if (forbiddenStaticFiles.has(normalized) || normalized.startsWith('/.')) {
+    return res.status(404).end();
+  }
+  next();
+});
+app.use(express.static(__dirname, { dotfiles: 'ignore', index: false }));
 
 // Dynamic HTML serving with Google Site Verification
 app.get('/', async (req, res) => {
