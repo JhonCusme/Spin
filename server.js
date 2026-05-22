@@ -94,21 +94,28 @@ async function updateUser(username, updates) {
 // sanitizeUser (same)
 // ── PAYPAL CLIENT ────────────────────────────────────────────
 function getPayPalClient() {
+  const id = process.env.PAYPAL_CLIENT_ID;
+  const secret = process.env.PAYPAL_CLIENT_SECRET;
+  if (!id || !secret) {
+    console.warn('PayPal credentials missing - PayPal routes will be disabled');
+    return null;
+  }
   const env = process.env.PAYPAL_MODE === 'live'
-    ? new paypal.core.LiveEnvironment(process.env.PAYPAL_CLIENT_ID, process.env.PAYPAL_CLIENT_SECRET)
-    : new paypal.core.SandboxEnvironment(process.env.PAYPAL_CLIENT_ID, process.env.PAYPAL_CLIENT_SECRET);
+    ? new paypal.core.LiveEnvironment(id, secret)
+    : new paypal.core.SandboxEnvironment(id, secret);
   return new paypal.core.PayPalHttpClient(env);
 }
 
 // ── PAYPHONE CONFIG ──────────────────────────────────────────
-const PAYPHONE_TOKEN = process.env.PAYPHONE_TOKEN;
-const PAYPHONE_STORE_ID = process.env.PAYPHONE_STORE_ID;
-const PAYPHONE_ENCRYPT_KEY = process.env.PAYPHONE_ENCRYPT_KEY; // Clave para encriptar cardHolder
+const PAYPHONE_TOKEN = process.env.PAYPHONE_TOKEN || null;
+const PAYPHONE_STORE_ID = process.env.PAYPHONE_STORE_ID || null;
+const PAYPHONE_ENCRYPT_KEY = process.env.PAYPHONE_ENCRYPT_KEY || null; // Clave para encriptar cardHolder
 const PAYPHONE_BASE_URL = process.env.PAYPHONE_MODE === 'live'
   ? 'https://pay.payphonetodoesposible.com'
   : 'https://pay.payphonetodoesposible.com'; // Para pruebas usar el mismo, pero en sandbox
 
 function encryptAES(text, key) {
+  if (!key) throw new Error('Encryption key missing');
   const cipher = crypto.createCipher('aes-256-cbc', key);
   let encrypted = cipher.update(text, 'utf8', 'base64');
   encrypted += cipher.final('base64');
@@ -116,11 +123,17 @@ function encryptAES(text, key) {
 }
 
 // ── EMAIL ────────────────────────────────────────────────────
-const mailer = nodemailer.createTransport({
-  service: 'gmail',
-  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
-});
+let mailer = null;
+if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+  mailer = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
+  });
+} else {
+  console.warn('Email credentials missing - email notifications disabled');
+}
 async function sendEmail(to, subject, html) {
+  if (!mailer) { console.warn('sendEmail skipped, mailer not configured'); return; }
   try {
     await mailer.sendMail({ from: `SpinDraw <${process.env.EMAIL_USER}>`, to, subject, html });
   } catch(e) { console.error('Email error:', e.message); }
@@ -388,6 +401,7 @@ app.post('/api/paypal/create-order', authMiddleware, async (req, res) => {
     });
 
     const client = getPayPalClient();
+    if (!client) return res.status(503).json({ error: 'PayPal not configured' });
     const order = await client.execute(request);
     const approveUrl = order.result.links.find(l => l.rel === 'approve')?.href;
 
@@ -414,6 +428,7 @@ app.post('/api/paypal/capture-order', authMiddleware, async (req, res) => {
     request.requestBody({});
 
     const client = getPayPalClient();
+    if (!client) return res.status(503).json({ error: 'PayPal not configured' });
     const capture = await client.execute(request);
 
     if (capture.result.status === 'COMPLETED') {
