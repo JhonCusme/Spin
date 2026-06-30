@@ -79,7 +79,10 @@
     "suspenseSub": "Desacelera lentamente al final",
     "revancha": "🔥 Revancha — Free",
     "revanchaToggle": "Botón de Revancha",
-    "revanchaSub": "Aparece botón para volver a girar"
+    "revanchaSub": "Aparece botón para volver a girar",
+    "streak": "🏆 Racha de victorias — Free",
+    "streakToggle": "Mostrar racha",
+    "streakSub": "Quién va ganando más seguido"
   },
   "paywallModal": {
     "title": "¡Actualiza a Pro!",
@@ -97,6 +100,12 @@
     "stream": "Modo Stream",
     "import": "Importar participantes",
     "noAds": "Sin anuncios",
+    "features": "TODO LO QUE INCLUYE PRO",
+    "paypalButton": "PayPal / Tarjeta",
+    "payphoneButton": "💳 PayPhone (EC)",
+    "nuveiButton": "💳 Nuvei (EC)",
+    "transferButton": "🏦 Transferencia (EC)",
+    "notNow": "Ahora no",
     "upgrade": "Actualizar Ahora",
     "cancel": "Cancelar"
   },

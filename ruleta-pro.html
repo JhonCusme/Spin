@@ -183,21 +183,6 @@ body{
 }
 @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(110vh) rotate(720deg);opacity:0}}
 
-/* ══ PAYMENT METHOD MODAL ══ */
-#paymentMethodModal{
-  display:none;position:fixed;inset:0;z-index:8889;
-  background:rgba(0,0,0,.75);backdrop-filter:blur(8px);
-  align-items:center;justify-content:center;
-}
-#paymentMethodModal.active{display:flex;}
-
-/* ══ TRANSFER MODAL ══ */
-#transferModal{
-  display:none;position:fixed;inset:0;z-index:8890;
-  background:rgba(0,0,0,.75);backdrop-filter:blur(8px);
-  align-items:center;justify-content:center;
-}
-#transferModal.active{display:flex;}
 #paywallModal.active{display:flex !important;}
 .transfer-details{text-align:left;margin:20px 0;padding:15px;background:var(--bg);border-radius:10px;}
 .transfer-details p{margin:5px 0;}
@@ -660,38 +645,6 @@ header{
 
 
 
-<!-- ══ PAYMENT METHOD MODAL ══ -->
-<div id="paymentMethodModal">
-  <div class="paywall-box">
-    <div class="paywall-crown">💳</div>
-    <div class="paywall-title" data-i18n="paywall.title">Método de Pago</div>
-    <div class="paywall-sub" data-i18n="paywall.subtitle">Elige cómo quieres pagar por SpinDraw Pro.</div>
-    <button class="btn-upgrade" onclick="buyProPayPal(selectedPlan)" data-i18n="paywall.paypal">PayPal</button><br>
-    <button class="btn-upgrade" onclick="buyProTransfer(selectedPlan)" data-i18n="paywall.bankTransfer">Transferencia Bancaria</button><br>
-    <button class="btn-cancel" onclick="closePaymentMethodModal()" data-i18n="paywall.back">Atrás</button>
-  </div>
-</div>
-
-<!-- ══ TRANSFER PAYMENT MODAL ══ -->
-<div id="transferModal">
-  <div class="paywall-box">
-    <div class="paywall-crown">🏦</div>
-    <div class="paywall-title" data-i18n="paywall.transferTitle">Pago por Transferencia</div>
-    <div class="paywall-sub" data-i18n="paywall.transferSubtitle">Realiza la transferencia a la siguiente cuenta y sube el comprobante.</div>
-    <div class="transfer-details">
-      <p><strong data-i18n="paywall.bank">Banco:</strong> <span id="bankBankName"></span></p>
-      <p><strong data-i18n="paywall.account">Cuenta:</strong> <span id="bankAccount"></span></p>
-      <p><strong data-i18n="paywall.clabe">CLABE:</strong> <span id="bankId"></span></p>
-      <p><strong data-i18n="paywall.beneficiary">Beneficiario:</strong> <span id="bankName"></span></p>
-      <p><strong data-i18n="paywall.type">Tipo:</strong> <span id="bankType"></span></p>
-      <p><strong data-i18n="paywall.note">Nota:</strong> <span id="bankNote"></span></p>
-      <p><strong data-i18n="paywall.amount">Monto:</strong> <span id="transferAmount">$4.99</span></p>
-    </div>
-    <input type="file" id="comprobanteFile" accept="image/*,application/pdf" style="margin:10px 0;">
-    <button class="btn-upgrade" id="uploadComprobanteBtn" onclick="uploadComprobante()" data-i18n="paywall.upload">Subir Comprobante</button><br>
-    <button class="btn-cancel" id="cancelTransferBtn" onclick="closeTransferModal()" data-i18n="paywall.cancel">Cancelar</button>
-  </div>
-</div>
 
 <!-- ══ ACCOUNT MODAL ══ -->
 <style>
@@ -1357,133 +1310,12 @@ let currentPalette=PALETTES[0];
 function getColor(i){return currentPalette[i%currentPalette.length];}
 function ar(){return ruletas && ruletas.length > 0 ? ruletas[activeRuletaIdx] : ruletas[0];}
 
-// ══ PLA
-let selectedPlan = '';
-
-function selectPaymentMethod(plan){
-  selectedPlan = plan;
-  closePaywall();
-  document.getElementById('paymentMethodModal').classList.add('active');
-}
-
-function buyProPayPal(plan){
-  closePaymentMethodModal();
-  fetch(API + '/api/paypal/create-order', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-    body: JSON.stringify({ plan })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.approveUrl) {
-      window.location = data.approveUrl;
-    } else {
-      alert('Error: ' + (data.error || 'Desconocido'));
-    }
-  })
-  .catch(err => alert('Error de conexión: ' + err.message));
-}
-
-function buyProTransfer(plan){
-  closePaymentMethodModal();
-  document.getElementById('transferAmount').textContent = plan === 'monthly' ? '$4.99' : '$49.99';
-  document.getElementById('transferModal').classList.add('active');
-}
-
-function closePaymentMethodModal(){
-  document.getElementById('paymentMethodModal').classList.remove('active');
-}
-
-function closeTransferModal(){
-  document.getElementById('transferModal').classList.remove('active');
-}
-
-async function compressImage(file, maxSizeMB = 5) {
-  const maxSize = maxSizeMB * 1024 * 1024;
-  if (file.size <= maxSize) return file;
-  return new Promise((resolve) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    img.onload = () => {
-      let { width, height } = img;
-      const ratio = Math.sqrt(maxSize / file.size);
-      width *= ratio;
-      height *= ratio;
-      canvas.width = width;
-      canvas.height = height;
-      ctx.drawImage(img, 0, 0, width, height);
-      canvas.toBlob(resolve, 'image/jpeg', 0.8);
-    };
-    img.src = URL.createObjectURL(file);
-  });
-}
-
-async function uploadComprobante(){
-  const file = document.getElementById('comprobanteFile').files[0];
-  if (!file) {
-    alert('Selecciona un archivo');
-    return;
-  }
-  const button = document.getElementById('uploadComprobanteBtn');
-  const cancelBtn = document.getElementById('cancelTransferBtn');
-  button.disabled = true;
-  cancelBtn.disabled = true;
-  button.textContent = 'Subiendo...';
-
-  let processedFile = file;
-  if (file.type.startsWith('image/')) {
-    processedFile = await compressImage(file);
-  } else if (file.size > 5 * 1024 * 1024) {
-    alert('El archivo es demasiado grande. Solo se permiten archivos de hasta 5MB.');
-    button.disabled = false;
-    cancelBtn.disabled = false;
-    button.textContent = 'Subir Comprobante';
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append('comprobante', processedFile);
-  formData.append('plan', selectedPlan);
-  // Optional: add bank reference if user inputs it
-  fetch(API + '/api/transfer/submit', {
-    method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + authToken },
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.success) {
-      alert('Comprobante subido. Tu cuenta Pro será activada en 24 horas.');
-      closeTransferModal();
-      // Do not set isPro here; wait for admin approval
-    } else {
-      alert('Error: ' + (data.error || 'Desconocido'));
-    }
-  })
-  .catch(err => alert('Error de conexión: ' + err.message))
-  .finally(() => {
-    button.disabled = false;
-    cancelBtn.disabled = false;
-    button.textContent = 'Subir Comprobante';
-  });
-}
-
-function buyPro(plan){
-  if (!authToken) {
-    showAccountModal();
-    return;
-  }
-  selectPaymentMethod(plan);
-}
 function simulateUpgrade(){isPro=true;closePaywall();updatePlanUI();} // Keep for admin or something
 function deactivatePro(){
   isPro=false;updatePlanUI();
   if(ar().entries.length>FREE_LIMIT)ar().entries=ar().entries.slice(0,FREE_LIMIT);
   renderList();drawWheel(currentAngle);
 }
-function openPaywall(){document.getElementById('paywallModal').classList.add('active');}
-function closePaywall(){document.getElementById('paywallModal').classList.remove('active');}
 function closePayphoneModal(){document.getElementById('payphoneModal').classList.remove('active');}
 function updatePlanUI(){
   document.getElementById('demoUnlockBar').style.display = currentUserData?.isAdmin ? '' : 'none';
@@ -2331,14 +2163,19 @@ async function startPayment(plan, method) {
   if (!currentUserData) {
     closePaywall(); showAccountModal(); return;
   }
-  if (method === 'paypal') await startPayPal(plan);
-  else openTransferModal(plan);
+  if (method === 'paypal') {
+    closePaywall();
+    await startPayPal(plan);
+  } else {
+    openTransferModal(plan);
+  }
 }
 
 async function startPayPhonePayment(plan) {
   if (!currentUserData) {
     closePaywall(); showAccountModal(); return;
   }
+  closePaywall();
   try {
     const endpoint = plan === 'monthly' ? '/api/payphone/create-subscription' : '/api/payphone/create-order';
     const data = await api('POST', endpoint, { plan });
@@ -2354,6 +2191,7 @@ async function startNuveiPayment(plan) {
   if (!currentUserData) {
     closePaywall(); showAccountModal(); return;
   }
+  closePaywall();
   try {
     const endpoint = plan === 'monthly' ? '/api/nuvei/create-subscription' : '/api/nuvei/create-order';
     const data = await api('POST', endpoint, { plan });
@@ -2394,7 +2232,6 @@ async function pollPaymentStatus(plan) {
 
 // ── TRANSFER ─────────────────────────────────
 function openTransferModal(plan) {
-  selectedPlan = plan; // ensure selectedPlan is set
   const { bank, prices, whatsapp } = siteSettings;
   const amount = prices[plan]?.amount;
   document.getElementById('transferPlan').textContent = plan==='monthly'?'Mensual':'Vitalicio';
@@ -2834,7 +2671,7 @@ if (document.readyState === 'loading') {
 </div>
 
 <!-- PAYPHONE MODAL -->
-<div id="payphoneModal" style="display:none;position:fixed;inset:0;z-index:8888;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
+<div class="modal-overlay" id="payphoneModal" style="position:fixed;inset:0;z-index:8888;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:16px;">
   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;width:100%;max-width:500px;max-height:calc(100vh - 32px);overflow-y:auto;animation:authSlideIn .3s ease;">
     <div style="text-align:center;margin-bottom:20px;">
       <div style="font-size:2rem;margin-bottom:6px;">💳</div>

@@ -53,7 +53,10 @@ class I18n {
           suspenseSub: 'Desacelera lentamente al final',
           revancha: '🔥 Revancha — Free',
           revanchaToggle: 'Botón de Revancha',
-          revanchaSub: 'Aparece botón para volver a girar'
+          revanchaSub: 'Aparece botón para volver a girar',
+          streak: '🏆 Racha de victorias — Free',
+          streakToggle: 'Mostrar racha',
+          streakSub: 'Quién va ganando más seguido'
         },
         paywallModal: {
           title: '¡Actualiza a Pro!',
@@ -71,6 +74,12 @@ class I18n {
           stream: 'Modo Stream',
           import: 'Importar participantes',
           noAds: 'Sin anuncios',
+          features: 'TODO LO QUE INCLUYE PRO',
+          paypalButton: 'PayPal / Tarjeta',
+          payphoneButton: '💳 PayPhone (EC)',
+          nuveiButton: '💳 Nuvei (EC)',
+          transferButton: '🏦 Transferencia (EC)',
+          notNow: 'Ahora no',
           upgrade: 'Actualizar Ahora',
           cancel: 'Cancelar'
         }
@@ -108,7 +117,10 @@ class I18n {
           suspenseSub: 'Slows down slowly at the end',
           revancha: '🔥 Revancha — Free',
           revanchaToggle: 'Revancha Button',
-          revanchaSub: 'Shows button to spin again'
+          revanchaSub: 'Shows button to spin again',
+          streak: '🏆 Winning streak — Free',
+          streakToggle: 'Show streak',
+          streakSub: 'Who is winning the most in a row'
         },
         paywallModal: {
           title: 'Upgrade to Pro!',
@@ -126,6 +138,12 @@ class I18n {
           stream: 'Stream mode',
           import: 'Import participants',
           noAds: 'No ads',
+          features: 'WHAT PRO INCLUDES',
+          paypalButton: 'PayPal / Card',
+          payphoneButton: '💳 PayPhone (EC)',
+          nuveiButton: '💳 Nuvei (EC)',
+          transferButton: '🏦 Bank Transfer (EC)',
+          notNow: 'Not now',
           upgrade: 'Upgrade Now',
           cancel: 'Cancel'
         }
@@ -163,7 +181,10 @@ class I18n {
           suspenseSub: 'Desacelera lentamente no final',
           revancha: '🔥 Revanche — Free',
           revanchaToggle: 'Botão de Revanche',
-          revanchaSub: 'Mostra botão para girar novamente'
+          revanchaSub: 'Mostra botão para girar novamente',
+          streak: '🏆 Sequência de vitórias — Free',
+          streakToggle: 'Mostrar sequência',
+          streakSub: 'Quem está ganhando mais seguido'
         },
         paywallModal: {
           title: 'Atualize para Pro!',
@@ -181,6 +202,12 @@ class I18n {
           stream: 'Modo Stream',
           import: 'Importar participantes',
           noAds: 'Sem anúncios',
+          features: 'O QUE O PRO INCLUI',
+          paypalButton: 'PayPal / Cartão',
+          payphoneButton: '💳 PayPhone (EC)',
+          nuveiButton: '💳 Nuvei (EC)',
+          transferButton: '🏦 Transferência (EC)',
+          notNow: 'Agora não',
           upgrade: 'Atualizar Agora',
           cancel: 'Cancelar'
         }
